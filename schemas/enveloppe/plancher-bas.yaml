@@ -1,0 +1,122 @@
+﻿$id: https://schemas.open-dpe.fr/enveloppe/plancher-bas
+$schema: https://json-schema.org/draft/2020-12/schema
+title: Plancher bas
+type: object
+unevaluatedProperties: false
+properties:
+  id:
+    $ref: /common/primitives#/$defs/id
+  description:
+    $ref: /common/primitives#/$defs/description
+  type:
+    title: Type de plancher bas
+    type: [string, "null"]
+    x-enum: enveloppe:plancher-bas:type
+    enum:
+      - plancher_avec_ou_sans_remplissage
+      - plancher_entre_solives_metalliques
+      - plancher_entre_solives_bois
+      - plancher_bois_sur_solives_metalliques
+      - bardeaux_et_remplissage
+      - voutains_sur_solives_metalliques
+      - voutains_briques_ou_moellons
+      - dalle_beton
+      - plancher_bois_sur_solives_bois
+      - plancher_lourd_type_entrevous_terre_cuite_ou_poutrelles_beton
+      - plancher_entrevous_isolant
+      - null
+  inertie:
+    $ref: /enveloppe/common/primitives#/$defs/inertie_paroi
+  annee_construction:
+    $ref: /common/primitives#/$defs/annee_construction
+  annee_renovation:
+    $ref: /common/primitives#/$defs/annee_renovation
+  u0:
+    $ref: /enveloppe/common/primitives#/$defs/u0_saisi
+  u:
+    $ref: /enveloppe/common/primitives#/$defs/u_saisi
+  position:
+    title: Position
+    type: object
+    properties:
+      surface_ue:
+        title: Surface retenue pour le calcul de ue en m²
+        type: [number, "null"]
+        exclusiveMinimum: 0
+      perimetre_ue:
+        title: Périmètre retenue pour le calcul de ue en m
+        type: [number, "null"]
+        exclusiveMinimum: 0
+    allOf:
+      - $ref: /enveloppe/common/components#/$defs/position
+    oneOf:
+      - title: Plancher bas donnant sur un vides sanitaire, un sous-sol non chauffé ou un terre-plein
+        type: object
+        properties:
+          mitoyennete:
+            enum:
+              - enterre
+              - vide_sanitaire
+              - terre_plein
+              - sous_sol_non_chauffe
+          surface_ue:
+            type: number
+          perimetre_ue:
+            type: number
+          local_non_chauffe_id:
+            const: null
+        required:
+          - mitoyennete
+          - surface_ue
+          - perimetre_ue
+      - title: Autres cas
+        type: object
+        properties:
+          mitoyennete:
+            enum:
+              - exterieur
+              - local_non_chauffe
+              - local_non_residentiel
+              - local_residentiel
+              - local_non_accessible
+          surface_ue:
+            const: null
+          perimetre_ue:
+            const: null
+        required:
+          - mitoyennete
+  isolation:
+    $ref: /enveloppe/common/components#/$defs/isolation
+  data:
+    title: Données calculées
+    type: object
+    readOnly: true
+    additionalProperties: false
+    properties:
+      u0:
+        $ref: /enveloppe/common/primitives#/$defs/u
+      u:
+        $ref: /enveloppe/common/primitives#/$defs/u
+      b:
+        $ref: /enveloppe/common/primitives#/$defs/b
+      sdep:
+        $ref: /enveloppe/common/primitives#/$defs/sdep
+      dp:
+        $ref: /enveloppe/common/primitives#/$defs/deperditions
+    required:
+      - u0
+      - u
+      - b
+      - sdep
+      - dp
+required:
+  - id
+  - description
+  - type
+  - inertie
+  - annee_construction
+  - annee_renovation
+  - u0
+  - u
+  - position
+  - isolation

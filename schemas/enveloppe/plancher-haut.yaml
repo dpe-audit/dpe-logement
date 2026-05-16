@@ -1,0 +1,91 @@
+﻿$id: https://schemas.open-dpe.fr/enveloppe/plancher-haut
+$schema: https://json-schema.org/draft/2020-12/schema
+title: Plancher haut
+type: object
+unevaluatedProperties: false
+properties:
+  id:
+    $ref: /common/primitives#/$defs/id
+  description:
+    $ref: /common/primitives#/$defs/description
+  configuration:
+    title: Configuration
+    type: string
+    x-enum: enveloppe:plancher-haut:configuration
+    enum: [plancher, rampants, terrasse]
+  type:
+    title: Type de plancher haut
+    type: [string, "null"]
+    x-enum: enveloppe:plancher-haut:type
+    enum:
+      - plafond_avec_ou_sans_remplissage
+      - plafond_entre_solives_metalliques
+      - plafond_entre_solives_bois
+      - plafond_bois_sur_solives_metalliques
+      - plafond_bois_sous_solives_metalliques
+      - bardeaux_et_remplissage
+      - plafond_bois_sur_solives_bois
+      - plafond_bois_sous_solives_bois
+      - dalle_beton
+      - plafond_lourd
+      - combles_amenages_sous_rampant
+      - toiture_chaume
+      - plafond_patre
+      - bac_acier
+      - null
+  inertie:
+    $ref: /enveloppe/common/primitives#/$defs/inertie_paroi
+  annee_construction:
+    $ref: /common/primitives#/$defs/annee_construction
+  annee_renovation:
+    $ref: /common/primitives#/$defs/annee_renovation
+  u0:
+    $ref: /enveloppe/common/primitives#/$defs/u0_saisi
+  u:
+    $ref: /enveloppe/common/primitives#/$defs/u_saisi
+  position:
+    title: Position
+    type: object
+    properties:
+      orientation:
+        $ref: /enveloppe/common/primitives#/$defs/orientation
+    required:
+      - orientation
+    allOf:
+      - $ref: /enveloppe/common/components#/$defs/position
+  isolation:
+    $ref: /enveloppe/common/components#/$defs/isolation
+  data:
+    title: Données calculées
+    type: object
+    readOnly: true
+    additionalProperties: false
+    properties:
+      u0:
+        $ref: /enveloppe/common/primitives#/$defs/u
+      u:
+        $ref: /enveloppe/common/primitives#/$defs/u
+      b:
+        $ref: /enveloppe/common/primitives#/$defs/b
+      sdep:
+        $ref: /enveloppe/common/primitives#/$defs/sdep
+      dp:
+        $ref: /enveloppe/common/primitives#/$defs/deperditions
+    required:
+      - u0
+      - u
+      - b
+      - sdep
+      - dp
+required:
+  - id
+  - description
+  - configuration
+  - type
+  - inertie
+  - annee_construction
+  - annee_renovation
+  - u0
+  - u
+  - position
+  - isolation

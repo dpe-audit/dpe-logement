@@ -1,0 +1,72 @@
+$id: https://schemas.open-dpe.fr/ecs
+$schema: https://json-schema.org/draft/2020-12/schema
+title: Eau chaude sanitaire
+type: object
+additionalProperties: false
+properties:
+  generateurs:
+    title: Liste des générateurs
+    type: array
+    minItems: 1
+    items:
+      $ref: /ecs/generateur
+  installations:
+    title: Liste des installations
+    type: array
+    minItems: 1
+    items:
+      $ref: /ecs/installation
+  data:
+    title: Données calculées
+    type: object
+    readOnly: true
+    additionalProperties: false
+    properties:
+      nadeq:
+        title: Nombre d'adultes équivalents
+        type: number
+        minimum: 0
+      nmax:
+        title: Coefficient d'occupation maximal
+        type: number
+        minimum: 0
+      bef:
+        $ref: /common/primitives#/$defs/bef
+      iecs:
+        title: Inverse du rendement moyen
+        type: number
+        minimum: 0
+      rd:
+        title: Rendement de distribution moyen
+        type: number
+        minimum: 0
+      rs:
+        title: Rendement de stockage moyen
+        type: number
+        minimum: 0
+      rg:
+        title: Rendement de génération moyen
+        type: number
+        minimum: 0
+      rgs:
+        title: Rendement de génération et de stockage moyen
+        type: number
+        minimum: 0
+      pertes:
+        $ref: /common/components#/$defs/pertes
+      consommations:
+        $ref: /common/components#/$defs/consommations
+    required:
+      - nadeq
+      - nmax
+      - bef
+      - iecs
+      - rd
+      - rs
+      - rg
+      - rgs
+      - pertes
+      - consommations
+required:
+  - generateurs
+  - installations

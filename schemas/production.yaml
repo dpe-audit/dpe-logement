@@ -1,0 +1,23 @@
+$id: https://schemas.open-dpe.fr/production
+$schema: https://json-schema.org/draft/2020-12/schema
+title: Production
+type: object
+additionalProperties: false
+properties:
+  panneaux_photovoltaiques:
+    title: Liste des panneaux photovoltaïques
+    type: array
+    items:
+      $ref: /production/panneau-photovoltaique
+  data:
+    title: Données calculées
+    type: object
+    readOnly: true
+    additionalProperties: false
+    properties:
+      ppv:
+        $ref: /production/common#/$defs/ppv
+    required:
+      - ppv
+required:
+  - panneaux_photovoltaiques

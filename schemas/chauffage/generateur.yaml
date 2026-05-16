@@ -1,0 +1,690 @@
+﻿$id: https://schemas.open-dpe.fr/chauffage/generateur
+$schema: https://json-schema.org/draft/2020-12/schema
+title: Générateur de chauffage
+type: object
+unevaluatedProperties: false
+properties:
+  id:
+    $ref: /common/primitives#/$defs/id
+  description:
+    $ref: /common/primitives#/$defs/description
+  type:
+    title: Type de générateur
+    type: [string, "null"]
+    x-enum: chauffage:type-generateur
+    enum:
+      - chaudiere
+      - convecteur_bi_jonction
+      - convecteur_electrique
+      - panneau_rayonnant_electrique
+      - plafond_rayonnant_electrique
+      - plancher_rayonnant_electrique
+      - radiateur_electrique
+      - radiateur_electrique_accumulation
+      - generateur_air_chaud
+      - pac_air_air
+      - pac_air_eau
+      - pac_eau_eau
+      - pac_eau_glycolee_eau
+      - pac_geothermique
+      - cuisiniere
+      - foyer_ferme
+      - insert
+      - poele
+      - poele_bouilleur
+      - radiateur_gaz
+      - reseau_chaleur
+      - null
+  energie:
+    title: Energie
+    type: [string, "null"]
+    x-enum: energie
+    enum:
+      - electricite
+      - gaz_naturel
+      - gpl
+      - fioul
+      - charbon
+      - bois_buche
+      - bois_plaquette
+      - bois_granule
+      - reseau_chaleur
+      - null
+  bienergie:
+    title: Energie secondaire
+    type: [string, "null"]
+    x-enum: energie
+    enum:
+      - electricite
+      - gaz_naturel
+      - gpl
+      - fioul
+      - charbon
+      - bois_buche
+      - bois_plaquette
+      - bois_granule
+      - null
+  annee_installation:
+    $ref: /common/primitives#/$defs/annee_installation
+  position:
+    title: Position
+    type: object
+    unevaluatedProperties: false
+    properties:
+      position_chaudiere:
+        title: Position de la chaudière
+        type: [string, "null"]
+        x-enum: chauffage:position-chaudiere
+        enum: [chaudiere_murale, chaudiere_sol, null]
+      generateur_collectif:
+        title: Générateur collectif d'eau chaude sanitaire
+        type: boolean
+      generateur_multi_batiment:
+        title: Générateur multi bâtiment
+        type: boolean
+      position_volume_chauffe:
+        title: Position du générateur à l'intérieur du volume chauffé
+        type: boolean
+      generateur_mixte_id:
+        title: Identifiant du générateur mixte
+        anyOf:
+          - $ref: /common/primitives#/$defs/id
+          - const: null
+      reseau_chaleur_id:
+        title: Identifiant du réseau de chaleur
+        type: [string, "null"]
+    required:
+      - generateur_collectif
+      - generateur_multi_batiment
+      - position_volume_chauffe
+    oneOf:
+      - title: Générateur individuel
+        type: object
+        properties:
+          generateur_collectif:
+            const: false
+          generateur_multi_batiment:
+            const: false
+          reseau_chaleur_id:
+            const: null
+        required:
+          - generateur_collectif
+          - generateur_multi_batiment
+      - title: Générateur collectif
+        type: object
+        properties:
+          generateur_collectif:
+            const: true
+          position_volume_chauffe:
+            const: false
+        required:
+          - generateur_collectif
+          - position_volume_chauffe
+  signaletique:
+    title: Fiche signalétique
+    type: object
+    unevaluatedProperties: false
+    properties:
+      pn:
+        title: Puissance nominale en kW
+        type: [number, "null"]
+        exclusiveMinimum: 0
+      label:
+        title: Label du générateur
+        type: [string, "null"]
+        enum: [flamme_verte, nf_performance, null]
+      scop:
+        title: Coefficient de performance énergétique saisonnier
+        type: [number, "null"]
+        exclusiveMinimum: 0
+        maximum: 10
+      mode_combustion:
+        title: Mode de combustion
+        type: [string, "null"]
+        x-enum: chauffage:mode-combustion
+        enum:
+          - standard
+          - basse_temperature
+          - condensation
+          - null
+      presence_ventouse:
+        title: Présence d'une ventouse
+        type: [boolean, "null"]
+      presence_regulation_combustion:
+        title: Présence d'une régulation de combustion
+        type: [boolean, "null"]
+      pveilleuse:
+        title: Puissance de la veilleuse en W
+        type: [number, "null"]
+        minimum: 0
+      qp0:
+        title: Pertes à l'arrêt en W
+        type: [number, "null"]
+        exclusiveMinimum: 0
+      rpn:
+        title: Rendement à puissance nominale sur PCI en %
+        type: [number, "null"]
+        exclusiveMinimum: 0
+        maximum: 150
+      rpint:
+        title: Rendement à puissance intermédiaire sur PCI en %
+        type: [number, "null"]
+        exclusiveMinimum: 0
+        maximum: 150
+      tfonc30:
+        title: Température de fonctionnement à 30% de la puissance nominale en °C
+        type: [number, "null"]
+        exclusiveMinimum: 0
+        maximum: 150
+      tfonc100:
+        title: Température de fonctionnement à 100% de la puissance nominale en °C
+        type: [number, "null"]
+        exclusiveMinimum: 0
+        maximum: 150
+  data:
+    title: Données calculées
+    type: object
+    readOnly: true
+    additionalProperties: false
+    properties:
+      pn:
+        title: Puissance nominale en kW
+        type: number
+      pdim:
+        title: Puissance de dimensionnement en kW
+        type: number
+      pch:
+        title: Puissance de dimensionnement de chauffage en kW
+        type: number
+      rg:
+        title: Rendement de génération moyen
+        type: number
+      scop:
+        title: Coefficient de performance énergétique saisonnier
+        type: [number, "null"]
+      rpn:
+        title: Rendement à pleine charge exprimée en %PCI
+        type: [number, "null"]
+      rpint:
+        title: Rendement à charge intermédiaire exprimée en %PCI
+        type: [number, "null"]
+      qp0:
+        title: Pertes à l'arrêt en W
+        type: [number, "null"]
+      pveilleuse:
+        title: Puissance de la veilleuse en W
+        type: [number, "null"]
+      tfonc30:
+        title: Température de fonctionnement à 30% de la puissance nominale en °C
+        type: [number, "null"]
+      tfonc100:
+        title: Température de fonctionnement à 100% de la puissance nominale en °C
+        type: [number, "null"]
+      rdim:
+        $ref: /common/primitives#/$defs/rdim
+      pertes:
+        $ref: /common/components#/$defs/pertes
+      consommations:
+        $ref: /common/components#/$defs/consommations
+    required:
+      - pn
+      - pdim
+      - pch
+      - rg
+      - scop
+      - rpn
+      - rpint
+      - qp0
+      - pveilleuse
+      - tfonc30
+      - tfonc100
+      - rdim
+      - pertes
+      - consommations
+required:
+  - id
+  - description
+  - type
+  - energie
+  - annee_installation
+  - position
+  - signaletique
+discriminator:
+  propertyName: type
+oneOf:
+  - title: Générateur à combustion
+    type: object
+    properties:
+      energie:
+        not:
+          enum: [electricite, reseau_chaleur]
+      position:
+        type: object
+        properties:
+          reseau_chaleur_id:
+            const: null
+      signaletique:
+        type: object
+        properties:
+          scop:
+            const: null
+    required:
+      - energie
+      - position
+      - signaletique
+    oneOf:
+      - title: Chaudière à combustion
+        properties:
+          type:
+            const: chaudiere
+          signaletique:
+            type: object
+            properties:
+              label:
+                const: null
+        required:
+          - type
+          - signaletique
+      - title: Poèle bouilleur
+        properties:
+          type:
+            const: poele_bouilleur
+          energie:
+            enum: [bois_buche, bois_plaquette, bois_granule]
+          bienergie:
+            const: null
+          signaletique:
+            type: object
+            properties:
+              label:
+                const: null
+        required:
+          - type
+          - energie
+          - signaletique
+      - title: Poèle / Insert
+        properties:
+          type:
+            enum: [cuisiniere, foyer_ferme, insert, poele]
+          bienergie:
+            const: null
+          position:
+            type: object
+            properties:
+              position_chaudiere:
+                const: null
+              generateur_collectif:
+                const: false
+              generateur_multi_batiment:
+                const: false
+              position_volume_chauffe:
+                const: true
+              generateur_mixte_id:
+                const: null
+          signaletique:
+            type: object
+            properties:
+              label:
+                title: Label
+                type: [string, "null"]
+                enum: [flamme_verte, null]
+              mode_combustion:
+                const: null
+              presence_regulation_combustion:
+                const: null
+              pveilleuse:
+                const: null
+              qp0:
+                const: null
+              rpn:
+                const: null
+              rpint:
+                const: null
+              tfonc30:
+                const: null
+              tfonc100:
+                const: null
+        required:
+          - type
+          - energie
+          - position
+          - signaletique
+      - title: Générateur air chaud à combustion
+        type: object
+        properties:
+          type:
+            const: generateur_air_chaud
+          bienergie:
+            const: null
+          signaletique:
+            type: object
+            properties:
+              mode_combustion:
+                enum: [standard, condensation, null]
+              label:
+                const: null
+        required:
+          - type
+          - energie
+          - signaletique
+      - title: Radiateur à gaz
+        type: object
+        properties:
+          type:
+            const: radiateur_gaz
+          energie:
+            enum: [gaz_naturel, gpl]
+          bienergie:
+            const: null
+          position:
+            type: object
+            properties:
+              position_chaudiere:
+                const: null
+              generateur_collectif:
+                const: false
+              generateur_multi_batiment:
+                const: false
+              position_volume_chauffe:
+                const: true
+              generateur_mixte_id:
+                const: null
+          signaletique:
+            type: object
+            properties:
+              label:
+                title: Label
+                type: [string, "null"]
+                enum: [flamme_verte, null]
+              mode_combustion:
+                const: null
+              presence_regulation_combustion:
+                const: null
+              pveilleuse:
+                const: null
+              qp0:
+                const: null
+              rpint:
+                const: null
+              tfonc30:
+                const: null
+              tfonc100:
+                const: null
+        required:
+          - type
+          - energie
+          - position
+          - signaletique
+  - title: Générateur électrique
+    type: object
+    properties:
+      type:
+        enum:
+          - chaudiere
+          - generateur_air_chaud
+          - convecteur_bi_jonction
+          - convecteur_electrique
+          - panneau_rayonnant_electrique
+          - plafond_rayonnant_electrique
+          - plancher_rayonnant_electrique
+          - radiateur_electrique
+          - radiateur_electrique_accumulation
+      energie:
+        const: electricite
+      bienergie:
+        const: null
+      position:
+        type: object
+        properties:
+          reseau_chaleur_id:
+            const: null
+      signaletique:
+        type: object
+        properties:
+          scop:
+            const: null
+          mode_combustion:
+            const: null
+          presence_ventouse:
+            const: null
+          presence_regulation_combustion:
+            const: null
+          pveilleuse:
+            const: null
+          qp0:
+            const: null
+          rpn:
+            const: null
+          rpint:
+            const: null
+          tfonc30:
+            const: null
+          tfonc100:
+            const: null
+    required:
+      - type
+      - energie
+      - position
+      - signaletique
+    oneOf:
+      - title: Chaudière électrique
+        properties:
+          type:
+            enum: [chaudiere, generateur_air_chaud]
+          signaletique:
+            type: object
+            properties:
+              label:
+                const: null
+        required:
+          - type
+          - signaletique
+      - title: Emetteur électrique
+        type: object
+        properties:
+          type:
+            not:
+              const: chaudiere
+          position:
+            type: object
+            properties:
+              position_chaudiere:
+                const: null
+              generateur_collectif:
+                const: false
+              generateur_multi_batiment:
+                const: false
+              position_volume_chauffe:
+                const: true
+              generateur_mixte_id:
+                const: null
+          signaletique:
+            type: object
+            properties:
+              label:
+                title: Label
+                type: [string, "null"]
+                enum: [nf_performance, null]
+        required:
+          - type
+          - position
+          - signaletique
+  - title: Générateur thermodynamique
+    type: object
+    properties:
+      type:
+        enum:
+          - pac_air_air
+          - pac_air_eau
+          - pac_eau_eau
+          - pac_eau_glycolee_eau
+          - pac_geothermique
+      energie:
+        const: electricite
+      position:
+        type: object
+        properties:
+          reseau_chaleur_id:
+            const: null
+    required:
+      - type
+      - energie
+      - position
+    oneOf:
+      - title: Pompe à chaleur
+        type: object
+        properties:
+          bienergie:
+            const: null
+          position:
+            type: object
+            properties:
+              position_chaudiere:
+                const: null
+          signaletique:
+            type: object
+            properties:
+              label:
+                const: null
+              mode_combustion:
+                const: null
+              presence_ventouse:
+                const: null
+              presence_regulation_combustion:
+                const: null
+              pveilleuse:
+                const: null
+              qp0:
+                const: null
+              rpn:
+                const: null
+              rpint:
+                const: null
+              tfonc30:
+                const: null
+              tfonc100:
+                const: null
+        required:
+          - position
+          - signaletique
+      - title: Pompe à chaleur hybride
+        properties:
+          type:
+            not:
+              const: pac_air_air
+          bienergie:
+            not:
+              const: null
+          signaletique:
+            type: object
+            properties:
+              label:
+                const: null
+        required:
+          - type
+          - bienergie
+          - signaletique
+  - title: Réseau de chaleur
+    type: object
+    properties:
+      type:
+        const: reseau_chaleur
+      energie:
+        const: reseau_chaleur
+      bienergie:
+        const: null
+      position:
+        type: object
+        properties:
+          position_chaudiere:
+            const: null
+          generateur_collectif:
+            const: true
+          generateur_multi_batiment:
+            const: true
+          position_volume_chauffe:
+            const: false
+          generateur_mixte_id:
+            const: null
+      signaletique:
+        type: object
+        properties:
+          pn:
+            const: null
+          label:
+            const: null
+          scop:
+            const: null
+          mode_combustion:
+            const: null
+          presence_regulation_combustion:
+            const: null
+          pveilleuse:
+            const: null
+          qp0:
+            const: null
+          rpn:
+            const: null
+          rpint:
+            const: null
+          tfonc30:
+            const: null
+          tfonc100:
+            const: null
+    required:
+      - type
+      - energie
+      - position
+      - signaletique
+  - title: Générateur collectif inconnu
+    type: object
+    properties:
+      type:
+        const: null
+      energie:
+        const: null
+      bienergie:
+        const: null
+      position:
+        type: object
+        properties:
+          position_chaudiere:
+            const: null
+          generateur_collectif:
+            const: true
+          position_volume_chauffe:
+            const: false
+          generateur_mixte_id:
+            const: null
+          reseau_chaleur_id:
+            const: null
+      signaletique:
+        type: object
+        properties:
+          pn:
+            const: null
+          label:
+            const: null
+          scop:
+            const: null
+          mode_combustion:
+            const: null
+          presence_regulation_combustion:
+            const: null
+          pveilleuse:
+            const: null
+          qp0:
+            const: null
+          rpn:
+            const: null
+          rpint:
+            const: null
+          tfonc30:
+            const: null
+          tfonc100:
+            const: null
+    required:
+      - type
+      - energie
+      - position
+      - signaletique

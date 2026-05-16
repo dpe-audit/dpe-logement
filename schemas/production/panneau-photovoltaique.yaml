@@ -1,0 +1,51 @@
+$id: https://schemas.open-dpe.fr/production/panneau-photovoltaique
+$schema: https://json-schema.org/draft/2020-12/schema
+title: Panneau photovoltaïque
+type: object
+additionalProperties: false
+properties:
+  id:
+    $ref: /common/primitives#/$defs/id
+  description:
+    $ref: /common/primitives#/$defs/description
+  orientation:
+    $ref: /common/primitives#/$defs/orientation
+  inclinaison:
+    $ref: /common/primitives#/$defs/inclinaison
+  modules:
+    title: Nombre de modules
+    type: integer
+    minimum: 1
+    maximum: 1000
+  surface:
+    title: Surface totale des capteurs en m²
+    anyOf:
+      - $ref: /common/primitives#/$defs/surface
+      - const: null
+  installation_collective:
+    title: Installation photovoltaïque collective
+    type: boolean
+  data:
+    title: Données calculées
+    type: object
+    readOnly: true
+    additionalProperties: false
+    properties:
+      kpv:
+        title: Coefficient de pondération prenant en compte l'altération par rapport à l'orientation optimale
+        type: number
+        minimum: 0
+        maximum: 1
+      ppv:
+        $ref: /production/common#/$defs/ppv
+    required:
+      - kpv
+      - ppv
+required:
+  - id
+  - description
+  - orientation
+  - inclinaison
+  - modules
+  - surface
+  - installation_collective

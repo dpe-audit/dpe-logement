@@ -1,0 +1,33 @@
+$id: https://schemas.open-dpe.fr/ventilation
+$schema: https://json-schema.org/draft/2020-12/schema
+title: Ventilation
+type: object
+unevaluatedProperties: false
+properties:
+  installations:
+    title: Liste des installations
+    type: array
+    minItems: 1
+    items:
+      $ref: /ventilation/installation
+  data:
+    title: Données calculées
+    type: object
+    readOnly: true
+    additionalProperties: false
+    properties:
+      qvarep_conv:
+        $ref: /ventilation/common#/$defs/qvarep_conv
+      qvasouf_conv:
+        $ref: /ventilation/common#/$defs/qvasouf_conv
+      smea_conv:
+        $ref: /ventilation/common#/$defs/smea_conv
+      consommations:
+        $ref: /common/components#/$defs/consommations
+    required:
+      - qvarep_conv
+      - qvasouf_conv
+      - smea_conv
+      - consommations
+required:
+  - installations

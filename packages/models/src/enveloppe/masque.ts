@@ -1,0 +1,77 @@
+import type { OrientationCardinale, UUID } from "../common/common";
+import { buildEnum } from "../utils";
+
+/**
+ * @see https://schemas.open-dpe.fr/enveloppe/masque
+ */
+export type Masque = MasqueProche | MasqueLointain;
+
+type BaseMasque = {
+	id: UUID;
+	description: string;
+	type: TypeMasque;
+	orientation: OrientationCardinale | null;
+	hauteur: number | null;
+	profondeur: number | null;
+	secteur: Secteur | null;
+};
+
+export type MasqueProche =
+	| MasqueProcheParoiLaterale
+	| MasqueProcheFondBalconOuLoggias
+	| MasqueProcheBalconOuAuvent;
+
+export type MasqueLointain = MasqueLointainHomogene | MasqueLointainNonHomogene;
+
+export type MasqueLointainHomogene = BaseMasque & {
+	type: typeof TypeMasqueEnum.homogene;
+	orientation: OrientationCardinale;
+	hauteur: number;
+};
+
+export type MasqueLointainNonHomogene = BaseMasque & {
+	type: typeof TypeMasqueEnum.non_homogene;
+	orientation: OrientationCardinale;
+	hauteur: number;
+	secteur: Secteur;
+};
+
+export type MasqueProcheParoiLaterale = BaseMasque & {
+	type:
+		| typeof TypeMasqueEnum.paroi_laterale_sans_obstacle_au_sud
+		| typeof TypeMasqueEnum.paroi_laterale_avec_obstacle_au_sud;
+};
+
+export type MasqueProcheFondBalconOuLoggias = BaseMasque & {
+	type:
+		| typeof TypeMasqueEnum.fond_balcon
+		| typeof TypeMasqueEnum.fond_et_flanc_loggias;
+	orientation: OrientationCardinale;
+	profondeur: number;
+};
+
+export type MasqueProcheBalconOuAuvent = BaseMasque & {
+	type: typeof TypeMasqueEnum.balcon_ou_auvent;
+	profondeur: number;
+};
+
+export const TYPES_MASQUES = [
+	"homogene",
+	"non_homogene",
+	"fond_balcon",
+	"fond_et_flanc_loggias",
+	"balcon_ou_auvent",
+	"paroi_laterale_sans_obstacle_au_sud",
+	"paroi_laterale_avec_obstacle_au_sud",
+] as const;
+export type TypeMasque = (typeof TYPES_MASQUES)[number];
+export const TypeMasqueEnum = buildEnum(TYPES_MASQUES);
+
+export const SECTEURS = [
+	"lateral",
+	"lateral_sud",
+	"central",
+	"central_sud",
+] as const;
+export type Secteur = (typeof SECTEURS)[number];
+export const SecteurEnum = buildEnum(SECTEURS);

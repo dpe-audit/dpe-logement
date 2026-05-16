@@ -1,0 +1,111 @@
+﻿$id: https://schemas.open-dpe.fr/enveloppe/porte
+$schema: https://json-schema.org/draft/2020-12/schema
+title: Porte
+type: object
+unevaluatedProperties: false
+properties:
+  id:
+    $ref: /common/primitives#/$defs/id
+  description:
+    $ref: /common/primitives#/$defs/description
+  isolation:
+    title: État d'isolation
+    type: [boolean, "null"]
+  materiau:
+    title: Matériau
+    type: [string, "null"]
+    x-enum: enveloppe:porte:materiau
+    enum: [pvc, bois, bois_metal, metal, null]
+  annee_installation:
+    $ref: /common/primitives#/$defs/annee_installation
+  u:
+    $ref: /enveloppe/common/primitives#/$defs/u_saisi
+  position:
+    title: Position de la porte
+    type: object
+    properties:
+      paroi_id:
+        title: Identifiant de la paroi associée à la porte
+        anyOf:
+          - $ref: /common/primitives#/$defs/id
+          - const: null
+      orientation:
+        $ref: /enveloppe/common/primitives#/$defs/orientation
+      presence_sas:
+        title: Présence d'un sas devant la porte
+        type: boolean
+      type_pose:
+        $ref: /enveloppe/common/primitives#/$defs/type_pose
+    required:
+      - paroi_id
+      - orientation
+      - presence_sas
+      - type_pose
+    allOf:
+      - $ref: /enveloppe/common/components#/$defs/position
+  menuiserie:
+    title: Menuiserie
+    type: object
+    additionalProperties: false
+    properties:
+      largeur_dormant:
+        title: Largeur dormant en mm
+        type: [number, "null"]
+        exclusiveMinimum: 0
+      presence_joint:
+        title: Présence de joint d'étanchéité
+        type: [boolean, "null"]
+      presence_retour_isolation:
+        title: Présence d'un retour d'isolation
+        type: [boolean, "null"]
+    required:
+      - largeur_dormant
+      - presence_joint
+      - presence_retour_isolation
+  vitrage:
+    title: Vitrage
+    type: [object, "null"]
+    additionalProperties: false
+    properties:
+      surface:
+        title: Surface de vitrage en m²
+        description: Une porte avec un taux de vitrage supérieur à 60% est à considérer comme une porte-fenètre avec soubassement
+        type: number
+        exclusiveMinimum: 0
+      type:
+        title: Type de vitrage
+        type: [string, "null"]
+        x-enum: enveloppe:porte:type-vitrage
+        enum: [simple_vitrage, double_vitrage, triple_vitrage, null]
+    required:
+      - surface
+      - type
+  data:
+    title: Données calculées
+    type: object
+    readOnly: true
+    additionalProperties: false
+    properties:
+      u:
+        $ref: /enveloppe/common/primitives#/$defs/u
+      b:
+        $ref: /enveloppe/common/primitives#/$defs/b
+      sdep:
+        $ref: /enveloppe/common/primitives#/$defs/sdep
+      dp:
+        $ref: /enveloppe/common/primitives#/$defs/deperditions
+    required:
+      - u
+      - b
+      - sdep
+      - dp
+required:
+  - id
+  - description
+  - isolation
+  - materiau
+  - annee_installation
+  - u
+  - position
+  - vitrage
+  - menuiserie

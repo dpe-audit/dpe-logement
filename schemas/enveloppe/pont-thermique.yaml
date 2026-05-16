@@ -1,0 +1,118 @@
+﻿$id: https://schemas.open-dpe.fr/enveloppe/pont-thermique
+$schema: https://json-schema.org/draft/2020-12/schema
+title: Pont thermique
+type: object
+unevaluatedProperties: false
+properties:
+  id:
+    $ref: /common/primitives#/$defs/id
+  description:
+    $ref: /common/primitives#/$defs/description
+  longueur:
+    title: Longueur du pont thermique en m
+    type: number
+    exclusiveMinimum: 0
+  kpt:
+    title: Valeur du pont thermique
+    type: [number, "null"]
+    exclusiveMinimum: 0
+  liaison:
+    title: Liaison
+    type: object
+    unevaluatedProperties: false
+    properties:
+      type:
+        title: Type de liaison
+        type: string
+        x-enum: enveloppe:pont-thermique:type
+        enum:
+          - plancher_bas_mur
+          - plancher_haut_mur
+          - refend_mur
+          - plancher_intermediaire_mur
+          - porte_mur
+          - baie_mur
+      pont_thermique_partiel:
+        title: Pont thermique partiel
+        type: boolean
+      mur_id:
+        title: Identifiant du mur associé
+        $ref: /common/primitives#/$defs/id
+      plancher_id:
+        title: Identifiant du Plancher haut ou du Plancher bas associé
+        anyOf:
+          - $ref: /common/primitives#/$defs/id
+          - const: null
+      ouverture_id:
+        title: Identifiant de la Baie ou de la Porte associée
+        anyOf:
+          - $ref: /common/primitives#/$defs/id
+          - const: null
+    required:
+      - type
+      - mur_id
+    discriminator:
+      propertyName: type
+    oneOf:
+      - title: Pont thermique mur / plancher
+        type: object
+        properties:
+          type:
+            enum: [plancher_bas_mur, plancher_haut_mur]
+          pont_thermique_partiel:
+            const: false
+          plancher_id:
+            type: string
+          ouverture_id:
+            const: null
+        required:
+          - type
+          - plancher_id
+      - title: Pont thermique mur / menuiserie
+        type: object
+        properties:
+          type:
+            enum: [porte_mur, baie_mur]
+          pont_thermique_partiel:
+            const: false
+          ouverture_id:
+            type: string
+          plancher_id:
+            const: null
+        required:
+          - type
+          - ouverture_id
+      - title: Pont thermique mur / refend ou plancher intermédiaire
+        type: object
+        properties:
+          type:
+            enum: [plancher_intermediaire_mur, refend_mur]
+          ouverture_id:
+            const: null
+          plancher_id:
+            const: null
+        required:
+          - type
+          - pont_thermique_partiel
+  data:
+    title: Données calculées
+    type: object
+    readOnly: true
+    additionalProperties: false
+    properties:
+      k:
+        title: Valeur du pont thermique
+        type: number
+        minimum: 0
+      pt:
+        title: Déperditions thermiques
+        $ref: /enveloppe/common/primitives#/$defs/deperditions
+    required:
+      - k
+      - pt
+required:
+  - id
+  - description
+  - longueur
+  - kpt
+  - liaison

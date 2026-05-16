@@ -1,0 +1,42 @@
+{
+  "name": "@open-dpe-logement/engine",
+  "version": "0.1.0",
+  "description": "Moteur de calcul 3CL-DPE pour l'établissement du Diagnostic de Performance Énergétique (DPE)",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check-types": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "keywords": [
+    "dpe",
+    "diagnostic",
+    "energie",
+    "3cl",
+    "typescript"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/open-dpe/open-dpe-logement"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@open-dpe-logement/models": "*"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.6"
+  }
+}

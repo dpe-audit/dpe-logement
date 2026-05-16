@@ -1,0 +1,125 @@
+﻿$id: https://schemas.open-dpe.fr/ventilation/installation
+$schema: https://json-schema.org/draft/2020-12/schema
+title: Installation de ventilation
+type: object
+unevaluatedProperties: false
+properties:
+  id:
+    $ref: /common/primitives#/$defs/id
+  description:
+    $ref: /common/primitives#/$defs/description
+  surface:
+    $ref: /common/primitives#/$defs/surface
+  type:
+    title: Type de ventilation
+    type: string
+    x-enum: ventilation:type
+    enum:
+      - ventilation_ouverture_fenetres
+      - ventilation_entrees_air_hautes_basses
+      - ventilation_naturelle_conduit_entrees_air_hygroreglables
+      - ventilation_naturelle_conduit
+      - vmc_simple_flux_autoreglable
+      - vmc_simple_flux_hygroreglable_a
+      - vmc_simple_flux_hygroreglable_gaz
+      - vmc_simple_flux_hygroreglable_b
+      - vmc_basse_pression_autoreglable
+      - vmc_basse_pression_hygroreglable_a
+      - vmc_basse_pression_hygroreglable_b
+      - vmc_double_flux
+      - ventilation_hybride
+      - ventilation_hybride_entrees_air_hygroreglables
+      - ventilation_mecanique_conduit
+      - ventilation_mecanique_insufflation
+      - puit_climatique
+  installation_collective:
+    title: Installation collective
+    type: [boolean, "null"]
+  presence_echangeur_thermique:
+    title: Présence d'un échangeur thermique
+    type: [boolean, "null"]
+  annee_installation:
+    $ref: /common/primitives#/$defs/annee_installation
+  data:
+    title: Données calculées
+    type: object
+    readOnly: true
+    additionalProperties: false
+    properties:
+      qvarep_conv:
+        $ref: /ventilation/common#/$defs/qvarep_conv
+      qvasouf_conv:
+        $ref: /ventilation/common#/$defs/qvasouf_conv
+      smea_conv:
+        $ref: /ventilation/common#/$defs/smea_conv
+      rdim:
+        $ref: /common/primitives#/$defs/rdim
+      consommations:
+        $ref: /common/components#/$defs/consommations
+    required:
+      - qvarep_conv
+      - qvasouf_conv
+      - smea_conv
+      - rdim
+      - consommations
+required:
+  - id
+  - description
+  - surface
+  - type
+discriminator:
+  propertyName: type
+oneOf:
+  - title: Installation naturelle
+    type: object
+    properties:
+      type:
+        enum:
+          - ventilation_ouverture_fenetres
+          - ventilation_entrees_air_hautes_basses
+          - ventilation_naturelle_conduit_entrees_air_hygroreglables
+          - ventilation_naturelle_conduit
+      installation_collective:
+        const: null
+      presence_echangeur_thermique:
+        const: null
+      annee_installation:
+        const: null
+    required:
+      - type
+  - title: Installation mécanique - VMC Double flux / Puit climatique
+    type: object
+    properties:
+      type:
+        enum:
+          - vmc_double_flux
+          - puit_climatique
+      installation_collective:
+        type: boolean
+    required:
+      - type
+      - installation_collective
+      - presence_echangeur_thermique
+      - annee_installation
+  - title: Installation mécanique - Autres
+    type: object
+    properties:
+      type:
+        enum:
+          - vmc_simple_flux_autoreglable
+          - vmc_simple_flux_hygroreglable_a
+          - vmc_simple_flux_hygroreglable_b
+          - vmc_simple_flux_hygroreglable_gaz
+          - vmc_basse_pression_autoreglable
+          - vmc_basse_pression_hygroreglable_a
+          - vmc_basse_pression_hygroreglable_b
+          - ventilation_hybride
+          - ventilation_hybride_entrees_air_hygroreglables
+          - ventilation_mecanique_conduit
+          - ventilation_mecanique_insufflation
+      presence_echangeur_thermique:
+        const: null
+    required:
+      - type
+      - installation_collective
+      - annee_installation

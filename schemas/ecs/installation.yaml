@@ -1,0 +1,131 @@
+﻿$id: https://schemas.open-dpe.fr/ecs/installation
+$schema: https://json-schema.org/draft/2020-12/schema
+title: Installation d'eau chaude sanitaire
+type: object
+unevaluatedProperties: false
+properties:
+  id:
+    $ref: /common/primitives#/$defs/id
+  description:
+    $ref: /common/primitives#/$defs/description
+  surface:
+    $ref: /common/primitives#/$defs/surface
+  generateurs:
+    title: Générateurs associés
+    type: array
+    minItems: 1
+    items:
+      $ref: /common/primitives#/$defs/id
+  reseau:
+    title: Réseau de distribution d'eau chaude sanitaire
+    type: object
+    additionalProperties: false
+    properties:
+      alimentation_contigue:
+        title: Alimentation contigüe
+        type: boolean
+      niveaux_desservis:
+        title: Nombre de niveaux desservis
+        type: integer
+        minimum: 1
+      isolation:
+        title: Isolation du réseau
+        type: [boolean, "null"]
+      bouclage:
+        title: Type de bouclage
+        type: [string, "null"]
+        x-enum: ecs:bouclage-reseau
+        enum: [non_boucle, boucle, trace, null]
+    required:
+      - alimentation_contigue
+      - niveaux_desservis
+      - isolation
+      - bouclage
+  stockage:
+    title: Stockage indépendant
+    type: [object, "null"]
+    additionalProperties: false
+    properties:
+      volume:
+        title: Volume de stockage en l
+        type: [number, "null"]
+        minimum: 0
+      position_volume_chauffe:
+        title: Position à l'intérieur volume chauffé
+        type: boolean
+    required:
+      - volume
+      - position_volume_chauffe
+  solaire_thermique:
+    title: Solaire thermique
+    type: [object, "null"]
+    additionalProperties: false
+    properties:
+      usage:
+        title: Usages couverts par le solaire thermique
+        type: string
+        x-enum: ecs:usage-solaire
+        enum: [ecs, chauffage_ecs]
+      annee_installation:
+        $ref: /common/primitives#/$defs/annee_installation
+      fecs:
+        title: Facteur de couverture solaire
+        type: [number, "null"]
+        minimum: 0
+        maximum: 1
+    required:
+      - usage
+      - annee_installation
+      - fecs
+  data:
+    title: Données calculées
+    type: object
+    readOnly: true
+    additionalProperties: false
+    properties:
+      paux:
+        title: Puissance des auxiliaires en W
+        type: number
+      fecs:
+        title: Facteur de couverture solaire
+        type: number
+      iecs:
+        title: Inverse du rendement moyen
+        type: number
+      rd:
+        title: Rendement de distribution moyen
+        type: number
+      rs:
+        title: Rendement de stockage moyen
+        type: number
+      rg:
+        title: Rendement de génération moyen
+        type: number
+      rgs:
+        title: Rendement de génération et de stockage moyen
+        type: number
+      rdim:
+        $ref: /common/primitives#/$defs/rdim
+      pertes:
+        $ref: /common/components#/$defs/pertes
+      consommations:
+        $ref: /common/components#/$defs/consommations
+    required:
+      - paux
+      - fecs
+      - iecs
+      - rd
+      - rs
+      - rg
+      - rgs
+      - rdim
+      - pertes
+      - consommations
+required:
+  - id
+  - description
+  - surface
+  - generateurs
+  - reseau
+  - stockage
+  - solaire_thermique

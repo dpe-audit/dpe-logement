@@ -1,0 +1,82 @@
+﻿$id: https://schemas.open-dpe.fr/batiment
+$schema: https://json-schema.org/draft/2020-12/schema
+title: Bâtiment
+type: object
+unevaluatedProperties: false
+properties:
+  rnb_id:
+    title: Identifiant du bâtiment depuis le RNB
+    type: [string, "null"]
+  type:
+    title: Type de bâtiment
+    type: string
+    enum: [maison, immeuble]
+    x-enum: type-batiment
+  annee_construction:
+    title: Année de construction
+    $ref: /common/primitives#/$defs/annee
+  annee_renovation:
+    $ref: /common/primitives#/$defs/annee_renovation
+  altitude:
+    title: Altitude du bâtiment en mètres
+    type: number
+    minimum: -1000
+    maximum: 10000
+  logements:
+    title: Nombre de logements
+    type: integer
+    exclusiveMinimum: 0
+  surface_habitable:
+    title: Surface habitable en m²
+    $ref: /common/primitives#/$defs/surface
+  hauteur_sous_plafond:
+    title: Hauteur moyenne sous plafond en m
+    $ref: /common/primitives#/$defs/hauteur
+  materiaux_anciens:
+    title: Bâtiment majoritairement composé de matériaux anciens
+    type: boolean
+  adresse:
+    $ref: /common/components#/$defs/adresse
+  data:
+    title: Données calculées
+    type: object
+    readOnly: true
+    additionalProperties: false
+    properties:
+      zone_climatique:
+        title: Zone climatique
+        type: string
+        x-enum: zone-climatique
+        enum: [H1a, H1b, H1c, H2a, H2b, H2c, H2d, H3]
+    required:
+      - zone_climatique
+required:
+  - rnb_id
+  - type
+  - annee_construction
+  - annee_renovation
+  - altitude
+  - logements
+  - surface_habitable
+  - hauteur_sous_plafond
+  - materiaux_anciens
+  - adresse
+oneOf:
+  - title: Maison individuelle
+    properties:
+      type:
+        const: maison
+      logements:
+        enum: [1, 2]
+    required:
+      - type
+      - logements
+  - title: Immeuble
+    properties:
+      type:
+        const: immeuble
+      logements:
+        minimum: 3
+    required:
+      - type
+      - logements

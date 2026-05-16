@@ -1,0 +1,126 @@
+﻿$id: https://schemas.open-dpe.fr/enveloppe/mur
+$schema: https://json-schema.org/draft/2020-12/schema
+title: Mur
+type: object
+unevaluatedProperties: false
+properties:
+  id:
+    $ref: /common/primitives#/$defs/id
+  description:
+    $ref: /common/primitives#/$defs/description
+  structures:
+    title: Structures
+    type: array
+    minItems: 1
+    items:
+      type: object
+      additionalProperties: false
+      properties:
+        materiau:
+          title: Matériau
+          type: [string, "null"]
+          x-enum: enveloppe:mur:type
+          enum:
+            - pierre_moellons
+            - pierre_moellons_avec_remplissage
+            - pise_ou_beton_terre
+            - pan_bois_sans_remplissage
+            - pan_bois_avec_remplissage
+            - bois_rondin
+            - brique_pleine_simple
+            - brique_pleine_double_avec_lame_air
+            - brique_creuse
+            - bloc_beton_plein
+            - bloc_beton_creux
+            - beton_banche
+            - beton_machefer
+            - brique_terre_cuite_alveolaire
+            - sandwich_beton_isolant_beton_sans_isolation_rapportee
+            - cloison_platre
+            - ossature_bois_sans_remplissage
+            - ossature_bois_avec_remplissage_tout_venant
+            - ossature_bois_avec_remplissage_isolant
+            - beton_cellulaire
+            - null
+        epaisseur:
+          title: Epaisseur du mur non isolé en mm
+          type: [number, "null"]
+          exclusiveMinimum: 0
+        materiau_ancien:
+          title: Matériau ancien
+          type: [boolean, "null"]
+      required:
+        - materiau
+        - epaisseur
+        - materiau_ancien
+  type_doublage:
+    title: Type de doublage
+    type: [string, "null"]
+    x-enum: enveloppe:mur:type-doublage
+    enum:
+      - sans_doublage
+      - indetermine
+      - lame_air_inferieur_15mm
+      - lame_air_superieur_15mm
+      - materiaux_connu
+      - null
+  presence_enduit_isolant:
+    title: Présence d'un enduit isolant
+    type: [boolean, "null"]
+  inertie:
+    $ref: /enveloppe/common/primitives#/$defs/inertie_paroi
+  annee_construction:
+    $ref: /common/primitives#/$defs/annee_construction
+  annee_renovation:
+    $ref: /common/primitives#/$defs/annee_renovation
+  u0:
+    $ref: /enveloppe/common/primitives#/$defs/u0_saisi
+  u:
+    $ref: /enveloppe/common/primitives#/$defs/u_saisi
+  position:
+    title: Position
+    type: object
+    properties:
+      orientation:
+        $ref: /enveloppe/common/primitives#/$defs/orientation
+    required:
+      - orientation
+    allOf:
+      - $ref: /enveloppe/common/components#/$defs/position
+  isolation:
+    $ref: /enveloppe/common/components#/$defs/isolation
+  data:
+    title: Données calculées
+    type: object
+    readOnly: true
+    additionalProperties: false
+    properties:
+      u0:
+        $ref: /enveloppe/common/primitives#/$defs/u
+      u:
+        $ref: /enveloppe/common/primitives#/$defs/u
+      b:
+        $ref: /enveloppe/common/primitives#/$defs/b
+      sdep:
+        $ref: /enveloppe/common/primitives#/$defs/sdep
+      dp:
+        $ref: /enveloppe/common/primitives#/$defs/deperditions
+    required:
+      - u0
+      - u
+      - b
+      - sdep
+      - dp
+required:
+  - id
+  - description
+  - structures
+  - type_doublage
+  - presence_enduit_isolant
+  - inertie
+  - annee_construction
+  - annee_renovation
+  - u0
+  - u
+  - position
+  - isolation

@@ -1,0 +1,68 @@
+﻿$id: https://schemas.open-dpe.fr/diagnostic
+$schema: https://json-schema.org/draft/2020-12/schema
+title: Diagnostic
+type: object
+additionalProperties: false
+properties:
+  id:
+    $ref: /common/primitives#/$defs/id
+    readOnly: true
+  date:
+    title: Date d'enregistrement
+    $ref: /common/primitives#/$defs/date
+    readOnly: true
+  date_visite:
+    title: Date de visite du logement
+    $ref: /common/primitives#/$defs/date
+  date_etablissement:
+    title: Date d'établissement
+    $ref: /common/primitives#/$defs/date
+  batiment:
+    $ref: /batiment
+  enveloppe:
+    $ref: /enveloppe
+  chauffage:
+    $ref: /chauffage
+  ecs:
+    $ref: /ecs
+  ventilation:
+    $ref: /ventilation
+  refroidissement:
+    $ref: /refroidissement
+  production:
+    $ref: /production
+  data:
+    title: Données calculées
+    type: object
+    readOnly: true
+    additionalProperties: false
+    properties:
+      cef:
+        title: Consommation d'énergie finale en kWh/m²/an
+        type: number
+        minimum: 0
+      cep:
+        title: Consommation d'énergie primaire en kWh/m²/an
+        type: number
+        minimum: 0
+      eges:
+        title: Émissions de gaz à effet de serre en kgCO2/m²/an
+        type: number
+        minimum: 0
+      consommations:
+        $ref: /common/components#/$defs/consommations
+    required:
+      - cef
+      - cep
+      - eges
+      - consommations
+required:
+  - date_visite
+  - date_etablissement
+  - batiment
+  - enveloppe
+  - chauffage
+  - ecs
+  - ventilation
+  - refroidissement
+  - production

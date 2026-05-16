@@ -1,0 +1,209 @@
+﻿$id: https://schemas.open-dpe.fr/enveloppe
+$schema: https://json-schema.org/draft/2020-12/schema
+title: Enveloppe
+type: object
+additionalProperties: false
+properties:
+  exposition:
+    title: Exposition
+    type: string
+    x-enum: enveloppe:exposition
+    enum: [simple, multiple]
+  q4pa_conv:
+    anyOf:
+      - $ref: "#/$defs/q4pa_conv"
+      - const: null
+  presence_brasseurs_air:
+    title: Présence de brasseurs d'air
+    type: boolean
+  niveaux:
+    title: Liste des niveaux
+    type: array
+    minItems: 1
+    items:
+      $ref: /enveloppe/niveau
+  locaux_non_chauffes:
+    title: Liste des locaux non chauffés
+    type: array
+    items:
+      $ref: /enveloppe/local-non-chauffe
+  murs:
+    title: Liste des murs
+    type: array
+    items:
+      $ref: /enveloppe/mur
+  planchers_bas:
+    title: Liste des planchers bas
+    type: array
+    items:
+      $ref: /enveloppe/plancher-bas
+  planchers_hauts:
+    title: Liste des planchers hauts
+    type: array
+    items:
+      $ref: /enveloppe/plancher-haut
+  baies:
+    title: Liste des baies
+    type: array
+    items:
+      $ref: /enveloppe/baie
+  portes:
+    title: Liste des portes
+    type: array
+    items:
+      $ref: /enveloppe/porte
+  ponts_thermiques:
+    title: Liste des ponts thermiques
+    type: array
+    items:
+      $ref: /enveloppe/pont-thermique
+  masques:
+    title: Liste des masques
+    type: array
+    items:
+      $ref: /enveloppe/masque
+  data:
+    title: Données calculées
+    type: object
+    readOnly: true
+    additionalProperties: false
+    properties:
+      inertie:
+        title: Inertie
+        type: string
+        x-enum: enveloppe:inertie
+        enum: [tres_lourde, lourde, moyenne, legere]
+      parois_anciennes_lourdes:
+        title: Bâtiment constitué de parois anciennes lourdes
+        type: boolean
+      deperditions:
+        title: Déperditions thermiques
+        type: object
+        additionalProperties: false
+        properties:
+          gv:
+            title: Déperditions thermiques totales
+            $ref: /enveloppe/common/primitives#/$defs/deperditions
+          ubat:
+            title: Coefficient de transmission thermique de l'enveloppe
+            $ref: /enveloppe/common/primitives#/$defs/u
+          pt:
+            title: Déperditions thermiques par les ponts thermiques
+            $ref: /enveloppe/common/primitives#/$defs/deperditions
+          dr:
+            title: Déperditions thermiques par renouvellement d'air
+            type: object
+            additionalProperties: false
+            properties:
+              total:
+                title: Déperditions thermiques totales par renouvellement d'air
+                $ref: /enveloppe/common/primitives#/$defs/deperditions
+              hvent:
+                title: Déperdition thermique par renouvellement d'air due au système de ventilation
+                $ref: /enveloppe/common/primitives#/$defs/deperditions
+              hperm:
+                title: Déperdition thermique par renouvellement d'air due au vent
+                $ref: /enveloppe/common/primitives#/$defs/deperditions
+            required:
+              - total
+              - hvent
+              - hperm
+          dp:
+            title: Déperditions thermiques par les parois
+            type: object
+            additionalProperties: false
+            properties:
+              total:
+                title: Déperditions thermiques totales par les parois
+                $ref: /enveloppe/common/primitives#/$defs/deperditions
+              murs:
+                title: Déperditions thermiques par les murs
+                $ref: /enveloppe/common/primitives#/$defs/deperditions
+              planchers_bas:
+                title: Déperditions thermiques par les planchers bas
+                $ref: /enveloppe/common/primitives#/$defs/deperditions
+              planchers_hauts:
+                title: Déperditions thermiques par les planchers hauts
+                $ref: /enveloppe/common/primitives#/$defs/deperditions
+              baies:
+                title: Déperditions thermiques par les baies
+                $ref: /enveloppe/common/primitives#/$defs/deperditions
+              portes:
+                title: Déperditions thermiques par les portes
+                $ref: /enveloppe/common/primitives#/$defs/deperditions
+            required:
+              - total
+              - murs
+              - planchers_bas
+              - planchers_hauts
+              - baies
+              - portes
+        required:
+          - gv
+          - ubat
+          - dp
+          - pt
+          - dr
+      permeabilite:
+        title: Permeabilité
+        type: object
+        additionalProperties: false
+        properties:
+          q4pa_conv:
+            $ref: "#/$defs/q4pa_conv"
+          presence_joints_menuiserie:
+            title: Présence majoritaire de joints au niveau des menuiseries
+            type: boolean
+        required:
+          - q4pa_conv
+          - presence_joints_menuiserie
+      confort_ete:
+        title: Confort d'été
+        type: object
+        additionalProperties: false
+        properties:
+          inertie_lourde:
+            title: Inertie lourde
+            type: boolean
+          isolation_plancher_haut:
+            title: Isolation des planchers hauts
+            type: [boolean, "null"]
+          presence_protection_solaire:
+            title: Présence de protections solaires
+            type: [boolean, "null"]
+          logement_traversant:
+            title: Logement traversant
+            type: [boolean, "null"]
+          presence_brasseurs_air:
+            title: Présence de brasseurs d'air
+            type: [boolean, "null"]
+        required:
+          - inertie_lourde
+          - isolation_plancher_haut
+          - presence_protection_solaire
+          - logement_traversant
+          - presence_brasseurs_air
+    required:
+      - inertie
+      - parois_anciennes_lourdes
+      - deperditions
+      - permeabilite
+      - confort_ete
+required:
+  - exposition
+  - q4pa_conv
+  - presence_brasseurs_air
+  - niveaux
+  - locaux_non_chauffes
+  - murs
+  - planchers_bas
+  - planchers_hauts
+  - baies
+  - portes
+  - ponts_thermiques
+  - masques
+$defs:
+  q4pa_conv:
+    title: Perméabilité à l'air de l'enveloppe sous 4Pa en m3/(h.m²)
+    type: number
+    exclusiveMinimum: 0

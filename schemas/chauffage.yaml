@@ -1,0 +1,86 @@
+﻿$id: https://schemas.open-dpe.fr/chauffage
+$schema: https://json-schema.org/draft/2020-12/schema
+title: Chauffage
+type: object
+additionalProperties: false
+properties:
+  generateurs:
+    title: Liste des générateurs
+    type: array
+    minItems: 1
+    items:
+      $ref: /chauffage/generateur
+  emetteurs:
+    title: Liste des émetteurs
+    type: array
+    items:
+      $ref: /chauffage/emetteur
+  installations:
+    title: Liste des installations
+    type: array
+    minItems: 1
+    items:
+      $ref: /chauffage/installation
+  data:
+    title: Données calculées
+    type: object
+    readOnly: true
+    additionalProperties: false
+    properties:
+      f:
+        title: Fraction des besoins de chauffage couverts par les apports gratuits
+        type: number
+        minimum: 0
+        maximum: 1
+      apports:
+        $ref: /common/primitives#/$defs/apports
+      apports_internes:
+        title: Apports internes
+        $ref: /common/primitives#/$defs/apports
+      apports_solaires:
+        title: Apports solaires
+        $ref: /common/primitives#/$defs/apports
+      bef:
+        $ref: /common/primitives#/$defs/bef
+      ich:
+        title: Inverse du rendement moyen
+        type: number
+        minimum: 0
+      rd:
+        title: Rendement de distribution moyen
+        type: number
+        minimum: 0
+      re:
+        title: Rendement d'émission moyen
+        type: number
+        minimum: 0
+      rg:
+        title: Rendement de génération moyen
+        type: number
+        minimum: 0
+      rr:
+        title: Rendement de régulation moyen
+        type: number
+        minimum: 0
+      pertes:
+        $ref: /common/components#/$defs/pertes
+      consommations:
+        $ref: /common/components#/$defs/consommations
+    required:
+      - effet_joule
+      - f
+      - apports
+      - apports_internes
+      - apports_solaires
+      - bef
+      - ich
+      - rd
+      - re
+      - rg
+      - rr
+      - pertes
+      - consommations
+required:
+  - generateurs
+  - emetteurs
+  - installations
