@@ -1,10 +1,8 @@
 import data, { type Row } from '../../data/eclairage/nhecl.js'
-import { Repository } from '../../repository.js'
+import { type AbaqueQuery, filter } from '../../filter.js'
 
-export type EclairageNheclSchema = Row
+export type NheclSchema = Row
+export type NheclQuery = AbaqueQuery
 
-export class EclairageNheclRepository extends Repository<EclairageNheclSchema> {
-  protected load(): EclairageNheclSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: NheclQuery, rows: NheclSchema[]) => filter(query, rows)
