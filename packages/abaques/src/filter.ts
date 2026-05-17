@@ -62,10 +62,6 @@ function rowMatchesQuery(row: Record<string, unknown>, query: AbaqueQuery): bool
   return true
 }
 
-export function search<S extends object>(rows: S[], query: AbaqueQuery): S[] {
+export function filter<S extends object>(query: AbaqueQuery, rows: S[]): S[] {
   return rows.filter((row) => rowMatchesQuery(row as Record<string, unknown>, query))
-}
-
-export function find<S extends object>(rows: S[], query: AbaqueQuery): S | null {
-  return search(rows, query)[0] ?? null
 }
