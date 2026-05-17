@@ -1,10 +1,8 @@
 import data, { type Row } from '../../data/performance/reseau.js'
-import { Repository } from '../../repository.js'
+import { type AbaqueQuery, filter } from '../../filter.js'
 
-export type PerformanceReseauSchema = Row
+export type ReseauSchema = Row
+export type ReseauQuery = AbaqueQuery
 
-export class PerformanceReseauRepository extends Repository<PerformanceReseauSchema> {
-  protected load(): PerformanceReseauSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: ReseauQuery, rows: ReseauSchema[]) => filter(query, rows)

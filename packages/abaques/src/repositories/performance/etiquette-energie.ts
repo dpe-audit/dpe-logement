@@ -1,10 +1,8 @@
 import data, { type Row } from '../../data/performance/etiquette-energie.js'
-import { Repository } from '../../repository.js'
+import { type AbaqueQuery, filter } from '../../filter.js'
 
-export type PerformanceEtiquetteEnergieSchema = Row
+export type EtiquetteEnergieSchema = Row
+export type EtiquetteEnergieQuery = AbaqueQuery
 
-export class PerformanceEtiquetteEnergieRepository extends Repository<PerformanceEtiquetteEnergieSchema> {
-  protected load(): PerformanceEtiquetteEnergieSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: EtiquetteEnergieQuery, rows: EtiquetteEnergieSchema[]) => filter(query, rows)

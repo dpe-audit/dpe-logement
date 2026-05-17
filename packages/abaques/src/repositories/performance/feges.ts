@@ -1,10 +1,8 @@
 import data, { type Row } from '../../data/performance/feges.js'
-import { Repository } from '../../repository.js'
+import { type AbaqueQuery, filter } from '../../filter.js'
 
-export type PerformanceFegesSchema = Row
+export type FegesSchema = Row
+export type FegesQuery = AbaqueQuery
 
-export class PerformanceFegesRepository extends Repository<PerformanceFegesSchema> {
-  protected load(): PerformanceFegesSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: FegesQuery, rows: FegesSchema[]) => filter(query, rows)

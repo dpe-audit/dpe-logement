@@ -1,10 +1,8 @@
 import data, { type Row } from '../../data/performance/fcep.js'
-import { Repository } from '../../repository.js'
+import { type AbaqueQuery, filter } from '../../filter.js'
 
-export type PerformanceFcepSchema = Row
+export type FcepSchema = Row
+export type FcepQuery = AbaqueQuery
 
-export class PerformanceFcepRepository extends Repository<PerformanceFcepSchema> {
-  protected load(): PerformanceFcepSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: FcepQuery, rows: FcepSchema[]) => filter(query, rows)
