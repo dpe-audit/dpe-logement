@@ -1,10 +1,8 @@
 import data, { type Row } from '../../data/chauffage/scop.js'
-import { Repository } from '../../repository.js'
+import { type AbaqueQuery, filter } from '../../filter.js'
 
-export type ChauffageScopSchema = Row
+export type ScopSchema = Row
+export type ScopQuery = AbaqueQuery
 
-export class ChauffageScopRepository extends Repository<ChauffageScopSchema> {
-  protected load(): ChauffageScopSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: ScopQuery, rows: ScopSchema[]) => filter(query, rows)

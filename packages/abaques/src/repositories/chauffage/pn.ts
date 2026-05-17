@@ -1,10 +1,8 @@
 import data, { type Row } from '../../data/chauffage/pn.js'
-import { Repository } from '../../repository.js'
+import { type AbaqueQuery, filter } from '../../filter.js'
 
-export type ChauffagePnSchema = Row
+export type PnSchema = Row
+export type PnQuery = AbaqueQuery
 
-export class ChauffagePnRepository extends Repository<ChauffagePnSchema> {
-  protected load(): ChauffagePnSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: PnQuery, rows: PnSchema[]) => filter(query, rows)

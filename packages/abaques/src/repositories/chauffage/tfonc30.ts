@@ -1,10 +1,8 @@
 import data, { type Row } from '../../data/chauffage/tfonc30.js'
-import { Repository } from '../../repository.js'
+import { type AbaqueQuery, filter } from '../../filter.js'
 
-export type ChauffageTfonc30Schema = Row
+export type Tfonc30Schema = Row
+export type Tfonc30Query = AbaqueQuery
 
-export class ChauffageTfonc30Repository extends Repository<ChauffageTfonc30Schema> {
-  protected load(): ChauffageTfonc30Schema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: Tfonc30Query, rows: Tfonc30Schema[]) => filter(query, rows)

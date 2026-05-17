@@ -1,10 +1,8 @@
 import data, { type Row } from '../../data/chauffage/fch.js'
-import { Repository } from '../../repository.js'
+import { type AbaqueQuery, filter } from '../../filter.js'
 
-export type ChauffageFchSchema = Row
+export type FchSchema = Row
+export type FchQuery = AbaqueQuery
 
-export class ChauffageFchRepository extends Repository<ChauffageFchSchema> {
-  protected load(): ChauffageFchSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: FchQuery, rows: FchSchema[]) => filter(query, rows)

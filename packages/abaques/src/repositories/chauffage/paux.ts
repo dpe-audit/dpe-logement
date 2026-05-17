@@ -1,10 +1,8 @@
 import data, { type Row } from '../../data/chauffage/paux.js'
-import { Repository } from '../../repository.js'
+import { type AbaqueQuery, filter } from '../../filter.js'
 
-export type ChauffagePauxSchema = Row
+export type PauxSchema = Row
+export type PauxQuery = AbaqueQuery
 
-export class ChauffagePauxRepository extends Repository<ChauffagePauxSchema> {
-  protected load(): ChauffagePauxSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: PauxQuery, rows: PauxSchema[]) => filter(query, rows)
