@@ -1,10 +1,8 @@
 import data, { type Row } from '../../data/production/kpv.js'
-import { Repository } from '../../repository.js'
+import { type AbaqueQuery, filter } from '../../filter.js'
 
-export type ProductionKpvSchema = Row
+export type KpvSchema = Row
+export type KpvQuery = AbaqueQuery
 
-export class ProductionKpvRepository extends Repository<ProductionKpvSchema> {
-  protected load(): ProductionKpvSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: KpvQuery, rows: KpvSchema[]) => filter(query, rows)
