@@ -1,10 +1,13 @@
 import data, { type Row } from '../../data/ventilation/debits.js'
-import { Repository } from '../../repository.js'
+import { type AbaqueQuery, filter } from '../../filter.js'
 
-export type VentilationDebitsSchema = Row
+export type DebitsSchema = Row
 
-export class VentilationDebitsRepository extends Repository<VentilationDebitsSchema> {
-  protected load(): VentilationDebitsSchema[] {
-    return data
-  }
-}
+export type DebitsQuery = {
+  type_ventilation: string
+  presence_echangeur_thermique: boolean | null
+  installation_collective: boolean | null
+} & AbaqueQuery
+
+export const load = () => data
+export const search = (query: DebitsQuery, rows: DebitsSchema[]) => filter(query, rows)

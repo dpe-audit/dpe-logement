@@ -1,10 +1,8 @@
 import data, { type Row } from '../../data/ventilation/pvent.js'
-import { Repository } from '../../repository.js'
+import { type AbaqueQuery, filter } from '../../filter.js'
 
-export type VentilationPventSchema = Row
+export type PventSchema = Row
+export type PventQuery = AbaqueQuery
 
-export class VentilationPventRepository extends Repository<VentilationPventSchema> {
-  protected load(): VentilationPventSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: PventQuery, rows: PventSchema[]) => filter(query, rows)
