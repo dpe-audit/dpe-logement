@@ -1,10 +1,8 @@
 import data, { type Row } from '../../data/ecs/combustion.js'
-import { Repository } from '../../repository.js'
+import { type AbaqueQuery, filter } from '../../filter.js'
 
-export type EcsCombustionSchema = Row
+export type CombustionSchema = Row
+export type CombustionQuery = AbaqueQuery
 
-export class EcsCombustionRepository extends Repository<EcsCombustionSchema> {
-  protected load(): EcsCombustionSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: CombustionQuery, rows: CombustionSchema[]) => filter(query, rows)

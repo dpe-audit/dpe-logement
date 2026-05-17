@@ -1,10 +1,8 @@
 import data, { type Row } from '../../data/ecs/cop.js'
-import { Repository } from '../../repository.js'
+import { type AbaqueQuery, filter } from '../../filter.js'
 
-export type EcsCopSchema = Row
+export type CopSchema = Row
+export type CopQuery = AbaqueQuery
 
-export class EcsCopRepository extends Repository<EcsCopSchema> {
-  protected load(): EcsCopSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: CopQuery, rows: CopSchema[]) => filter(query, rows)

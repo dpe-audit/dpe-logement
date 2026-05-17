@@ -1,10 +1,8 @@
 import data, { type Row } from '../../data/ecs/paux.js'
-import { Repository } from '../../repository.js'
+import { type AbaqueQuery, filter } from '../../filter.js'
 
-export type EcsPauxSchema = Row
+export type PauxSchema = Row
+export type PauxQuery = AbaqueQuery
 
-export class EcsPauxRepository extends Repository<EcsPauxSchema> {
-  protected load(): EcsPauxSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: PauxQuery, rows: PauxSchema[]) => filter(query, rows)

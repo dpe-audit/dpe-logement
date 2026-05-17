@@ -1,10 +1,8 @@
 import data, { type Row } from '../../data/ecs/fecs.js'
-import { Repository } from '../../repository.js'
+import { type AbaqueQuery, filter } from '../../filter.js'
 
-export type EcsFecsSchema = Row
+export type FecsSchema = Row
+export type FecsQuery = AbaqueQuery
 
-export class EcsFecsRepository extends Repository<EcsFecsSchema> {
-  protected load(): EcsFecsSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: FecsQuery, rows: FecsSchema[]) => filter(query, rows)

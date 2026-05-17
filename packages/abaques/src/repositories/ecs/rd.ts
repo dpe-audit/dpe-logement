@@ -1,10 +1,8 @@
 import data, { type Row } from '../../data/ecs/rd.js'
-import { Repository } from '../../repository.js'
+import { type AbaqueQuery, filter } from '../../filter.js'
 
-export type EcsRdSchema = Row
+export type RdSchema = Row
+export type RdQuery = AbaqueQuery
 
-export class EcsRdRepository extends Repository<EcsRdSchema> {
-  protected load(): EcsRdSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: RdQuery, rows: RdSchema[]) => filter(query, rows)
