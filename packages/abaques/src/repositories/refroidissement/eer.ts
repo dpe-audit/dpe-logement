@@ -1,10 +1,8 @@
 import data, { type Row } from '../../data/refroidissement/eer.js'
-import { Repository } from '../../repository.js'
+import { type AbaqueQuery, filter } from '../../filter.js'
 
-export type RefroidissementEerSchema = Row
+export type EerSchema = Row
+export type EerQuery = AbaqueQuery
 
-export class RefroidissementEerRepository extends Repository<RefroidissementEerSchema> {
-  protected load(): RefroidissementEerSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: EerQuery, rows: EerSchema[]) => filter(query, rows)
