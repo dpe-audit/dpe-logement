@@ -1,10 +1,8 @@
 import data, { type Row } from '../../../data/enveloppe/plancher-haut/u0.js'
-import { Repository } from '../../../repository.js'
+import { type AbaqueQuery, filter } from '../../../filter.js'
 
-export type PlancherHautU0Schema = Row
+export type U0Schema = Row
+export type U0Query = AbaqueQuery
 
-export class PlancherHautU0Repository extends Repository<PlancherHautU0Schema> {
-  protected load(): PlancherHautU0Schema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: U0Query, rows: U0Schema[]) => filter(query, rows)

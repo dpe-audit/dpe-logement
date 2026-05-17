@@ -1,10 +1,8 @@
 import data, { type Row } from '../../../data/enveloppe/baie/deltar.js'
-import { Repository } from '../../../repository.js'
+import { type AbaqueQuery, filter } from '../../../filter.js'
 
-export type BaieDelatarSchema = Row
+export type DelatarSchema = Row
+export type DelatarQuery = AbaqueQuery
 
-export class BaieDelatarRepository extends Repository<BaieDelatarSchema> {
-  protected load(): BaieDelatarSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: DelatarQuery, rows: DelatarSchema[]) => filter(query, rows)

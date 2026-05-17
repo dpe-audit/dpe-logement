@@ -1,10 +1,8 @@
 import data, { type Row } from '../../../data/enveloppe/pont-thermique/kpt.js'
-import { Repository } from '../../../repository.js'
+import { type AbaqueQuery, filter } from '../../../filter.js'
 
-export type PontThermiqueKptSchema = Row
+export type KptSchema = Row
+export type KptQuery = AbaqueQuery
 
-export class PontThermiqueKptRepository extends Repository<PontThermiqueKptSchema> {
-  protected load(): PontThermiqueKptSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: KptQuery, rows: KptSchema[]) => filter(query, rows)

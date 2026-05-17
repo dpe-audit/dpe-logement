@@ -1,10 +1,8 @@
 import data, { type Row } from '../../../data/enveloppe/masque/omb.js'
-import { Repository } from '../../../repository.js'
+import { type AbaqueQuery, filter } from '../../../filter.js'
 
-export type MasqueOmbSchema = Row
+export type OmbSchema = Row
+export type OmbQuery = AbaqueQuery
 
-export class MasqueOmbRepository extends Repository<MasqueOmbSchema> {
-  protected load(): MasqueOmbSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: OmbQuery, rows: OmbSchema[]) => filter(query, rows)

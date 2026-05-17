@@ -1,10 +1,8 @@
 import data, { type Row } from '../../../data/enveloppe/local-non-chauffe/uvue.js'
-import { Repository } from '../../../repository.js'
+import { type AbaqueQuery, filter } from '../../../filter.js'
 
-export type LocalNonChauffeUvueSchema = Row
+export type UvueSchema = Row
+export type UvueQuery = AbaqueQuery
 
-export class LocalNonChauffeUvueRepository extends Repository<LocalNonChauffeUvueSchema> {
-  protected load(): LocalNonChauffeUvueSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: UvueQuery, rows: UvueSchema[]) => filter(query, rows)

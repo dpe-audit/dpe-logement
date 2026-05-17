@@ -1,10 +1,8 @@
 import data, { type Row } from '../../../data/enveloppe/mur/u.js'
-import { Repository } from '../../../repository.js'
+import { type AbaqueQuery, filter } from '../../../filter.js'
 
-export type MurUSchema = Row
+export type USchema = Row
+export type UQuery = AbaqueQuery
 
-export class MurURepository extends Repository<MurUSchema> {
-  protected load(): MurUSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: UQuery, rows: USchema[]) => filter(query, rows)

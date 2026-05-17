@@ -1,10 +1,8 @@
 import data, { type Row } from '../../../data/enveloppe/paroi/bver.js'
-import { Repository } from '../../../repository.js'
+import { type AbaqueQuery, filter } from '../../../filter.js'
 
-export type ParoiBverSchema = Row
+export type BverSchema = Row
+export type BverQuery = AbaqueQuery
 
-export class ParoiBverRepository extends Repository<ParoiBverSchema> {
-  protected load(): ParoiBverSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: BverQuery, rows: BverSchema[]) => filter(query, rows)

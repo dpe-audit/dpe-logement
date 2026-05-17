@@ -1,10 +1,8 @@
 import data, { type Row } from '../../../data/enveloppe/local-non-chauffe/b.js'
-import { Repository } from '../../../repository.js'
+import { type AbaqueQuery, filter } from '../../../filter.js'
 
-export type LocalNonChauffeBSchema = Row
+export type BSchema = Row
+export type BQuery = AbaqueQuery
 
-export class LocalNonChauffeBRepository extends Repository<LocalNonChauffeBSchema> {
-  protected load(): LocalNonChauffeBSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: BQuery, rows: BSchema[]) => filter(query, rows)

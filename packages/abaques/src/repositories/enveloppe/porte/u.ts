@@ -1,10 +1,8 @@
 import data, { type Row } from '../../../data/enveloppe/porte/u.js'
-import { Repository } from '../../../repository.js'
+import { type AbaqueQuery, filter } from '../../../filter.js'
 
-export type PorteUSchema = Row
+export type USchema = Row
+export type UQuery = AbaqueQuery
 
-export class PorteURepository extends Repository<PorteUSchema> {
-  protected load(): PorteUSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: UQuery, rows: USchema[]) => filter(query, rows)

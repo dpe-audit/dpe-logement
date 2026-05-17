@@ -1,10 +1,8 @@
 import data, { type Row } from '../../../data/enveloppe/masque/fe1.js'
-import { Repository } from '../../../repository.js'
+import { type AbaqueQuery, filter } from '../../../filter.js'
 
-export type MasqueFe1Schema = Row
+export type Fe1Schema = Row
+export type Fe1Query = AbaqueQuery
 
-export class MasqueFe1Repository extends Repository<MasqueFe1Schema> {
-  protected load(): MasqueFe1Schema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: Fe1Query, rows: Fe1Schema[]) => filter(query, rows)

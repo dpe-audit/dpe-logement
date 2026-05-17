@@ -1,10 +1,8 @@
 import data, { type Row } from '../../../data/enveloppe/local-non-chauffe/t.js'
-import { Repository } from '../../../repository.js'
+import { type AbaqueQuery, filter } from '../../../filter.js'
 
-export type LocalNonChauffeTSchema = Row
+export type TSchema = Row
+export type TQuery = AbaqueQuery
 
-export class LocalNonChauffeTRepository extends Repository<LocalNonChauffeTSchema> {
-  protected load(): LocalNonChauffeTSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: TQuery, rows: TSchema[]) => filter(query, rows)

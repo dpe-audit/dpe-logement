@@ -1,10 +1,8 @@
 import data, { type Row } from '../../../data/enveloppe/baie/sw.js'
-import { Repository } from '../../../repository.js'
+import { type AbaqueQuery, filter } from '../../../filter.js'
 
-export type BaieSwSchema = Row
+export type SwSchema = Row
+export type SwQuery = AbaqueQuery
 
-export class BaieSwRepository extends Repository<BaieSwSchema> {
-  protected load(): BaieSwSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: SwQuery, rows: SwSchema[]) => filter(query, rows)

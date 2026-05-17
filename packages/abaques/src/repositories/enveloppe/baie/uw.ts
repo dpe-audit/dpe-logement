@@ -1,10 +1,8 @@
 import data, { type Row } from '../../../data/enveloppe/baie/uw.js'
-import { Repository } from '../../../repository.js'
+import { type AbaqueQuery, filter } from '../../../filter.js'
 
-export type BaieUwSchema = Row
+export type UwSchema = Row
+export type UwQuery = AbaqueQuery
 
-export class BaieUwRepository extends Repository<BaieUwSchema> {
-  protected load(): BaieUwSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: UwQuery, rows: UwSchema[]) => filter(query, rows)
