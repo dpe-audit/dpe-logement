@@ -1,10 +1,8 @@
 import data, { type Row } from '../../data/climat/sollicitations.js'
-import { Repository } from '../../repository.js'
+import { type AbaqueQuery, filter } from '../../filter.js'
 
-export type ClimatSollicitationsSchema = Row
+export type SollicitationsSchema = Row
+export type SollicitationsQuery = AbaqueQuery
 
-export class ClimatSollicitationsRepository extends Repository<ClimatSollicitationsSchema> {
-  protected load(): ClimatSollicitationsSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: SollicitationsQuery, rows: SollicitationsSchema[]) => filter(query, rows)

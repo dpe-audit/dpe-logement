@@ -1,10 +1,8 @@
 import data, { type Row } from '../../data/climat/nj.js'
-import { Repository } from '../../repository.js'
+import { type AbaqueQuery, filter } from '../../filter.js'
 
-export type ClimatNjSchema = Row
+export type NjSchema = Row
+export type NjQuery = AbaqueQuery
 
-export class ClimatNjRepository extends Repository<ClimatNjSchema> {
-  protected load(): ClimatNjSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: NjQuery, rows: NjSchema[]) => filter(query, rows)

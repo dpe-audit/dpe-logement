@@ -1,10 +1,8 @@
 import data, { type Row } from '../../data/climat/c1.js'
-import { Repository } from '../../repository.js'
+import { type AbaqueQuery, filter } from '../../filter.js'
 
-export type ClimatC1Schema = Row
+export type C1Schema = Row
+export type C1Query = AbaqueQuery
 
-export class ClimatC1Repository extends Repository<ClimatC1Schema> {
-  protected load(): ClimatC1Schema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: C1Query, rows: C1Schema[]) => filter(query, rows)

@@ -1,10 +1,8 @@
 import data, { type Row } from '../../data/climat/tbase.js'
-import { Repository } from '../../repository.js'
+import { type AbaqueQuery, filter } from '../../filter.js'
 
-export type ClimatTbaseSchema = Row
+export type TbaseSchema = Row
+export type TbaseQuery = AbaqueQuery
 
-export class ClimatTbaseRepository extends Repository<ClimatTbaseSchema> {
-  protected load(): ClimatTbaseSchema[] {
-    return data
-  }
-}
+export const load = () => data
+export const search = (query: TbaseQuery, rows: TbaseSchema[]) => filter(query, rows)
