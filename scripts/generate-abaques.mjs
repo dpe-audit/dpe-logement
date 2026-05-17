@@ -222,7 +222,7 @@ function findCsvFiles(dir) {
 }
 
 const DOCTRINE_ABAQUES = join(ROOT, 'doctrine', 'abaques')
-const ENGINE_DATA = join(ROOT, 'packages', 'engine', 'src', 'abaques', 'data')
+const ENGINE_DATA = join(ROOT, 'packages', 'abaques', 'src', 'data')
 
 const csvFiles = findCsvFiles(DOCTRINE_ABAQUES)
 
