@@ -1,8 +1,12 @@
-import data, { type Row } from '../../data/chauffage/re.js'
+import data from '../../data/chauffage/re.js'
 import { type AbaqueQuery, filter } from '../../filter.js'
 
-export type ReSchema = Row
-export type ReQuery = AbaqueQuery
+export type ReSchema = {
+  type_emission: string
+  type_generateur: string | null
+  label_generateur: string | null
+  re: number
+}
 
-export const load = () => data
-export const search = (query: ReQuery, rows: ReSchema[]) => filter(query, rows)
+export const load = (): ReSchema[] => data as ReSchema[]
+export const search = (query: AbaqueQuery, rows: ReSchema[]) => filter(query, rows)
