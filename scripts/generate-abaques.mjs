@@ -1,45 +1,47 @@
 // @ts-check
-import { readFileSync, writeFileSync, mkdirSync, readdirSync, statSync } from 'node:fs'
+// scripts/generate-abaques.mjs
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, statSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { load as loadYaml } from 'js-yaml'
 
 const ROOT = join(fileURLToPath(import.meta.url), '..', '..')
 
-/** @type {Record<string, Record<string, string>>} */
-const SCHEMA = JSON.parse(
-  readFileSync(join(ROOT, 'scripts', 'abaques-schema.json'), 'utf-8')
-)
-
 /**
- * Détecte si un nom de colonne est une colonne range et retourne le suffixe.
  * @param {string} col
  * @returns {{ base: string, op: string } | null}
  */
 function parseRangeHeader(col) {
   const ops = ['/eq', '/gte', '/gt', '/lte', '/lt']
   for (const op of ops) {
-    if (col.endsWith(op)) {
-      return { base: col.slice(0, -op.length), op: op.slice(1) }
-    }
+    if (col.endsWith(op)) return { base: col.slice(0, -op.length), op: op.slice(1) }
   }
   return null
 }
 
 /**
- * Parse une cellule CSV brute en valeur enrichie.
+ * Parse une cellule CSV en valeur TypeScript.
+ * Conserve les strings brutes (pas de split sur |).
  * @param {string} raw
- * @returns {string[] | number | string | null}
+ * @returns {number | string | null}
  */
 function parseCell(raw) {
   if (raw === '' || raw === undefined) return null
-  if (raw.includes('|')) return raw.split('|')
   const num = parseFloat(raw.replace(',', '.'))
   if (!isNaN(num) && String(num) === raw.replace(',', '.')) return num
-  return [raw]
+  return raw
 }
 
 /**
- * Parse une borne de colonne range (toujours numérique ou null).
+ * @param {string} raw
+ * @returns {boolean | null}
+ */
+function parseBooleanCell(raw) {
+  if (raw === '' || raw === undefined) return null
+  return raw === '1'
+}
+
+/**
  * @param {string} raw
  * @returns {number | null}
  */
@@ -50,31 +52,35 @@ function parseRangeCell(raw) {
 }
 
 /**
- * Parse un fichier CSV en tableau de lignes enrichies.
- * Détecte automatiquement les colonnes booléennes : toutes les valeurs non-vides sont '0' ou '1'.
+ * Lit le fichier .schema.yaml associé au CSV, retourne un Map nom→champ.
+ * @param {string} csvPath
+ * @returns {Record<string, { type: string, required: boolean }>}
+ */
+function readSchema(csvPath) {
+  const schemaPath = csvPath.replace(/\.csv$/, '.schema.yaml')
+  if (!existsSync(schemaPath)) return {}
+  /** @type {any} */
+  const schema = loadYaml(readFileSync(schemaPath, 'utf-8'))
+  return Object.fromEntries((schema.fields ?? []).map((/** @type {any} */ f) => [f.name, f]))
+}
+
+/**
+ * Parse un fichier CSV en tableau de lignes.
  * @param {string} csvContent
- * @param {Record<string, string>} [columnHints] - types déclarés dans le schéma, par nom de colonne
+ * @param {string} csvPath
+ * @param {string} relativeKey
  * @returns {Record<string, unknown>[]}
  */
-function parseCsv(csvContent, columnHints = {}) {
+function parseCsv(csvContent, csvPath, relativeKey) {
   const lines = csvContent.trim().split('\n').map((l) => l.trim())
+  if (!lines[0]) return []
   const headers = lines[0].split(';')
   const rawRows = lines.slice(1).filter((l) => l.length > 0).map((l) => l.split(';'))
 
-  /** @type {Map<string, string[]>} */
-  const rangeGroups = new Map()
-  for (const h of headers) {
-    const r = parseRangeHeader(h)
-    if (r) {
-      let group = rangeGroups.get(r.base)
-      if (!group) { group = []; rangeGroups.set(r.base, group) }
-      group.push(h)
-    }
-  }
-
+  const schemaFields = readSchema(csvPath)
   const rangeCols = new Set(headers.filter((h) => parseRangeHeader(h)))
 
-  // Colonnes dont toutes les valeurs non-vides sont '0' ou '1' → boolean
+  // Colonnes booléennes : toutes les valeurs non-vides sont '0' ou '1'
   const booleanCols = new Set(
     headers.filter((h, i) => {
       if (rangeCols.has(h)) return false
@@ -83,113 +89,55 @@ function parseCsv(csvContent, columnHints = {}) {
     })
   )
 
+  // Avertir pour les colonnes non déclarées dans le schema
+  for (const h of headers) {
+    if (rangeCols.has(h)) continue
+    if (!(h in schemaFields)) {
+      console.warn(`[schema] ${relativeKey}: colonne "${h}" non déclarée dans le schema`)
+    }
+  }
+
   return rawRows.map((values) => {
     /** @type {Record<string, unknown>} */
     const row = {}
 
     for (let i = 0; i < headers.length; i++) {
-      const header = headers[i]
-      if (rangeCols.has(header)) continue
+      const h = headers[i]
+      if (!h || rangeCols.has(h)) continue
       const raw = values[i] ?? ''
-      if (booleanCols.has(header)) {
-        row[header] = raw === '' ? null : raw === '1'
-      } else if (
-        (columnHints[header] ?? '').includes('string[]') &&
-        !(columnHints[header] ?? '').includes('number')
-      ) {
-        row[header] = raw === '' ? null : [raw]
-      } else {
-        row[header] = parseCell(raw)
-      }
+      row[h] = booleanCols.has(h) ? parseBooleanCell(raw) : parseCell(raw)
     }
 
-    for (const [base, cols] of rangeGroups) {
-      /** @type {Record<string, number | null>} */
-      const bounds = {}
-      for (const col of cols) {
-        const r = parseRangeHeader(col)
-        if (!r) continue
-        const idx = headers.indexOf(col)
-        bounds[r.op] = parseRangeCell(values[idx] ?? '')
-      }
-      row[base] = bounds
+    // Clés range plates (pas de fusion en RangeBounds)
+    for (const h of headers) {
+      if (!h || !rangeCols.has(h)) continue
+      const idx = headers.indexOf(h)
+      row[h] = parseRangeCell(values[idx] ?? '')
     }
 
     return row
   })
 }
 
-/**
- * Déduit le type TypeScript d'une ligne à partir de l'ensemble des données.
- * Retourne un objet avec le type sous forme de chaîne et un flag indiquant si RangeBounds est utilisé.
- * @param {Record<string, unknown>[]} rows
- * @param {string} [relative] - utilisé dans les messages de warning
- * @param {Record<string, string>} [columnHints] - types déclarés dans le schéma, par nom de colonne
- * @returns {{ typeStr: string, usesRangeBounds: boolean }}
- */
-function inferRowType(rows, relative, columnHints = {}) {
-  if (rows.length === 0) return { typeStr: 'Record<string, unknown>', usesRangeBounds: false }
-
-  /** @type {Map<string, Set<string>>} */
-  const colTypes = new Map()
-
-  for (const row of rows) {
-    for (const [key, value] of Object.entries(row)) {
-      let types = colTypes.get(key)
-      if (!types) { types = new Set(); colTypes.set(key, types) }
-
-      if (value === null) types.add('null')
-      else if (typeof value === 'boolean') types.add('boolean')
-      else if (typeof value === 'number') types.add('number')
-      else if (Array.isArray(value)) types.add('string[]')
-      else if (typeof value === 'object') types.add('RangeBounds')
-    }
-  }
-
-  let usesRangeBounds = false
-  const fields = []
-  for (const [key, types] of colTypes) {
-    if (types.has('RangeBounds')) usesRangeBounds = true
-    // Quoted key pour gérer les noms avec tirets (ex. u0-doublage)
-    const inferredType = [...types].join(' | ')
-    const declaredType = columnHints[key]
-    if (declaredType) {
-      if (declaredType !== inferredType) {
-        console.warn(
-          `[schema] ${relative}: "${key}" inféré "${inferredType}", déclaré "${declaredType}" — type déclaré utilisé`
-        )
-      }
-      fields.push(`  "${key}": ${declaredType}`)
-    } else {
-      fields.push(`  "${key}": ${inferredType}`)
-    }
-  }
-
-  return { typeStr: `{\n${fields.join('\n')}\n}`, usesRangeBounds }
-}
-
 const CHUNK_SIZE = 200
 
 /**
- * Génère un fichier TypeScript de constante depuis un CSV.
- * Les données sont découpées en chunks de CHUNK_SIZE lignes pour éviter TS2590
- * (union type trop complexe sur les grands tableaux littéraux).
- * @param {string} csvPath - Chemin absolu du CSV source
- * @param {string} outPath - Chemin absolu du fichier TS généré
- * @param {string} relative - Chemin relatif du CSV depuis doctrine/abaques/
+ * Génère un fichier TypeScript de données brutes depuis un CSV.
+ * N'émet aucun type TypeScript.
+ * @param {string} csvPath
+ * @param {string} outPath
+ * @param {string} relative
  */
 function generateFromCsv(csvPath, outPath, relative) {
   const csvContent = readFileSync(csvPath, 'utf-8')
   const relativeKey = relative.replaceAll('\\', '/').replace(/\.csv$/, '')
-  const columnHints = SCHEMA[relativeKey] ?? {}
-  const rows = parseCsv(csvContent, columnHints)
+  const rows = parseCsv(csvContent, csvPath, relativeKey)
   const sourcePath = csvPath.replaceAll('\\', '/')
 
-  const { typeStr, usesRangeBounds } = inferRowType(rows, relativeKey, columnHints)
-
-  // Chemin relatif vers filter.ts : autant de ../ que de segments dans relative (dir + data/)
-  const depth = relative.split(/[/\\]/).length
-  const filterImportPath = '../'.repeat(depth) + 'filter.js'
+  const chunks = []
+  for (let i = 0; i < rows.length; i += CHUNK_SIZE) {
+    chunks.push(rows.slice(i, i + CHUNK_SIZE))
+  }
 
   const lines = [
     `// GÉNÉRÉ AUTOMATIQUEMENT — ne pas modifier manuellement`,
@@ -197,39 +145,22 @@ function generateFromCsv(csvPath, outPath, relative) {
     ``,
   ]
 
-  if (usesRangeBounds) {
-    lines.push(`import type { RangeBounds } from '${filterImportPath}'`, ``)
-  }
-
-  lines.push(`type Row = ${typeStr}`, ``)
-
-  // Découpage en chunks pour éviter TS2590 sur les grands abaques
-  const chunks = []
-  for (let i = 0; i < rows.length; i += CHUNK_SIZE) {
-    chunks.push(rows.slice(i, i + CHUNK_SIZE))
-  }
-
   if (chunks.length === 1) {
-    lines.push(`const data: Row[] = ${JSON.stringify(chunks[0])}`, ``)
+    lines.push(`export default ${JSON.stringify(chunks[0])}`, ``)
   } else {
     for (let i = 0; i < chunks.length; i++) {
-      lines.push(`const chunk${i}: Row[] = ${JSON.stringify(chunks[i])}`, ``)
+      lines.push(`const chunk${i} = ${JSON.stringify(chunks[i])}`, ``)
     }
-    const chunkNames = chunks.map((_, i) => `...chunk${i}`).join(', ')
-    lines.push(`const data: Row[] = [${chunkNames}]`, ``)
+    const spread = chunks.map((_, i) => `...chunk${i}`).join(', ')
+    lines.push(`export default [${spread}]`, ``)
   }
 
-  lines.push(`export type { Row }`, ``, `export default data`, ``)
-
-  const content = lines.join('\n')
-
   mkdirSync(dirname(outPath), { recursive: true })
-  writeFileSync(outPath, content, 'utf-8')
+  writeFileSync(outPath, lines.join('\n'), 'utf-8')
   console.log(`✓ ${outPath.replace(ROOT, '').replaceAll('\\', '/')}`)
 }
 
 /**
- * Retourne tous les fichiers CSV dans un répertoire, récursivement.
  * @param {string} dir
  * @returns {string[]}
  */
@@ -250,9 +181,7 @@ function findCsvFiles(dir) {
 const DOCTRINE_ABAQUES = join(ROOT, 'doctrine', 'abaques')
 const ENGINE_DATA = join(ROOT, 'packages', 'abaques', 'src', 'data')
 
-const csvFiles = findCsvFiles(DOCTRINE_ABAQUES)
-
-for (const csv of csvFiles) {
+for (const csv of findCsvFiles(DOCTRINE_ABAQUES)) {
   const relative = csv.slice(DOCTRINE_ABAQUES.length + 1)
   const out = join(ENGINE_DATA, relative.replace(/\.csv$/, '.ts'))
   generateFromCsv(csv, out, relative)
