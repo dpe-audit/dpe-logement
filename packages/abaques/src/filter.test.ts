@@ -1,128 +1,129 @@
 import { describe, expect, it } from 'vitest'
 import { filter } from './filter.js'
 
-describe('filter — filtre match (string[])', () => {
-  it('retourne les lignes correspondant à une valeur exacte', () => {
+describe('filter — enum string (pipe-séparé)', () => {
+  it('match exacte sur valeur unique', () => {
     const rows = [
-      { zone_climatique: ['H1a'], nhecl: 1500 },
-      { zone_climatique: ['H1b'], nhecl: 1445 },
+      { zone_climatique: 'H1a', nhecl: 1500 },
+      { zone_climatique: 'H1b', nhecl: 1445 },
     ]
     expect(filter({ zone_climatique: 'H1a' }, rows)).toEqual([
-      { zone_climatique: ['H1a'], nhecl: 1500 },
+      { zone_climatique: 'H1a', nhecl: 1500 },
     ])
   })
 
-  it('retourne un tableau vide si aucune correspondance', () => {
-    const rows = [{ zone_climatique: ['H1a'], nhecl: 1500 }]
-    expect(filter({ zone_climatique: 'H3' }, rows)).toEqual([])
-  })
-
-  it('accepte une valeur présente dans un tableau pipe-splité', () => {
-    const rows = [{ zone_climatique: ['H1a', 'H1b', 'H1c'], etiquette: 'A' }]
+  it('match sur valeur dans une chaîne pipe-séparée', () => {
+    const rows = [{ zone_climatique: 'H1a|H1b|H1c', etiquette: 'A' }]
     expect(filter({ zone_climatique: 'H1b' }, rows)).toEqual([
-      { zone_climatique: ['H1a', 'H1b', 'H1c'], etiquette: 'A' },
+      { zone_climatique: 'H1a|H1b|H1c', etiquette: 'A' },
     ])
   })
 
-  it('refuse une valeur absente du tableau', () => {
-    const rows = [{ zone_climatique: ['H1a', 'H1b'], etiquette: 'A' }]
+  it('pas de match si valeur absente de la chaîne', () => {
+    const rows = [{ zone_climatique: 'H1a|H1b', etiquette: 'A' }]
     expect(filter({ zone_climatique: 'H3' }, rows)).toEqual([])
   })
 
-  it('traite null comme un wildcard', () => {
+  it('cellule null = wildcard', () => {
     const rows = [{ type_ventilation: null, qvarep_conv: 1.97 }]
     expect(filter({ type_ventilation: 'vmc_double_flux' }, rows)).toEqual([
       { type_ventilation: null, qvarep_conv: 1.97 },
     ])
   })
+})
 
-  it('convertit un booléen true en 1 pour comparaison avec cellule numérique', () => {
+describe('filter — booléen', () => {
+  it('match true', () => {
     const rows = [
-      { chauffage_central: 1, i0: 0.91 },
-      { chauffage_central: 0, i0: 0.84 },
+      { effet_joule: true, u: 1.2 },
+      { effet_joule: false, u: 0.8 },
     ]
-    expect(filter({ chauffage_central: true }, rows)).toEqual([
-      { chauffage_central: 1, i0: 0.91 },
-    ])
+    expect(filter({ effet_joule: true }, rows)).toEqual([{ effet_joule: true, u: 1.2 }])
   })
 
-  it('convertit un booléen false en 0 pour comparaison avec cellule numérique', () => {
+  it('match false', () => {
     const rows = [
-      { chauffage_central: 1, i0: 0.91 },
-      { chauffage_central: 0, i0: 0.84 },
+      { effet_joule: true, u: 1.2 },
+      { effet_joule: false, u: 0.8 },
     ]
-    expect(filter({ chauffage_central: false }, rows)).toEqual([
-      { chauffage_central: 0, i0: 0.84 },
-    ])
+    expect(filter({ effet_joule: false }, rows)).toEqual([{ effet_joule: false, u: 0.8 }])
+  })
+
+  it('cellule null = wildcard pour booléen', () => {
+    const rows = [{ chauffage_central: null, i0: 0.91 }]
+    expect(filter({ chauffage_central: true }, rows)).toEqual([{ chauffage_central: null, i0: 0.91 }])
   })
 })
 
-describe('filter — filtre range (RangeBounds)', () => {
-  it("accepte une valeur dans l'intervalle [gte, lte]", () => {
+describe('filter — range (clés plates /gte /lte /gt /lt /eq)', () => {
+  it('match dans un intervalle [gte, lte]', () => {
     const rows = [
-      { annee: { gte: 1982, lte: 2000 }, qvarep_conv: 1.65 },
-      { annee: { gte: 2001, lte: 2012 }, qvarep_conv: 1.5 },
+      { 'annee/gte': 1982, 'annee/lte': 2000, qvarep_conv: 1.65 },
+      { 'annee/gte': 2001, 'annee/lte': 2012, qvarep_conv: 1.5 },
     ]
     expect(filter({ annee: 1995 }, rows)).toEqual([
-      { annee: { gte: 1982, lte: 2000 }, qvarep_conv: 1.65 },
+      { 'annee/gte': 1982, 'annee/lte': 2000, qvarep_conv: 1.65 },
     ])
   })
 
-  it('refuse une valeur hors intervalle', () => {
-    const rows = [{ annee: { gte: 1982, lte: 2000 }, qvarep_conv: 1.65 }]
+  it('pas de match hors intervalle', () => {
+    const rows = [{ 'annee/gte': 1982, 'annee/lte': 2000, qvarep_conv: 1.65 }]
     expect(filter({ annee: 2015 }, rows)).toEqual([])
   })
 
-  it('traite une borne null comme absence de restriction', () => {
-    const rows = [{ annee: { gte: null, lte: 1981 }, qvarep_conv: 1.97 }]
+  it('borne null = pas de restriction', () => {
+    const rows = [{ 'annee/gte': null, 'annee/lte': 1981, qvarep_conv: 1.97 }]
     expect(filter({ annee: 1970 }, rows)).toEqual([
-      { annee: { gte: null, lte: 1981 }, qvarep_conv: 1.97 },
+      { 'annee/gte': null, 'annee/lte': 1981, qvarep_conv: 1.97 },
     ])
   })
 
   it('applique gt (strictement supérieur)', () => {
     const rows = [
-      { pdim: { gt: 5, lte: 10 }, pn: 18 },
-      { pdim: { gt: null, lte: 5 }, pn: 12 },
+      { 'pdim/gt': 5, 'pdim/lte': 10, pn: 18 },
+      { 'pdim/gt': null, 'pdim/lte': 5, pn: 12 },
     ]
-    expect(filter({ pdim: 5 }, rows)).toEqual([{ pdim: { gt: null, lte: 5 }, pn: 12 }])
-    expect(filter({ pdim: 6 }, rows)).toEqual([{ pdim: { gt: 5, lte: 10 }, pn: 18 }])
+    expect(filter({ pdim: 5 }, rows)).toEqual([{ 'pdim/gt': null, 'pdim/lte': 5, pn: 12 }])
+    expect(filter({ pdim: 6 }, rows)).toEqual([{ 'pdim/gt': 5, 'pdim/lte': 10, pn: 18 }])
   })
 
   it('applique lt (strictement inférieur)', () => {
-    const rows = [{ cep: { lt: 70 }, etiquette: 'A' }]
-    expect(filter({ cep: 69 }, rows)).toEqual([{ cep: { lt: 70 }, etiquette: 'A' }])
+    const rows = [{ 'cep/lt': 70, etiquette: 'A' }]
+    expect(filter({ cep: 69 }, rows)).toEqual([{ 'cep/lt': 70, etiquette: 'A' }])
     expect(filter({ cep: 70 }, rows)).toEqual([])
   })
 
-  it('applique eq (égalité)', () => {
+  it('applique eq', () => {
     const rows = [
-      { mois: { eq: 1 }, epv: 0.75 },
-      { mois: { eq: 2 }, epv: 0.8 },
+      { 'volume/eq': 100, cr: 0.75 },
+      { 'volume/eq': 200, cr: 0.8 },
     ]
-    expect(filter({ mois: 1 }, rows)).toEqual([{ mois: { eq: 1 }, epv: 0.75 }])
+    expect(filter({ volume: 100 }, rows)).toEqual([{ 'volume/eq': 100, cr: 0.75 }])
   })
 
-  it('traite RangeBounds null comme wildcard', () => {
-    const rows = [{ annee: null, qvarep_conv: 1.97 }]
-    expect(filter({ annee: 2010 }, rows)).toEqual([{ annee: null, qvarep_conv: 1.97 }])
-  })
-
-  it('rejette si la valeur de query range est non numérique', () => {
-    const rows = [{ annee: { gte: 1982, lte: 2000 }, qvarep_conv: 1.65 }]
+  it('rejette si queryValue non numérique pour range', () => {
+    const rows = [{ 'annee/gte': 1982, 'annee/lte': 2000, qvarep_conv: 1.65 }]
     expect(filter({ annee: '1995abc' }, rows)).toEqual([])
   })
 })
 
-describe('filter — filtre combiné match + range', () => {
-  it('applique simultanément match (string[]) et range (RangeBounds)', () => {
+describe('filter — combiné', () => {
+  it('match string pipe + range simultanément', () => {
     const rows = [
-      { type: ['vmc_double_flux'], annee: { gte: null, lte: 2012 }, debit: 0.6 },
-      { type: ['vmc_double_flux'], annee: { gte: 2013, lte: null }, debit: 0.26 },
-      { type: ['vmc_simple_flux_autoreglable'], annee: { gte: null, lte: 2012 }, debit: 1.97 },
+      { type_ventilation: 'vmc_double_flux', 'annee/gte': null, 'annee/lte': 2012, debit: 0.6 },
+      { type_ventilation: 'vmc_double_flux', 'annee/gte': 2013, 'annee/lte': null, debit: 0.26 },
+      { type_ventilation: 'vmc_simple_flux', 'annee/gte': null, 'annee/lte': 2012, debit: 1.97 },
     ]
-    expect(filter({ type: 'vmc_double_flux', annee: 2010 }, rows)).toEqual([
-      { type: ['vmc_double_flux'], annee: { gte: null, lte: 2012 }, debit: 0.6 },
+    expect(filter({ type_ventilation: 'vmc_double_flux', annee: 2010 }, rows)).toEqual([
+      { type_ventilation: 'vmc_double_flux', 'annee/gte': null, 'annee/lte': 2012, debit: 0.6 },
     ])
+  })
+
+  it('queryValue undefined = wildcard (critère ignoré)', () => {
+    const rows = [
+      { zone_climatique: 'H1a', u: 1.2 },
+      { zone_climatique: 'H2b', u: 0.8 },
+    ]
+    expect(filter({ zone_climatique: undefined }, rows)).toEqual(rows)
   })
 })

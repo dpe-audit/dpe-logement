@@ -1,63 +1,68 @@
-export type RangeBounds = {
-  eq?: number | null
-  gte?: number | null
-  gt?: number | null
-  lte?: number | null
-  lt?: number | null
+export type AbaqueQuery = Record<string, string | number | boolean | null | undefined>
+
+const RANGE_OPS = ['eq', 'gte', 'gt', 'lte', 'lt'] as const
+type RangeOp = (typeof RANGE_OPS)[number]
+
+function matchRange(value: number, op: RangeOp, bound: number): boolean {
+  switch (op) {
+    case 'eq': return value === bound
+    case 'gte': return value >= bound
+    case 'gt': return value > bound
+    case 'lte': return value <= bound
+    case 'lt': return value < bound
+  }
 }
 
-export type AbaqueQuery = Record<string, string | number | boolean>
-
-function isRangeBounds(cell: unknown): cell is RangeBounds {
-  return (
-    typeof cell === 'object' &&
-    cell !== null &&
-    !Array.isArray(cell) &&
-    ('eq' in cell || 'gte' in cell || 'gt' in cell || 'lte' in cell || 'lt' in cell)
-  )
+function matchCell(cell: unknown, queryValue: string | number | boolean): boolean {
+  if (cell === null || cell === undefined) return true
+  if (typeof cell === 'boolean') {
+    if (queryValue === true || queryValue === 1 || queryValue === '1') return cell === true
+    if (queryValue === false || queryValue === 0 || queryValue === '0') return cell === false
+    return false
+  }
+  if (typeof cell === 'number') {
+    return cell === Number(queryValue)
+  }
+  if (typeof cell === 'string') {
+    const values = cell.includes('|') ? cell.split('|') : [cell]
+    return values.includes(String(queryValue))
+  }
+  return false
 }
 
-function normalizeQuery(queryValue: string | number | boolean): string | number {
-  return typeof queryValue === 'boolean' ? (queryValue ? 1 : 0) : queryValue
-}
-
-function matchesRangeBounds(value: number, bounds: RangeBounds): boolean {
-  if (bounds.eq !== null && bounds.eq !== undefined && value !== bounds.eq) return false
-  if (bounds.gte !== null && bounds.gte !== undefined && value < bounds.gte) return false
-  if (bounds.gt !== null && bounds.gt !== undefined && value <= bounds.gt) return false
-  if (bounds.lte !== null && bounds.lte !== undefined && value > bounds.lte) return false
-  if (bounds.lt !== null && bounds.lt !== undefined && value >= bounds.lt) return false
-  return true
-}
-
-function matchesCellArray(cell: string[], queryValue: string | number | boolean): boolean {
-  const normalized = String(normalizeQuery(queryValue))
-  return cell.some((v) => v === normalized)
-}
-
-function matchesCellScalar(cell: string | number, queryValue: string | number | boolean): boolean {
-  const normalized = normalizeQuery(queryValue)
-  return cell === normalized || String(cell) === String(normalized)
-}
-
-// Vérifie qu'une ligne satisfait l'ensemble des critères de la query.
-// Détection par type de cellule : RangeBounds → filtre range, string[] → filtre match,
-// null/undefined → wildcard, scalaire → égalité directe.
 function rowMatchesQuery(row: Record<string, unknown>, query: AbaqueQuery): boolean {
   for (const [key, queryValue] of Object.entries(query)) {
-    const cell = row[key]
+    if (queryValue === undefined) continue
 
-    if (cell === null || cell === undefined) continue
+    const rangeEntries: Array<[RangeOp, number | null]> = []
+    for (const op of RANGE_OPS) {
+      const rangeKey = `${key}/${op}`
+      if (rangeKey in row) {
+        const bound = row[rangeKey]
+        rangeEntries.push([op, typeof bound === 'number' ? bound : null])
+      }
+    }
 
-    if (isRangeBounds(cell)) {
+    if (rangeEntries.length > 0) {
+      if (queryValue === null) {
+        if (rangeEntries.some(([, b]) => b !== null)) return false
+        continue
+      }
       const num = Number(queryValue)
       if (isNaN(num)) return false
-      if (!matchesRangeBounds(num, cell)) return false
-    } else if (Array.isArray(cell)) {
-      if (!matchesCellArray(cell as string[], queryValue)) return false
-    } else {
-      if (!matchesCellScalar(cell as string | number, queryValue)) return false
+      for (const [op, bound] of rangeEntries) {
+        if (bound === null) continue
+        if (!matchRange(num, op, bound)) return false
+      }
+      continue
     }
+
+    const cell = row[key]
+    if (queryValue === null) {
+      if (cell !== null && cell !== undefined) return false
+      continue
+    }
+    if (!matchCell(cell, queryValue)) return false
   }
   return true
 }
