@@ -1,0 +1,403 @@
+{
+  "chauffage/combustion": {
+    "type_generateur": "string[]",
+    "energie_generateur": "string[] | null",
+    "mode_combustion": "string[] | null",
+    "pn_max": "null | number",
+    "rpn": "string[]",
+    "rpint": "string[]",
+    "qp0": "string[]",
+    "pveilleuse": "number",
+    "tv_generateur_combustion_id": "number"
+  },
+  "chauffage/fch": {
+    "zone_climatique": "string[]",
+    "type_batiment": "string[]",
+    "fch": "number",
+    "tv_facteur_couverture_solaire_id": "number"
+  },
+  "chauffage/i0": {
+    "type_batiment": "string[]",
+    "type_emission": "string[]",
+    "type_intermittence": "string[]",
+    "chauffage_central": "boolean",
+    "regulation_terminale": "null | boolean",
+    "chauffage_collectif": "null | boolean",
+    "inertie_lourde": "null | boolean",
+    "comptage_individuel": "null | boolean",
+    "i0": "number",
+    "tv_intermittence_id": "number"
+  },
+  "chauffage/paux": {
+    "type_generateur": "string[]",
+    "energie_generateur": "string[] | null",
+    "generateur_multi_batiment": "boolean | null",
+    "presence_ventouse": "null | boolean",
+    "G": "number",
+    "H": "number",
+    "pn_max": "null | number",
+    "paux": "string[]"
+  },
+  "chauffage/pn": {
+    "position_chaudiere": "string[]",
+    "pn": "string[]",
+    "type_chaudiere_defaut": "string[]"
+  },
+  "chauffage/rd": {
+    "type_distribution": "string[]",
+    "temperature_distribution": "null | string[]",
+    "presence_fluide_frigorigene": "boolean | null",
+    "reseau_collectif": "null | boolean",
+    "isolation_reseau": "null | boolean",
+    "rd": "number"
+  },
+  "chauffage/re": {
+    "type_emission": "string[]",
+    "type_generateur": "string[] | null",
+    "label_generateur": "string[] | null",
+    "re": "number"
+  },
+  "chauffage/rg": {
+    "type_generateur": "string[]",
+    "energie_generateur": "null | string[]",
+    "label_generateur": "null | string[]",
+    "rg": "number"
+  },
+  "chauffage/rr": {
+    "type_emission": "string[]",
+    "type_generateur": "string[] | null",
+    "label_generateur": "string[] | null",
+    "reseau_collectif": "null | boolean",
+    "presence_robinet_thermostatique": "null | boolean",
+    "presence_regulation_terminale": "null | boolean",
+    "rr": "number"
+  },
+  "chauffage/scop": {
+    "zone_climatique": "string[]",
+    "type_generateur": "string[]",
+    "type_emetteur": "null | string[]",
+    "scop_cop": "string[]",
+    "scop": "number",
+    "tv_scop_id": "number"
+  },
+  "chauffage/tfonc100": {
+    "temperature_distribution": "string[]",
+    "tfonc100": "number",
+    "tv_temp_fonc_100_id": "number"
+  },
+  "chauffage/tfonc30": {
+    "mode_combustion": "string[]",
+    "temperature_distribution": "string[]",
+    "tfonc30": "number",
+    "tv_temp_fonc_30_id": "number"
+  },
+  "climat/c1": {
+    "mois": "string[]",
+    "zone_climatique": "string[]",
+    "orientation": "string[]",
+    "c1": "number"
+  },
+  "climat/nj": {
+    "mois": "string[]",
+    "nj": "number"
+  },
+  "climat/sollicitations": {
+    "mois": "string[]",
+    "zone_climatique": "string[]",
+    "parois_anciennes": "boolean",
+    "inertie": "null | string[]",
+    "epv": "number",
+    "e": "number",
+    "efr26": "number",
+    "efr28": "number",
+    "nref19": "string[]",
+    "nref21": "string[]",
+    "nref26": "number",
+    "nref28": "number",
+    "dh14": "number",
+    "dh19": "string[]",
+    "dh21": "string[]",
+    "dh26": "number",
+    "dh28": "number",
+    "text": "number | null",
+    "tefs": "number | null",
+    "textmoy_clim26": "null | number",
+    "textmoy_clim28": "null | number"
+  },
+  "climat/tbase": {
+    "zone_climatique": "string[]",
+    "tbase": "number"
+  },
+  "climat/zone-climatique": {
+    "code_departement": "string[]",
+    "departement": "string[]",
+    "zone_climatique": "string[]"
+  },
+  "eclairage/nhecl": {
+    "zone_climatique": "string[]",
+    "nhecl": "number"
+  },
+  "ecs/combustion": {
+    "type_generateur": "string[]",
+    "energie_generateur": "string[]",
+    "mode_combustion": "string[] | null",
+    "pn_max": "null | number",
+    "rpn": "string[]",
+    "qp0": "string[]",
+    "pveilleuse": "number",
+    "tv_generateur_combustion_id": "number"
+  },
+  "ecs/cop": {
+    "zone_climatique": "string[]",
+    "type_generateur": "string[]",
+    "cop": "number",
+    "tv_scop_id": "number"
+  },
+  "ecs/cr": {
+    "position_chauffe_eau": "string[]",
+    "label_generateur": "null | string[]",
+    "cr": "number",
+    "tv_pertes_stockage_id": "number"
+  },
+  "ecs/fecs": {
+    "type_batiment": "string[]",
+    "zone_climatique": "string[]",
+    "usage_solaire": "string[]",
+    "fecs": "number",
+    "tv_facteur_couverture_solaire_id": "number"
+  },
+  "ecs/paux": {
+    "type_generateur": "string[]",
+    "energie_generateur": "null | string[]",
+    "presence_ventouse": "null | boolean",
+    "G": "number",
+    "H": "number",
+    "paux": "string[]",
+    "pn_max": "null | number"
+  },
+  "ecs/rd": {
+    "reseau_collectif": "boolean",
+    "bouclage_reseau": "null | string[]",
+    "alimentation_contigue": "boolean | null",
+    "production_volume_habitable": "boolean | null",
+    "rd": "number",
+    "tv_rendement_distribution_ecs_id": "number"
+  },
+  "ecs/rg": {
+    "type_generateur": "string[]",
+    "energie_generateur": "string[]",
+    "rg": "number"
+  },
+  "enveloppe/baie/deltar": {
+    "type_fermeture": "string[]",
+    "deltar": "number",
+    "tv_deltar_id": "number | null"
+  },
+  "enveloppe/baie/sw": {
+    "type_baie": "string[]",
+    "presence_soubassement": "null | boolean",
+    "materiau": "null | string[]",
+    "type_vitrage": "null | string[]",
+    "type_pose": "null | string[]",
+    "type_survitrage": "null | string[]",
+    "sw": "number",
+    "tv_sw_id": "number"
+  },
+  "enveloppe/baie/ug": {
+    "type_vitrage": "string[]",
+    "type_survitrage": "null | string[]",
+    "type_baie": "string[] | null",
+    "nature_lame_air": "null | string[]",
+    "ug": "number",
+    "tv_ug_id": "null | number"
+  },
+  "enveloppe/baie/ujn": {
+    "deltar": "number",
+    "uw": "number",
+    "ujn": "number",
+    "tv_ujn_id": "number"
+  },
+  "enveloppe/baie/uw": {
+    "type_baie": "string[]",
+    "soubassement": "null | boolean",
+    "materiau": "null | string[]",
+    "rupteur_pont_thermique": "null | boolean",
+    "ug": "null | number",
+    "uw": "number",
+    "tv_uw_id": "number"
+  },
+  "enveloppe/local-non-chauffe/b": {
+    "uvue": "number",
+    "isolation_aiu": "boolean",
+    "isolation_aue": "boolean",
+    "b": "number",
+    "tv_coef_reduction_deperdition_id": "number"
+  },
+  "enveloppe/local-non-chauffe/t": {
+    "type_vitrage": "string[]",
+    "materiau": "null | string[]",
+    "presence_rupteur_pont_thermique": "null | boolean",
+    "t": "number",
+    "tv_coef_transparence_ets_id": "number"
+  },
+  "enveloppe/local-non-chauffe/uvue": {
+    "type_local_non_chauffe": "string[]",
+    "uvue": "number",
+    "tv_uvue_id": "number"
+  },
+  "enveloppe/masque/fe1": {
+    "type_masque": "string[]",
+    "orientation_facade": "string[] | null",
+    "fe1": "number",
+    "tv_coef_masque_proche_id": "number"
+  },
+  "enveloppe/masque/fe2": {
+    "type_masque": "string[]",
+    "orientation_facade": "string[]",
+    "fe2": "number",
+    "hauteur_alpha_defaut": "number",
+    "tv_coef_masque_lointain_homogene_id": "number"
+  },
+  "enveloppe/masque/omb": {
+    "type_masque": "string[]",
+    "orientation_facade": "string[]",
+    "secteur_orientation": "string[]",
+    "omb": "number",
+    "hauteur_alpha_defaut": "number",
+    "tv_coef_masque_lointain_non_homogene_id": "number"
+  },
+  "enveloppe/mur/u": {
+    "zone_climatique": "string[]",
+    "effet_joule": "boolean",
+    "u": "number",
+    "tv_umur_id": "number"
+  },
+  "enveloppe/mur/u0-doublage": {
+    "type_doublage": "string[]",
+    "u0_doublage": "number"
+  },
+  "enveloppe/mur/u0": {
+    "type_mur": "string[]",
+    "epaisseur_mur": "string[] | null",
+    "u0": "number",
+    "tv_umur0_id": "number"
+  },
+  "enveloppe/paroi/b": {
+    "mitoyennete": "string[]",
+    "b": "number",
+    "tv_coef_reduction_deperdition_id": "number"
+  },
+  "enveloppe/paroi/bver": {
+    "zone_climatique": "string[]",
+    "orientation_ets": "string[]",
+    "isolation_paroi": "boolean",
+    "bver": "number",
+    "tv_coef_reduction_deperdition_id": "number"
+  },
+  "enveloppe/permeabilite/q4paconv": {
+    "type_batiment": "string[]",
+    "presence_joints_menuiserie": "boolean | null",
+    "isolation_murs_plafonds": "boolean | null",
+    "q4pa_conv": "number",
+    "tv_q4pa_conv_id": "number"
+  },
+  "enveloppe/plancher-bas/u": {
+    "zone_climatique": "string[]",
+    "effet_joule": "boolean",
+    "u": "number",
+    "tv_upb_id": "number"
+  },
+  "enveloppe/plancher-bas/u0": {
+    "type_structure": "string[]",
+    "u0": "number",
+    "tv_upb0_id": "number"
+  },
+  "enveloppe/plancher-bas/ue": {
+    "mitoyennete": "string[]",
+    "2s/p": "number",
+    "u": "number",
+    "ue": "number",
+    "tv_ue_id": "number"
+  },
+  "enveloppe/plancher-haut/u": {
+    "configuration": "string[]",
+    "zone_climatique": "string[]",
+    "effet_joule": "boolean",
+    "u": "number",
+    "tv_uph_id": "number"
+  },
+  "enveloppe/plancher-haut/u0": {
+    "type_plancher_haut": "string[]",
+    "u0": "number",
+    "tv_uph0_id": "number"
+  },
+  "enveloppe/pont-thermique/kpt": {
+    "type_liaison": "string[]",
+    "isolation_mur": "boolean",
+    "type_isolation_mur": "null | string[]",
+    "isolation_plancher": "null | boolean",
+    "type_isolation_plancher": "null | string[]",
+    "type_pose_menuiserie": "null | string[]",
+    "presence_retour_isolation": "null | boolean",
+    "kpt": "number",
+    "tv_pont_thermique_id": "number"
+  },
+  "enveloppe/porte/u": {
+    "presence_sas": "boolean",
+    "materiau": "null | string[]",
+    "isolation": "null | boolean",
+    "type_vitrage": "null | string[]",
+    "u": "number",
+    "tv_uporte_id": "number"
+  },
+  "performance/etiquette-climat": {
+    "zone_climatique": "string[]",
+    "etiquette_climat": "string[]"
+  },
+  "performance/etiquette-energie": {
+    "zone_climatique": "string[]",
+    "etiquette_energie": "string[]"
+  },
+  "performance/fcep": {
+    "energie": "string[]",
+    "fcep": "number"
+  },
+  "performance/feges": {
+    "energie": "string[]",
+    "usage": "string[] | null",
+    "feges": "number"
+  },
+  "performance/reseau": {
+    "id": "string[]",
+    "contenu_co2": "number",
+    "contenu_co2_acv": "number",
+    "taux_enr": "number",
+    "feges": "number"
+  },
+  "production/kpv": {
+    "orientation_pv": "string[]",
+    "kpv": "number"
+  },
+  "refroidissement/eer": {
+    "zone_climatique": "string[]",
+    "seer": "number",
+    "eer": "number",
+    "tv_seer_id": "number"
+  },
+  "ventilation/debits": {
+    "type_ventilation": "string[]",
+    "presence_echangeur_thermique": "null | boolean",
+    "installation_collective": "null | boolean",
+    "qvarep_conv": "number",
+    "qvasouf_conv": "number",
+    "smea_conv": "number"
+  },
+  "ventilation/pvent": {
+    "type_ventilation": "string[]",
+    "pvent": "number"
+  },
+  "ventilation/pvent_moy": {
+    "type_ventilation": "string[]",
+    "pvent_moy": "number"
+  }
+}
