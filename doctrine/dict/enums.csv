@@ -153,6 +153,7 @@ climat:zone-climatique;H2c;H2c;zone-climatique
 climat:zone-climatique;H2d;H2d;zone-climatique
 climat:zone-climatique;H3;H3;zone-climatique
 commun:energie;electricite;Électricité;energie
+commun:energie;electricite_renouvelable;Électricité d'origine renouvelable;energie
 commun:energie;gaz_naturel;Gaz naturel;energie
 commun:energie;gpl;GPL;energie
 commun:energie;fioul;Fioul;energie
@@ -424,3 +425,15 @@ enveloppe:paroi:orientation;sud;Paroi exposée au sud;enveloppe:paroi:orientatio
 enveloppe:paroi:orientation;est;Paroi exposée à l'est;enveloppe:paroi:orientation
 enveloppe:paroi:orientation;ouest;Paroi exposée à l'ouest;enveloppe:paroi:orientation
 enveloppe:paroi:orientation;horizontale;Paroi horizontale;enveloppe:paroi:orientation
+mois;01;Janvier;mois
+mois;02;Février;mois
+mois;03;Mars;mois
+mois;04;Avril;mois
+mois;05;Mai;mois
+mois;06;Juin;mois
+mois;07;Juillet;mois
+mois;08;Août;mois
+mois;09;Septembre;mois
+mois;10;Octobre;mois
+mois;11;Novembre;mois
+mois;12;Décembre;mois

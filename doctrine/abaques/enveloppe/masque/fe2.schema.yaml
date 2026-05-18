@@ -1,0 +1,27 @@
+id: enveloppe:masque:fe2
+name: fe2
+fields:
+  - name: type_masque
+    title: Type de masque
+    type: string
+    format: enums
+    x-enum: enveloppe:masque:type
+    required: true
+  - name: orientation_facade
+    title: Orientation de la façade
+    type: string
+    format: enums
+    x-enum: orientation
+    required: true
+  - name: hauteur_masque_alpha/gte
+    title: Hauteur angulaire du masque (supérieure ou égale à) en degrés
+    type: number
+    required: false
+  - name: hauteur_masque_alpha/lt
+    title: Hauteur angulaire du masque (inférieure à) en degrés
+    type: number
+    required: false
+  - name: fe2
+    title: Facteur d'ensoleillement du masque lointain homogène
+    type: number
+    required: true

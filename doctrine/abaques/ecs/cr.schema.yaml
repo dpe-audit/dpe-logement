@@ -1,0 +1,27 @@
+id: ecs:cr
+name: cr
+fields:
+  - name: position_chauffe_eau
+    title: Position du chauffe-eau
+    type: string
+    format: enums
+    x-enum: ecs:position-chauffe-eau
+    required: true
+  - name: label_generateur
+    title: Label du générateur
+    type: string
+    format: enums
+    x-enum: ecs:label-generateur
+    required: false
+  - name: volume_stockage/lte
+    title: Volume de stockage (inférieur ou égal à) en litres
+    type: number
+    required: false
+  - name: volume_stockage/gt
+    title: Volume de stockage (supérieur à) en litres
+    type: number
+    required: false
+  - name: cr
+    title: Coefficient de réduction des pertes de stockage
+    type: number
+    required: true
