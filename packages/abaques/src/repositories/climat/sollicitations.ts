@@ -5,7 +5,7 @@ export type SollicitationsSchema = {
   zone_climatique: string
   'altitude/gt': number | null
   'altitude/gte': number | null
-  'altitue/lt': number | null
+  'altitude/lt': number | null
   'altitude/lte': number | null
   parois_anciennes: boolean
   inertie: string

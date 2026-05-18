@@ -5,8 +5,8 @@ export type RgSchema = {
   type_generateur: string
   energie_generateur: string | null
   label_generateur: string | null
-  'anne_installation_generateur/gte': number | null
-  'anne_installation_generateur/lte': number | null
+  'annee_installation_generateur/gte': number | null
+  'annee_installation_generateur/lte': number | null
   rg: number
 }
 
