@@ -1,8 +1,10 @@
-import data, { type Row } from '../../data/climat/nj.js'
+import data from '../../data/climat/nj.js'
 import { type AbaqueQuery, filter } from '../../filter.js'
 
-export type NjSchema = Row
-export type NjQuery = AbaqueQuery
+export type NjSchema = {
+  mois: string
+  nj: number
+}
 
-export const load = () => data
-export const search = (query: NjQuery, rows: NjSchema[]) => filter(query, rows)
+export const load = (): NjSchema[] => data as NjSchema[]
+export const search = (query: AbaqueQuery, rows: NjSchema[]) => filter(query, rows)

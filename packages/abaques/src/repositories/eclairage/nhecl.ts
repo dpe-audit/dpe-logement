@@ -1,8 +1,10 @@
-import data, { type Row } from '../../data/eclairage/nhecl.js'
+import data from '../../data/eclairage/nhecl.js'
 import { type AbaqueQuery, filter } from '../../filter.js'
 
-export type NheclSchema = Row
-export type NheclQuery = AbaqueQuery
+export type NheclSchema = {
+  zone_climatique: string
+  nhecl: number
+}
 
-export const load = () => data
-export const search = (query: NheclQuery, rows: NheclSchema[]) => filter(query, rows)
+export const load = (): NheclSchema[] => data as NheclSchema[]
+export const search = (query: AbaqueQuery, rows: NheclSchema[]) => filter(query, rows)
