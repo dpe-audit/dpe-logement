@@ -1,8 +1,11 @@
-import data, { type Row } from '../../data/performance/feges.js'
+import data from '../../data/performance/feges.js'
 import { type AbaqueQuery, filter } from '../../filter.js'
 
-export type FegesSchema = Row
-export type FegesQuery = AbaqueQuery
+export type FegesSchema = {
+  energie: string
+  usage: string | null
+  feges: number
+}
 
-export const load = () => data
-export const search = (query: FegesQuery, rows: FegesSchema[]) => filter(query, rows)
+export const load = (): FegesSchema[] => data as FegesSchema[]
+export const search = (query: AbaqueQuery, rows: FegesSchema[]) => filter(query, rows)

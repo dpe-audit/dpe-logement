@@ -1,13 +1,16 @@
-import data, { type Row } from '../../data/ventilation/debits.js'
+import data from '../../data/ventilation/debits.js'
 import { type AbaqueQuery, filter } from '../../filter.js'
 
-export type DebitsSchema = Row
-
-export type DebitsQuery = {
+export type DebitsSchema = {
   type_ventilation: string
   presence_echangeur_thermique: boolean | null
   installation_collective: boolean | null
-} & AbaqueQuery
+  'annee_installation/gte': number | null
+  'annee_installation/lte': number | null
+  qvarep_conv: number
+  qvasouf_conv: number
+  smea_conv: number
+}
 
-export const load = () => data
-export const search = (query: DebitsQuery, rows: DebitsSchema[]) => filter(query, rows)
+export const load = (): DebitsSchema[] => data as DebitsSchema[]
+export const search = (query: AbaqueQuery, rows: DebitsSchema[]) => filter(query, rows)
