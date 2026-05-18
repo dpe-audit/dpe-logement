@@ -1,8 +1,13 @@
-import data, { type Row } from '../../../data/enveloppe/paroi/bver.js'
+import data from '../../../data/enveloppe/paroi/bver.js'
 import { type AbaqueQuery, filter } from '../../../filter.js'
 
-export type BverSchema = Row
-export type BverQuery = AbaqueQuery
+export type BverSchema = {
+  zone_climatique: string
+  orientation_ets: string
+  isolation_paroi: boolean
+  bver: number
+  tv_coef_reduction_deperdition_id: number
+}
 
-export const load = () => data
-export const search = (query: BverQuery, rows: BverSchema[]) => filter(query, rows)
+export const load = (): BverSchema[] => data as BverSchema[]
+export const search = (query: AbaqueQuery, rows: BverSchema[]) => filter(query, rows)

@@ -1,3 +1,3 @@
-export * as u from './u.js'
+export * as umur from './umur.js'
+export * as umur0 from './umur0.js'
 export * as u0Doublage from './u0-doublage.js'
-export * as u0 from './u0.js'

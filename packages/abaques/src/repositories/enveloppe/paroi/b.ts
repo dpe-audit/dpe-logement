@@ -1,8 +1,11 @@
-import data, { type Row } from '../../../data/enveloppe/paroi/b.js'
+import data from '../../../data/enveloppe/paroi/b.js'
 import { type AbaqueQuery, filter } from '../../../filter.js'
 
-export type BSchema = Row
-export type BQuery = AbaqueQuery
+export type BSchema = {
+  mitoyennete: string
+  b: number
+  tv_coef_reduction_deperdition_id: number
+}
 
-export const load = () => data
-export const search = (query: BQuery, rows: BSchema[]) => filter(query, rows)
+export const load = (): BSchema[] => data as BSchema[]
+export const search = (query: AbaqueQuery, rows: BSchema[]) => filter(query, rows)
