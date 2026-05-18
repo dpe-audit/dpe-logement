@@ -5,6 +5,11 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = join(fileURLToPath(import.meta.url), '..', '..')
 
+/** @type {Record<string, Record<string, string>>} */
+const SCHEMA = JSON.parse(
+  readFileSync(join(ROOT, 'scripts', 'abaques-schema.json'), 'utf-8')
+)
+
 /**
  * Détecte si un nom de colonne est une colonne range et retourne le suffixe.
  * @param {string} col
@@ -48,9 +53,10 @@ function parseRangeCell(raw) {
  * Parse un fichier CSV en tableau de lignes enrichies.
  * Détecte automatiquement les colonnes booléennes : toutes les valeurs non-vides sont '0' ou '1'.
  * @param {string} csvContent
+ * @param {Record<string, string>} [columnHints] - types déclarés dans le schéma, par nom de colonne
  * @returns {Record<string, unknown>[]}
  */
-function parseCsv(csvContent) {
+function parseCsv(csvContent, columnHints = {}) {
   const lines = csvContent.trim().split('\n').map((l) => l.trim())
   const headers = lines[0].split(';')
   const rawRows = lines.slice(1).filter((l) => l.length > 0).map((l) => l.split(';'))
@@ -87,6 +93,11 @@ function parseCsv(csvContent) {
       const raw = values[i] ?? ''
       if (booleanCols.has(header)) {
         row[header] = raw === '' ? null : raw === '1'
+      } else if (
+        (columnHints[header] ?? '').includes('string[]') &&
+        !(columnHints[header] ?? '').includes('number')
+      ) {
+        row[header] = raw === '' ? null : [raw]
       } else {
         row[header] = parseCell(raw)
       }
@@ -112,9 +123,11 @@ function parseCsv(csvContent) {
  * Déduit le type TypeScript d'une ligne à partir de l'ensemble des données.
  * Retourne un objet avec le type sous forme de chaîne et un flag indiquant si RangeBounds est utilisé.
  * @param {Record<string, unknown>[]} rows
+ * @param {string} [relative] - utilisé dans les messages de warning
+ * @param {Record<string, string>} [columnHints] - types déclarés dans le schéma, par nom de colonne
  * @returns {{ typeStr: string, usesRangeBounds: boolean }}
  */
-function inferRowType(rows) {
+function inferRowType(rows, relative, columnHints = {}) {
   if (rows.length === 0) return { typeStr: 'Record<string, unknown>', usesRangeBounds: false }
 
   /** @type {Map<string, Set<string>>} */
@@ -138,7 +151,18 @@ function inferRowType(rows) {
   for (const [key, types] of colTypes) {
     if (types.has('RangeBounds')) usesRangeBounds = true
     // Quoted key pour gérer les noms avec tirets (ex. u0-doublage)
-    fields.push(`  "${key}": ${[...types].join(' | ')}`)
+    const inferredType = [...types].join(' | ')
+    const declaredType = columnHints[key]
+    if (declaredType) {
+      if (declaredType !== inferredType) {
+        console.warn(
+          `[schema] ${relative}: "${key}" inféré "${inferredType}", déclaré "${declaredType}" — type déclaré utilisé`
+        )
+      }
+      fields.push(`  "${key}": ${declaredType}`)
+    } else {
+      fields.push(`  "${key}": ${inferredType}`)
+    }
   }
 
   return { typeStr: `{\n${fields.join('\n')}\n}`, usesRangeBounds }
@@ -156,10 +180,12 @@ const CHUNK_SIZE = 200
  */
 function generateFromCsv(csvPath, outPath, relative) {
   const csvContent = readFileSync(csvPath, 'utf-8')
-  const rows = parseCsv(csvContent)
+  const relativeKey = relative.replaceAll('\\', '/').replace(/\.csv$/, '')
+  const columnHints = SCHEMA[relativeKey] ?? {}
+  const rows = parseCsv(csvContent, columnHints)
   const sourcePath = csvPath.replaceAll('\\', '/')
 
-  const { typeStr, usesRangeBounds } = inferRowType(rows)
+  const { typeStr, usesRangeBounds } = inferRowType(rows, relativeKey, columnHints)
 
   // Chemin relatif vers filter.ts : autant de ../ que de segments dans relative (dir + data/)
   const depth = relative.split(/[/\\]/).length
