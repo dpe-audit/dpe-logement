@@ -1,13 +1,4 @@
 // GÉNÉRÉ AUTOMATIQUEMENT — ne pas modifier manuellement
 // Source : doctrine/abaques/eclairage/nhecl.csv
 
-type Row = {
-  "zone_climatique": string[]
-  "nhecl": number
-}
-
-const data: Row[] = [{"zone_climatique":["H1a"],"nhecl":1500},{"zone_climatique":["H1b"],"nhecl":1445},{"zone_climatique":["H1c"],"nhecl":1476},{"zone_climatique":["H2a"],"nhecl":1500},{"zone_climatique":["H2b"],"nhecl":1531},{"zone_climatique":["H2c"],"nhecl":1566},{"zone_climatique":["H2d"],"nhecl":1566},{"zone_climatique":["H3"],"nhecl":1506}]
-
-export type { Row }
-
-export default data
+export default [{"zone_climatique":"H1a","nhecl":1500},{"zone_climatique":"H1b","nhecl":1445},{"zone_climatique":"H1c","nhecl":1476},{"zone_climatique":"H2a","nhecl":1500},{"zone_climatique":"H2b","nhecl":1531},{"zone_climatique":"H2c","nhecl":1566},{"zone_climatique":"H2d","nhecl":1566},{"zone_climatique":"H3","nhecl":1506}]

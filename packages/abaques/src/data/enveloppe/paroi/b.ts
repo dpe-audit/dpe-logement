@@ -1,14 +1,4 @@
 // GÉNÉRÉ AUTOMATIQUEMENT — ne pas modifier manuellement
 // Source : doctrine/abaques/enveloppe/paroi/b.csv
 
-type Row = {
-  "mitoyennete": string[]
-  "b": number
-  "tv_coef_reduction_deperdition_id": number
-}
-
-const data: Row[] = [{"mitoyennete":["exterieur"],"b":1,"tv_coef_reduction_deperdition_id":1},{"mitoyennete":["enterre"],"b":1,"tv_coef_reduction_deperdition_id":2},{"mitoyennete":["vide_sanitaire"],"b":1,"tv_coef_reduction_deperdition_id":3},{"mitoyennete":["terre_plein"],"b":1,"tv_coef_reduction_deperdition_id":5},{"mitoyennete":["sous_sol_non_chauffe"],"b":1,"tv_coef_reduction_deperdition_id":6},{"mitoyennete":["local_non_residentiel"],"b":0.2,"tv_coef_reduction_deperdition_id":4},{"mitoyennete":["local_residentiel"],"b":0,"tv_coef_reduction_deperdition_id":283},{"mitoyennete":["local_non_accessible"],"b":0.95,"tv_coef_reduction_deperdition_id":7}]
-
-export type { Row }
-
-export default data
+export default [{"mitoyennete":"exterieur","b":1,"tv_coef_reduction_deperdition_id":1},{"mitoyennete":"enterre","b":1,"tv_coef_reduction_deperdition_id":2},{"mitoyennete":"vide_sanitaire","b":1,"tv_coef_reduction_deperdition_id":3},{"mitoyennete":"terre_plein","b":1,"tv_coef_reduction_deperdition_id":5},{"mitoyennete":"sous_sol_non_chauffe","b":1,"tv_coef_reduction_deperdition_id":6},{"mitoyennete":"local_non_residentiel","b":0.2,"tv_coef_reduction_deperdition_id":4},{"mitoyennete":"local_residentiel","b":0,"tv_coef_reduction_deperdition_id":283},{"mitoyennete":"local_non_accessible","b":0.95,"tv_coef_reduction_deperdition_id":7}]

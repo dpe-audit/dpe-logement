@@ -1,13 +1,4 @@
 // GÉNÉRÉ AUTOMATIQUEMENT — ne pas modifier manuellement
 // Source : doctrine/abaques/performance/fcep.csv
 
-type Row = {
-  "energie": string[]
-  "fcep": number
-}
-
-const data: Row[] = [{"energie":["electricite"],"fcep":1.9},{"energie":["gpl"],"fcep":1},{"energie":["fioul"],"fcep":1},{"energie":["charbon"],"fcep":1},{"energie":["bois_buche"],"fcep":1},{"energie":["bois_plaquette"],"fcep":1},{"energie":["bois_granule"],"fcep":1},{"energie":["reseau_chaleur"],"fcep":1},{"energie":["reseau_froid"],"fcep":1}]
-
-export type { Row }
-
-export default data
+export default [{"energie":"electricite","fcep":1.9},{"energie":"gpl","fcep":1},{"energie":"fioul","fcep":1},{"energie":"charbon","fcep":1},{"energie":"bois_buche","fcep":1},{"energie":"bois_plaquette","fcep":1},{"energie":"bois_granule","fcep":1},{"energie":"reseau_chaleur","fcep":1},{"energie":"reseau_froid","fcep":1}]
