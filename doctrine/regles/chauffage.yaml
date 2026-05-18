@@ -1,0 +1,36 @@
+chauffage.effet_joule:
+  id: chauffage.effet_joule
+  description: Chauffage majoritaire par effet Joule
+  type: boolean
+
+# <-- Besoins de chauffage -->
+
+chauffage.pch:
+  id: chauffage.pch
+  description: Puissance conventionnelle des générateurs de chauffage
+  type: number
+  unite: kWh
+  dependances:
+    - chauffage.generateur.pch
+
+# <-- Installations de chauffage -->
+
+chauffage.installation.rdim:
+  id: chauffage.installation.rdim
+  description: Ratio de dimensionnement de l'installation de chauffage
+  type: number
+
+# <-- Générateurs de chauffage -->
+
+chauffage:generateur:pch:
+  id: chauffage.generateur.pch
+  description: Puissance conventionnelle du générateur de chauffage
+  type: number
+  unite: kWh
+
+chauffage:generateur:rdim:
+  id: chauffage.generateur.rdim
+  description: Ratio de dimensionnement du générateur de chauffage
+  type: number
+  dependances:
+    - chauffage.installation.rdim

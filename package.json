@@ -2,8 +2,8 @@
   "name": "open-dpe-logement",
   "private": true,
   "scripts": {
-    "generate": "node scripts/generate-abaques.mjs",
-    "prebuild": "npm run generate",
+    "abaques:generate": "node scripts/generate-abaques.mjs",
+    "abaques:prebuild": "npm run generate:abaques",
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
@@ -11,6 +11,10 @@
     "check-types": "turbo run check-types"
   },
   "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^25.8.0",
+    "csv-parse": "^6.2.1",
+    "js-yaml": "^4.1.1",
     "prettier": "^3.7.4",
     "turbo": "^2.7.2",
     "typescript": "5.9.2"

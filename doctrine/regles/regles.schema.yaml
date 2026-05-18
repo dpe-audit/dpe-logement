@@ -1,0 +1,32 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+title: Règles de calcul
+type: object
+additionalProperties: false
+properties:
+  id:
+    title: Identifiant de la règle de calcul
+    type: string
+  description:
+    title: Description de la règle de calcul
+    type: string
+  type:
+    title: Type de la valeur calculée
+    type: string
+    enum: [number, boolean, string]
+  unite:
+    title: Unité de la valeur calculée
+    type: string
+  scopes:
+    title: Liste des scopes de la règle de calcul
+    type: array
+    items:
+      type: string
+  dependances:
+    title: Liste des dépendances de la règle de calcul
+    type: array
+    items:
+      type: string
+required:
+  - id
+  - description
+  - type

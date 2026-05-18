@@ -1,0 +1,214 @@
+refroidissement.cef:
+  id: refroidissement.cef
+  description: Consommation d'énergie finale des générateurs de refroidissement
+  type: number
+  unite: kWh/an
+  dependances:
+    - refroidissement.generateur.cef
+
+refroidissement.cep:
+  id: refroidissement.cep
+  description: Consommation d'énergie primaire des générateurs de refroidissement
+  type: number
+  unite: kWh/an
+  dependances:
+    - refroidissement.generateur.cep
+
+refroidissement.eges:
+  id: refroidissement.eges
+  description: Emissions de gaz à effet de serre des générateurs de refroidissement
+  type: number
+  unite: kgCO2e/an
+  dependances:
+    - refroidissement.generateur.eges
+
+refroidissement.cef_aux:
+  id: refroidissement.cef_aux
+  description: Consommation d'énergie finale des auxiliaires de refroidissement
+  type: number
+  unite: kWh/an
+  dependances:
+    - refroidissement.auxiliaire.cef
+
+refroidissement.cep_aux:
+  id: refroidissement.cep_aux
+  description: Consommation d'énergie primaire des auxiliaires de refroidissement
+  type: number
+  unite: kWh/an
+  dependances:
+    - refroidissement.auxiliaire.cep
+
+refroidissement.eges_aux:
+  id: refroidissement.eges_aux
+  description: Emissions de gaz à effet de serre des auxiliaires de refroidissement
+  type: number
+  unite: kgCO2e/an
+  dependances:
+    - refroidissement.auxiliaire.eges
+
+# <-- Besoins de refroidissement -->
+
+refroidissement.bfr:
+  id: refroidissement.bfr
+  description: Besoins de refroidissement
+  type: number
+  unite: kWh/an
+  scopes: [scenario]
+  dependances:
+    - refroidissement.bfr_j
+
+refroidissement.bfr_j:
+  id: refroidissement.bfr_j
+  description: Besoins de refroidissement mensuels
+  type: number
+  unite: kWh/mois
+  scopes: [mois, scenario]
+  dependances:
+    - climat.nref_fr
+    - climat.text_fr
+    - enveloppe.gv
+    - refroidissement.fut_j
+    - refroidissement.rbth_j
+    - refroidissement.a_fr_j
+
+refroidissement.fut_j:
+  id: refroidissement.fut_j
+  description: Facteur d'utilisation des apports
+  type: number
+  scopes: [mois, scenario]
+  dependances:
+    - refroidissement.rbth_j
+    - refroidissement.t
+
+refroidissement.rbth_j:
+  id: refroidissement.rbth_j
+  description: Ratio de bilan thermique mensuel
+  type: number
+  scopes: [mois, scenario]
+  dependances:
+    - climat.nref_fr
+    - climat.text_fr
+    - enveloppe.gv
+    - refroidissement.cin
+    - refroidissement.a_fr_j
+
+refroidissement.cin:
+  id: refroidissement.cin
+  description: Capacité thermique intérieure efficace de la zone
+  type: number
+  unite: J/K
+  dependances:
+    - batiment.sh
+    - enveloppe.inertie
+
+refroidissement.t:
+  id: refroidissement.t
+  description: Constante de temps de la zone pour le refroidissement
+  type: number
+  unite: h
+  dependances:
+    - enveloppe.gv
+    - refroidissement.cin
+
+refroidissement.a_fr_j:
+  id: refroidissement.a_fr_j
+  description: Apports gratuits mensuels
+  type: number
+  unite: Wh/mois
+  scopes: [mois, scenario]
+  dependances:
+    - refroidissement.as_fr_j
+    - refroidissement.ai_fr_j
+
+refroidissement.as_fr_j:
+  id: refroidissement.as_fr_j
+  description: Apports solaires mensuels
+  type: number
+  unite: Wh/mois
+  scopes: [mois, scenario]
+  dependances:
+    - enveloppe.sse_j
+
+refroidissement.ai_fr_j:
+  id: refroidissement.ai_fr_j
+  description: Apports internes mensuels
+  type: number
+  unite: Wh/mois
+  scopes: [mois, scenario]
+  dependances:
+    - batiment.sh
+    - climat.nref_fr
+    - ecs.nadeq
+
+# <-- Auxiliaires de refroidissement -->
+
+refroidissement.auxiliaire.cef:
+  id: refroidissement.auxiliaire.cef
+  description: Consommation d'énergie finale de l'auxiliaire de refroidissement
+  type: number
+  unite: kWh/an
+
+refroidissement.auxiliaire.cep:
+  id: refroidissement.auxiliaire.cep
+  description: Consommation d'énergie primaire de l'auxiliaire de refroidissement
+  type: number
+  unite: kWh/an
+  dependances:
+    - refroidissement.auxiliaire.cef
+
+refroidissement.auxiliaire.eges:
+  id: refroidissement.auxiliaire.eges
+  description: Emissions de gaz à effet de serre de l'auxiliaire de refroidissement
+  type: number
+  unite: kgCO2e/an
+  dependances:
+    - refroidissement.auxiliaire.cef
+
+# <-- Installations de refroidissement -->
+
+refroidissement.installation.rdim:
+  id: refroidissement.installation.rdim
+  description: Ratio de dimensionnement de l'installation de refroidissement
+  type: number
+
+# <-- Générateurs de refroidissement -->
+
+refroidissement.generateur.cef:
+  id: refroidissement.generateur.cef
+  description: Consommation d'énergie finale du générateur de refroidissement
+  type: number
+  unite: kWh/an
+  dependances:
+    - refroidissement.bfr
+    - refroidissement.generateur.rdim
+    - refroidissement.generateur.eer
+
+refroidissement.generateur.cep:
+  id: refroidissement.generateur.cep
+  description: Consommation d'énergie primaire du générateur de refroidissement
+  type: number
+  unite: kWh/an
+  dependances:
+    - refroidissement.generateur.cef
+
+refroidissement.generateur.eges:
+  id: refroidissement.generateur.eges
+  description: Emissions de gaz à effet de serre du générateur de refroidissement
+  type: number
+  unite: kgCO2e/an
+  dependances:
+    - refroidissement.generateur.cef
+
+refroidissement.generateur.rdim:
+  id: refroidissement.generateur.rdim
+  description: Ratio de dimensionnement du générateur de refroidissement
+  type: number
+  dependances:
+    - refroidissement.installation.rdim
+
+refroidissement.generateur.eer:
+  id: refroidissement.generateur.eer
+  description: Efficacité énergétique du générateur de refroidissement
+  type: number
+  dependances:
+    - climat.zone_climatique

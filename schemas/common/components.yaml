@@ -28,6 +28,20 @@ $defs:
       - code_postal
       - code_insee
       - commune
+  moisItem:
+    title: Valeur pour un mois
+    type: object
+    additionalProperties: true
+    properties:
+      mois:
+        $ref: /common/primitives#/$defs/mois
+    required:
+      - mois
+  moisCollection:
+    title: Collection de valeurs pour les mois
+    type: array
+    items:
+      $ref: "#/$defs/moisItem"
   consommationsItem:
     title: Consommation
     type: object

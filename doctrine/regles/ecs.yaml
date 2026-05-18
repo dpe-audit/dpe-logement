@@ -1,0 +1,365 @@
+ecs.cef:
+  id: ecs.cef
+  description: Consommation d'énergie finale des générateurs d'eau chaude sanitaire
+  type: number
+  unite: kWh/an
+
+ecs.cep:
+  id: ecs.cep
+  description: Consommation d'énergie primaire des générateurs d'eau chaude sanitaire
+  type: number
+  unite: kWh/an
+  dependances:
+    - ecs.generateur.cep
+
+ecs.eges:
+  id: ecs.eges
+  description: Emissions de gaz à effet de serre des générateurs d'eau chaude sanitaire
+  type: number
+  unite: kgCO2e/an
+  dependances:
+    - ecs.generateur.eges
+
+ecs.cef_aux:
+  id: ecs.cef_aux
+  description: Consommation d'énergie finale des auxiliaires d'eau chaude sanitaire
+  type: number
+  unite: kWh/an
+  dependances:
+    - ecs.auxiliaire.cef
+
+ecs.cep_aux:
+  id: ecs.cep_aux
+  description: Consommation d'énergie primaire des auxiliaires d'eau chaude sanitaire
+  type: number
+  unite: kWh/an
+  dependances:
+    - ecs.auxiliaire.cep
+
+ecs.eges_aux:
+  id: ecs.eges_aux
+  description: Emissions de gaz à effet de serre des auxiliaires d'eau chaude sanitaire
+  type: number
+  unite: kgCO2e/an
+  dependances:
+    - ecs.auxiliaire.eges
+
+# <-- Besoins d'eau chaude sanitaire -->
+
+ecs.becs:
+  id: ecs.becs
+  description: Besoins d'eau chaude sanitaire
+  type: number
+  unite: kWh/an
+  dependances:
+    - ecs.becs_j
+
+ecs.becs_j:
+  id: ecs.becs_j
+  description: Besoins mensuels d'eau chaude sanitaire
+  type: number
+  unite: kWh/mois
+  scopes: [mois]
+  dependances:
+    - climat.tefs
+    - ecs.nadeq
+
+ecs.nmax:
+  id: ecs.nmax
+  description: Coefficient d'occupation maximal
+  type: number
+
+ecs.nadeq:
+  id: ecs.nadeq
+  description: Nombre d'adulte équivalent
+  type: number
+  dependances:
+    - ecs.nmax
+
+ecs:pecs:
+  id: ecs.pecs
+  description: Puissance conventionnelle des générateurs d'eau chaude sanitaire
+  type: number
+  unite: kWh
+  dependances:
+    - ecs.generateur.pecs
+
+# <-- Installations d'eau chaude sanitaire -->
+
+ecs.installation.rdim:
+  id: ecs.installation.rdim
+  description: Ratio de dimensionnement de l'installation d'eau chaude sanitaire
+  type: number
+
+ecs.installation.iecs:
+  id: ecs.installation.iecs
+  description: Inverse du rendement de l'installation d'eau chaude sanitaire
+  type: number
+  dependances:
+    - ecs.installation.rd
+    - ecs.installation.rg
+    - ecs.installation.rgs
+    - ecs.installation.rs
+
+ecs.installation.rd:
+  id: ecs.installation.rd
+  description: Rendement de distribution de l'installation d'eau chaude sanitaire
+  type: number
+
+ecs.installation.rg:
+  id: ecs.installation.rg
+  description: Rendement de génération de l'installation d'eau chaude sanitaire
+  type: number
+  dependances:
+    - ecs.becs
+    - ecs.generateur.rpn
+    - ecs.generateur.qp0
+    - ecs.generateur.pveilleuse
+
+ecs.installation.rgs:
+  id: ecs.installation.rgs
+  description: Rendement de génération et de stockage de l'installation d'eau chaude sanitaire
+  type: number
+  dependances:
+    - ecs.becs
+    - ecs.generateur.cop
+    - ecs.generateur.rpn
+    - ecs.generateur.qp0
+    - ecs.generateur.pveilleuse
+    - ecs.generateur.pertes_stockage
+    - ecs.installation.pertes_stockage
+
+ecs.installation.rs:
+  id: ecs.installation.rs
+  description: Rendement de stockage de l'installation d'eau chaude sanitaire
+  type: number
+  dependances:
+    - ecs.becs
+    - ecs.generateur.pertes_stockage
+    - ecs.installation.pertes_stockage
+    - ecs.installation.rd
+
+ecs.installation.pertes_stockage:
+  id: ecs.installation.pertes_stockage
+  description: Pertes de stockage indépendant d'eau chaude sanitaire
+  type: number
+  unite: Wh/an
+  dependances:
+    - ecs.installation.pertes_stockage_j
+
+ecs.installation.pertes_stockage_j:
+  id: ecs.installation.pertes_stockage_j
+  description: Pertes mensuelles de stockage indépendant d'eau chaude sanitaire
+  type: number
+  unite: Wh/mois
+  scopes: [mois]
+
+ecs.installation.pertes_stockage_recuperables:
+  id: ecs.installation.pertes_stockage_recuperables
+  description: Pertes de stockage indépendant récupérables d'eau chaude sanitaire
+  type: number
+  unite: Wh/an
+  dependances:
+    - ecs.installation.pertes_stockage_recuperables_j
+
+ecs.installation.pertes_stockage_recuperables_j:
+  id: ecs.installation.pertes_stockage_recuperables_j
+  description: Pertes mensuelles de stockage indépendant récupérables d'eau chaude sanitaire
+  type: number
+  unite: Wh/mois
+  scopes: [mois]
+  dependances:
+    - climat:nref_ch
+    - ecs.installation.pertes_stockage_j
+
+ecs.installation.pertes_distribution:
+  id: ecs.installation.pertes_distribution
+  description: Pertes de distribution d'eau chaude sanitaire
+  type: number
+  unite: Wh/an
+  dependances:
+    - ecs.installation.pertes_distribution_j
+
+ecs.installation.pertes_distribution_j:
+  id: ecs.installation.pertes_distribution_j
+  description: Pertes mensuelles de distribution d'eau chaude sanitaire
+  type: number
+  unite: Wh/mois
+  scopes: [mois]
+  dependances:
+    - ecs.installation.pertes_distribution_ind_vc_j
+    - ecs.installation.pertes_distribution_col_vc_j
+    - ecs.installation.pertes_distribution_col_hvc_j
+
+ecs.installation.pertes_distribution_recuperables:
+  id: ecs.installation.pertes_distribution_recuperables
+  description: Pertes de distribution récupérables d'eau chaude sanitaire
+  type: number
+  unite: Wh/an
+  dependances:
+    - ecs.installation.pertes_distribution_recuperables_j
+
+ecs.installation.pertes_distribution_recuperables_j:
+  id: ecs.installation.pertes_distribution_recuperables_j
+  description: Pertes mensuelles de distribution récupérables d'eau chaude sanitaire
+  type: number
+  unite: Wh/mois
+  scopes: [mois]
+  dependances:
+    - ecs.installation.pertes_distribution_j
+
+ecs.installation.pertes_distribution_ind_vc_j:
+  id: ecs.installation.pertes_distribution_ind_vc_j
+  description: Pertes mensuelles de distribution individuelle en volume chauffé
+  type: number
+  unite: Wh/mois
+  scopes: [mois]
+  dependances:
+    - ecs.becs_j
+    - ecs.installation.rdim
+
+ecs.installation.pertes_distribution_col_vc_j:
+  id: ecs.installation.pertes_distribution_col_vc_j
+  description: Pertes mensuelles de distribution collective en volume chauffé
+  type: number
+  unite: Wh/mois
+  scopes: [mois]
+  dependances:
+    - ecs.becs_j
+    - ecs.installation.rdim
+
+ecs.installation.pertes_distribution_col_hvc_j:
+  id: ecs.installation.pertes_distribution_col_hvc_j
+  description: Pertes mensuelles de distribution collective hors volume chauffé
+  type: number
+  unite: Wh/mois
+  scopes: [mois]
+  dependances:
+    - ecs.becs_j
+    - ecs.installation.rdim
+
+# <-- Générateurs d'eau chaude sanitaire -->
+
+ecs.generateur.rdim:
+  id: ecs.generateur.rdim
+  description: Ratio de dimensionnement du générateur d'eau chaude sanitaire
+  type: number
+  dependances:
+    - ecs.installation.rdim
+
+ecs.generateur.pecs:
+  id: ecs.generateur.pecs
+  description: Puissance conventionnelle du générateur d'eau chaude sanitaire
+  type: number
+  unite: kWh
+
+ecs.generateur.pdim:
+  id: ecs.generateur.pdim
+  description: Puissance de dimensionnement du générateur d'eau chaude sanitaire
+  type: number
+  unite: kW
+  dependances:
+    - ecs.generateur.pecs
+    - chauffage.generateur.pch
+
+ecs.generateur.cop:
+  id: ecs.generateur.cop
+  description: Coefficient de performance du générateur d'eau chaude sanitaire
+  type: [number, "null"]
+  dependances:
+    - climat:zone_climatique
+
+ecs.generateur.rpn:
+  id: ecs.generateur.rpn
+  description: Rendement à pleine charge
+  type: [number, "null"]
+  dependances:
+    - ecs.generateur.pecs
+
+ecs.generateur.qp0:
+  id: ecs.generateur.qp0
+  description: Pertes à l'arrêt du générateur
+  type: [number, "null"]
+  unite: W
+  dependances:
+    - ecs.generateur.pecs
+
+ecs.generateur.pveilleuse:
+  id: ecs.generateur.pveilleuse
+  description: Puissance de la veilleuse
+  type: [number, "null"]
+  unite: W
+  dependances:
+    - ecs.generateur.pecs
+
+ecs.generateur.pertes_generation:
+  id: ecs.generateur.pertes_generation
+  description: Pertes de génération d'eau chaude sanitaire
+  type: number
+  unite: Wh/an
+  dependances:
+    - ecs.generateur.pertes_generation_j
+
+ecs.generateur.pertes_generation_j:
+  id: ecs.generateur.pertes_generation_j
+  description: Pertes mensuelles de génération d'eau chaude sanitaire
+  type: number
+  unite: Wh/mois
+  scopes: [mois]
+  dependances:
+    - climat:nref_ch
+    - ecs.generateur.rdim
+    - ecs.generateur.qp0
+
+ecs.generateur.pertes_generation_recuperables:
+  id: ecs.generateur.pertes_generation_recuperables
+  description: Pertes de génération récupérables d'eau chaude sanitaire
+  type: number
+  unite: Wh/an
+  dependances:
+    - ecs.generateur.pertes_generation_recuperables_j
+
+ecs.generateur.pertes_generation_recuperables_j:
+  id: ecs.generateur.pertes_generation_recuperables_j
+  description: Pertes mensuelles de génération récupérables d'eau chaude sanitaire
+  type: number
+  unite: Wh/mois
+  scopes: [mois]
+  dependances:
+    - ecs.generateur.pertes_generation_j
+
+ecs.generateur.pertes_stockage:
+  id: ecs.generateur.pertes_stockage
+  description: Pertes de stockage intégré d'eau chaude sanitaire
+  type: number
+  unite: Wh/an
+  dependances:
+    - ecs.generateur.pertes_stockage_j
+
+ecs.generateur.pertes_stockage_j:
+  id: ecs.generateur.pertes_stockage_j
+  description: Pertes mensuelles de stockage intégré d'eau chaude sanitaire
+  type: number
+  unite: Wh/mois
+  scopes: [mois]
+  dependances:
+    - climat:nref_ch
+    - ecs.generateur.rdim
+    - ecs.generateur.qp0
+
+ecs.generateur.pertes_stockage_recuperables:
+  id: ecs.generateur.pertes_stockage_recuperables
+  description: Pertes de stockage intégré récupérables d'eau chaude sanitaire
+  type: number
+  unite: Wh/an
+  dependances:
+    - ecs.generateur.pertes_stockage_recuperables_j
+
+ecs.generateur.pertes_stockage_recuperables_j:
+  id: ecs.generateur.pertes_stockage_recuperables_j
+  description: Pertes mensuelles de stockage intégré récupérables d'eau chaude sanitaire
+  type: number
+  unite: Wh/mois
+  scopes: [mois]
+  dependances:
+    - ecs.generateur.pertes_stockage_j

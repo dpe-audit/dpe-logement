@@ -6,6 +6,40 @@ import { buildEnum } from "../utils";
 export type UUID = string & { readonly __brand: "UUID" };
 
 /**
+ * @see https://schemas.open-dpe.fr/common/primitives#/$defs/mois
+ */
+export const MOIS = [
+	"01",
+	"02",
+	"03",
+	"04",
+	"05",
+	"06",
+	"07",
+	"08",
+	"09",
+	"10",
+	"11",
+	"12",
+] as const;
+export type Mois = (typeof MOIS)[number];
+export const MoisEnum = buildEnum(MOIS);
+
+/**
+ * @see https://schemas.open-dpe.fr/common/components#/$defs/moisItem
+ */
+export type ParMois<T> = {
+	[K in Mois]: T;
+};
+
+/**
+ * @see https://schemas.open-dpe.fr/common/primitives#/$defs/scenario
+ */
+export const SCENARIOS = ["conventionnel", "depensier"] as const;
+export type Scenario = (typeof SCENARIOS)[number];
+export const ScenarioEnum = buildEnum(SCENARIOS);
+
+/**
  * @see https://schemas.open-dpe.fr/common/primitives#/$defs/orientation
  */
 export const ORIENTATIONS = [
@@ -29,13 +63,6 @@ export type OrientationCardinale = (typeof ORIENTATIONS_CARDINALES)[number];
 export const OrientationCardinaleEnum = buildEnum(ORIENTATIONS_CARDINALES);
 
 /**
- * @see https://schemas.open-dpe.fr/common/primitives#/$defs/scenario
- */
-export const SCENARIOS = ["conventionnel", "depensier"] as const;
-export type Scenario = (typeof SCENARIOS)[number];
-export const ScenarioEnum = buildEnum(SCENARIOS);
-
-/**
  * @see https://schemas.open-dpe.fr/common/primitives#/$defs/usage
  */
 export const USAGES = [
@@ -53,6 +80,7 @@ export const UsageEnum = buildEnum(USAGES);
  */
 export const ENERGIES = [
 	"electricite",
+	"electricite_renouvelable",
 	"gaz_naturel",
 	"gpl",
 	"fioul",

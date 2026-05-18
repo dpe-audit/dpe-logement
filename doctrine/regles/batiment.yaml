@@ -1,0 +1,11 @@
+﻿batiment.sh:
+  id: batiment.sh
+  description: Surface thermique du bâtiment ou du logement
+  type: number
+  unite: m²
+
+batiment.hsp:
+  id: batiment.hsp
+  description: Hauteur sous plafond moyenne du bâtiment ou du logement
+  type: number
+  unite: m

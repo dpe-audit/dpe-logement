@@ -1,0 +1,136 @@
+﻿ventilation.cef_aux:
+  id: ventilation.cef_aux
+  description: Consommation d'énergie finale des auxiliaires de ventilation
+  type: number
+  unite: kWh/an
+  dependances:
+    - ventilation.auxiliaire.cef
+
+ventilation.cep_aux:
+  id: ventilation.cep_aux
+  description: Consommation d'énergie primaire des auxiliaires de ventilation
+  type: number
+  unite: kWh/an
+  dependances:
+    - ventilation.auxiliaire.cep
+
+ventilation.eges_aux:
+  id: ventilation.eges_aux
+  description: Emissions de gaz à effet de serre des auxiliaires de ventilation
+  type: number
+  unite: kgCO2e/an
+  dependances:
+    - ventilation.auxiliaire.eges
+
+ventilation.hvent:
+  id: ventilation.hvent
+  description: Déperditions thermiques par renouvellement d'air due au système de ventilation
+  type: number
+  unite: W/K
+  dependances:
+    - ventilation.installation.hvent
+
+ventilation.smea_conv:
+  id: ventilation.smea_conv
+  description: Moyenne des sommes des modules d'entrée d'air sous 20 Pa
+  type: number
+  unite: m3/(h.m²)
+  dependances:
+    - ventilation.installation.rdim
+    - ventilation.installation.smea_conv
+
+ventilation.qvarep_conv:
+  id: ventilation.qvarep_conv
+  description: Moyenne des débits volumiques conventionnels à reprendre
+  type: number
+  unite: m3/(h.m²)
+  dependances:
+    - ventilation.installation.rdim
+    - ventilation.installation.qvarep_conv
+
+ventilation.qvasouf_conv:
+  id: ventilation.qvasouf_conv
+  description: Moyenne des débits volumiques conventionnels à souffler
+  type: number
+  unite: m3/(h.m²)
+  dependances:
+    - ventilation.installation.rdim
+    - ventilation.installation.qvasouf_conv
+
+# <-- Installation de ventilation -->
+
+ventilation.installation.rdim:
+  id: ventilation.installation.rdim
+  description: Ratio de dimensionnement de l'installation de ventilation
+  type: number
+
+ventilation.installation.smea_conv:
+  id: ventilation.installation.smea_conv
+  description: Somme des modules d'entrée d'air sous 20 Pa
+  type: number
+  unite: m3/(h.m²)
+
+ventilation.installation.qvarep_conv:
+  id: ventilation.installation.qvarep_conv
+  description: Débit volumique conventionnel à reprendre
+  type: number
+  unite: m3/(h.m²)
+
+ventilation.installation.qvasouf_conv:
+  id: ventilation.installation.qvasouf_conv
+  description: Débit volumique conventionnel à souffler
+  type: number
+  unite: m3/(h.m²)
+
+ventilation.installation.hvent:
+  id: ventilation.installation.hvent
+  description: Déperditions thermiques par renouvellement d'air due au système de ventilation
+  type: number
+  unite: W/K
+  dependances:
+    - ventilation.installation.rdim
+    - ventilation.installation.qvarep_conv
+    - batiment.sh
+
+# <-- Auxiliaire de ventilation -->
+
+ventilation.auxiliaire.cef:
+  id: ventilation.auxiliaire.cef
+  description: Consommation d'énergie finale de l'auxiliaire de ventilation
+  type: number
+  unite: kWh/an
+  dependances:
+    - ventilation.auxiliaire.rdim
+    - ventilation.auxiliaire.pvent_moy
+    - ventilation.auxiliaire.rut
+
+ventilation.auxiliaire.cep:
+  id: ventilation.auxiliaire.cep
+  description: Consommation d'énergie primaire de l'auxiliaire de ventilation
+  type: number
+  unite: kWh/an
+  dependances:
+    - ventilation.auxiliaire.cef
+
+ventilation.auxiliaire.eges:
+  id: ventilation.auxiliaire.eges
+  description: Emissions de gaz à effet de serre de l'auxiliaire de ventilation
+  type: number
+  unite: kgCO2e/an
+  dependances:
+    - ventilation.auxiliaire.cef
+
+ventilation.auxiliaire.rut:
+  id: ventilation.auxiliaire.rut
+  description: Ratio du temps d'utilisation du mode mécanique de l'auxiliaire de ventilation
+  type: number
+
+ventilation.auxiliaire.pvent_moy:
+  id: ventilation.auxiliaire.pvent_moy
+  description: Puissance moyenne de l'auxiliaire de ventilation
+  type: number
+  unite: W
+  dependances:
+    - batiment.sh
+    - ventilation.installation.rdim
+    - ventilation.installation.qvarep_conv

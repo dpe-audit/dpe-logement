@@ -9,6 +9,9 @@
       "import": "./dist/index.js"
     }
   },
+  "imports": {
+    "#*": "./src/*"
+  },
   "files": [
     "dist"
   ],
@@ -34,7 +37,9 @@
     "access": "public"
   },
   "dependencies": {
-    "@open-dpe-logement/models": "*"
+    "@open-dpe-logement/abaques": "*",
+    "@open-dpe-logement/models": "*",
+    "mathjs": "^15.2.0"
   },
   "devDependencies": {
     "vitest": "^4.1.6"

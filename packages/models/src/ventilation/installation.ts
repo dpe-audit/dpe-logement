@@ -25,13 +25,13 @@ type InstallationBase = {
 };
 
 export type InstallationNaturelle = InstallationBase & {
-	type: TYPE_VENTILATION_NATURELLE;
+	type: TypeVentilationNaturelle;
 	annee_installation: null;
 	installation_collective: null;
 };
 
 export type InstallationMecanique = InstallationBase & {
-	type: TYPE_VENTILATION_MECANIQUE;
+	type: TypeVentilationMecanique;
 	installation_collective: boolean;
 	presence_echangeur_thermique: null;
 };
@@ -75,15 +75,25 @@ export const TYPES_VENTILATION = [
 export type TypeVentilation = (typeof TYPES_VENTILATION)[number];
 export const TypeVentilationEnum = buildEnum(TYPES_VENTILATION);
 
-const TYPES_VENTILATION_NATURELLE = [
+export const TYPES_VENTILATION_NATURELLE = [
 	"ventilation_ouverture_fenetres",
 	"ventilation_entrees_air_hautes_basses",
 	"ventilation_naturelle_conduit_entrees_air_hygroreglables",
 	"ventilation_naturelle_conduit",
 ] as const satisfies readonly TypeVentilation[];
-type TYPE_VENTILATION_NATURELLE = (typeof TYPES_VENTILATION_NATURELLE)[number];
+export type TypeVentilationNaturelle =
+	(typeof TYPES_VENTILATION_NATURELLE)[number];
+export const TypeVentilationNaturelleEnum = buildEnum(
+	TYPES_VENTILATION_NATURELLE,
+);
 
-const TYPES_VENTILATION_MECANIQUE = [
+export function isVentilationNaturelle(
+	type: TypeVentilation,
+): type is TypeVentilationNaturelle {
+	return TYPES_VENTILATION_NATURELLE.includes(type as TypeVentilationNaturelle);
+}
+
+export const TYPES_VENTILATION_MECANIQUE = [
 	"vmc_simple_flux_autoreglable",
 	"vmc_simple_flux_hygroreglable_a",
 	"vmc_simple_flux_hygroreglable_gaz",
@@ -96,4 +106,14 @@ const TYPES_VENTILATION_MECANIQUE = [
 	"ventilation_mecanique_conduit",
 	"ventilation_mecanique_insufflation",
 ] as const satisfies readonly TypeVentilation[];
-type TYPE_VENTILATION_MECANIQUE = (typeof TYPES_VENTILATION_MECANIQUE)[number];
+export type TypeVentilationMecanique =
+	(typeof TYPES_VENTILATION_MECANIQUE)[number];
+export const TypeVentilationMecaniqueEnum = buildEnum(
+	TYPES_VENTILATION_MECANIQUE,
+);
+
+export function isVentilationMecanique(
+	type: TypeVentilation,
+): type is TypeVentilationMecanique {
+	return TYPES_VENTILATION_MECANIQUE.includes(type as TypeVentilationMecanique);
+}

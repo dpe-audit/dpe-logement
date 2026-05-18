@@ -1,4 +1,5 @@
 export * from "./enveloppe.js";
+export * as Common from "./common.js";
 export * as Baie from "./baie.js";
 export * as Mur from "./mur.js";
 export * as PlancherBas from "./plancher-bas.js";

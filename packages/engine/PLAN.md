@@ -2,16 +2,12 @@
 
 ## Contexte
 
-Monorepo TypeScript. Le package `/engine` implémente la méthode de calcul 3CL-DPE.
+- Monorepo Typescript
+- `/packages/engine` — implémente la méthode de calcul 3CL-DPE. Consomme :
+  - `/packages/models` — contrat de données publiques DPE, strictement typé, partagé entre les couches
+  - `/packages/abaques` — repositories des abaques utilisés pour les valeurs conventionnelles
 
-Packages liés :
-- `/models` — contrat de données publiques DPE, strictement typé, partagé entre les couches
-- `/database` — modèles persistés, découplé de `/models`
-- `/engine` — consomme `/models` uniquement
-
----
-
-## Architecture du package
+## Organisation
 
 ```
 /engine
@@ -22,12 +18,6 @@ Packages liés :
 │   │   ├── engine.ts                   # classe Engine
 │   │   ├── cache.ts                    # EngineCache
 │   │   └── dag.ts                      # DependencyGraph
-│   ├── abaques/
-│   │   ├── index.ts                    # createAbaques() → Abaques
-│   │   ├── abaque.ts                   # interface Abaque<S> + classe abstraite Repository<S>
-│   │   └── repositories/
-│   │       ├── abaque-pont-thermique.ts
-│   │       └── ...                     # 40 repositories
 │   ├── utils/
 │   │   ├── energie.ts                  # fonctions pures génériques uniquement
 │   │   ├── climatique.ts
@@ -58,11 +48,11 @@ Packages liés :
 
 ## Terminologie
 
-| Terme | Type source | Description |
-|---|---|---|
-| `Diagnostic` | `@open-dpe-logement/models` | Données saisies par le diagnosticien — entrée du moteur |
+| Terme                | Type source                 | Description                                                            |
+| -------------------- | --------------------------- | ---------------------------------------------------------------------- |
+| `Diagnostic`         | `@open-dpe-logement/models` | Données saisies par le diagnosticien — entrée du moteur                |
 | `DiagnosticWithData` | `@open-dpe-logement/models` | `Diagnostic` enrichi des valeurs calculées (`data`) — sortie du moteur |
-| `DiagnosticScope` | `/engine` | Union des clés de collections itérables dans `Diagnostic` |
+| `DiagnosticScope`    | `/engine`                   | Union des clés de collections itérables dans `Diagnostic`              |
 
 Le terme `Dpe` n'est pas utilisé dans le code. L'entrée et la sortie du moteur sont
 respectivement `Diagnostic` et `DiagnosticWithData`.
@@ -273,55 +263,6 @@ class RegleValeurPontThermique
 }
 ```
 
----
-
-## Abaques (`src/abaques/`)
-
-```typescript
-// Interface publique — découple les règles des repositories
-export interface Abaque<S extends object> {
-  all(): S[]
-}
-
-// Classe abstraite — cache lazy uniquement, pas de Singleton
-// Limitation : load() est synchrone (lecture CSV bundlé).
-// Si un repository futur charge depuis une API, l'interface devra devenir async.
-export abstract class Repository<S extends object> implements Abaque<S> {
-  private cache: S[] | null = null
-
-  protected abstract load(): S[]
-
-  all(): S[] {
-    if (!this.cache) this.cache = this.load()
-    return this.cache
-  }
-}
-
-// Repository concret — uniquement load()
-export class AbaquePontThermique extends Repository<PontThermiqueRow> {
-  protected load(): PontThermiqueRow[] {
-    // Lecture synchrone du CSV bundlé depuis /engine/abaques/
-  }
-}
-
-// Conteneur — instanciation centralisée des 40 repositories
-export interface Abaques {
-  pontThermique:  AbaquePontThermique
-  facteurSolaire: AbaqueFacteurSolaire
-  // ...
-}
-
-export function createAbaques(): Abaques {
-  return {
-    pontThermique:  new AbaquePontThermique(),
-    facteurSolaire: new AbaqueFacteurSolaire(),
-    // ...
-  }
-}
-```
-
----
-
 ## Cache (`src/core/cache.ts`)
 
 ```typescript
@@ -454,30 +395,30 @@ export type {
 
 ## Conventions règles
 
-| Élément | Convention |
-|---|---|
-| Fichier | `regle-{scope}-{variable}.ts` |
-| Classe | `Regle{Scope}{Variable}` |
-| `id` | `{domaine}:{scope}:{variable}` |
-| `scope` | Valeur de type `DiagnosticScope` — `as const` obligatoire |
-| Fonctions pures | Nommées selon la variable calculée |
-| Imports autorisés | Fonctions pures colocalisées + `/utils` uniquement |
-| Abaque | Injecté via constructeur, typé `Abaque<S>` |
-| `RuleResultRegistry` | Alimenter pour chaque nouvelle règle avec id + type de retour |
+| Élément                | Convention                                                      |
+| ---------------------- | --------------------------------------------------------------- |
+| Fichier                | `regle-{scope}-{variable}.ts`                                   |
+| Classe                 | `Regle{Scope}{Variable}`                                        |
+| `id`                   | `{domaine}:{scope}:{variable}`                                  |
+| `scope`                | Valeur de type `DiagnosticScope` — `as const` obligatoire       |
+| Fonctions pures        | Nommées selon la variable calculée                              |
+| Imports autorisés      | Fonctions pures colocalisées + `/utils` uniquement              |
+| Abaque                 | Injecté via constructeur, typé `Abaque<S>`                      |
+| `RuleResultRegistry`   | Alimenter pour chaque nouvelle règle avec id + type de retour   |
 | Données intermédiaires | `apply` absent → cache moteur uniquement, jamais dans `/models` |
-| Données publiques | `apply` présent → hydrate la deep copy |
+| Données publiques      | `apply` présent → hydrate la deep copy                          |
 
 ---
 
 ## Conventions tests
 
-| Élément | Convention |
-|---|---|
-| Localisation | `tests/` miroir de `src/rules/` |
-| Fonctions pures | Testées directement, aucun mock |
-| `select()` strategy | Testée directement, aucun mock |
-| Abaque en test | `abaqueMock<S>(rows)` — stub sur `Abaque<S>`, jamais sur `Repository` |
-| `prepare` / `compute` | Non implémentés en phase 1 — `throw new Error("not implemented")` |
+| Élément               | Convention                                                            |
+| --------------------- | --------------------------------------------------------------------- |
+| Localisation          | `tests/` miroir de `src/rules/`                                       |
+| Fonctions pures       | Testées directement, aucun mock                                       |
+| `select()` strategy   | Testée directement, aucun mock                                        |
+| Abaque en test        | `abaqueMock<S>(rows)` — stub sur `Abaque<S>`, jamais sur `Repository` |
+| `prepare` / `compute` | Non implémentés en phase 1 — `throw new Error("not implemented")`     |
 
 ---
 

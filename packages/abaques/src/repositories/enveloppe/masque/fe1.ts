@@ -1,15 +1,16 @@
-import data from '../../../data/enveloppe/masque/fe1.js'
-import { type AbaqueQuery, filter } from '../../../filter.js'
+import data from "../../../data/enveloppe/masque/fe1.js";
+import { type AbaqueQuery, filter } from "../../../filter.js";
 
 export type Fe1Schema = {
-  type_masque: string
-  orientation_facade: string | null
-  'avancee_masque/gte': number | null
-  'avancee_masque/le': number | null
-  avancee_defaut: number | null
-  fe1: number
-  tv_coef_masque_proche_id: number
-}
+	type_masque: string;
+	orientation_facade: string | null;
+	"avancee_masque/gte": number | null;
+	"avancee_masque/le": number | null;
+	avancee_defaut: number | null;
+	fe1: number;
+	tv_coef_masque_proche_id: number;
+};
 
-export const load = (): Fe1Schema[] => data as Fe1Schema[]
-export const search = (query: AbaqueQuery, rows: Fe1Schema[]) => filter(query, rows)
+export const load = (): Fe1Schema[] => data as Fe1Schema[];
+export const search = (query: AbaqueQuery, rows: Fe1Schema[]): Fe1Schema[] =>
+	filter(query, rows);
