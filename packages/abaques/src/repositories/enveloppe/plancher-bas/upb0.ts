@@ -1,5 +1,5 @@
-import data from "../../../data/enveloppe/plancher-bas/upb0.js";
-import { type AbaqueQuery, filter } from "../../../filter.js";
+import data from "#data/enveloppe/plancher-bas/upb0.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type Upb0Schema = {
 	type_structure: string;

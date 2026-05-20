@@ -26,7 +26,48 @@ type GenerateurBase = {
 	energie: EnergieEcs | null;
 	annee_installation: number | null;
 	position: Position;
+	stockage: Stockage | null;
 	signaletique: Signaletique;
+};
+
+export type Position = {
+	position_chauffe_eau: PositionChauffeEau | null;
+	generateur_collectif: boolean;
+	generateur_multi_batiment: boolean;
+	position_volume_chauffe: boolean;
+	generateur_mixte_id: string | null;
+	reseau_chaleur_id: string | null;
+};
+
+export type Signaletique = {
+	pn: number | null;
+	cop: number | null;
+	label: Label | null;
+	mode_combustion: ModeCombustion | null;
+	presence_ventouse: boolean | null;
+	pveilleuse: number | null;
+	qp0: number | null;
+	rpn: number | null;
+};
+
+export type GenerateurData = {
+	rdim: number;
+	pn: number;
+	pdim: number;
+	pecs: number;
+	rg: number;
+	cop: number | null;
+	rpn: number | null;
+	qp0: number | null;
+	pveilleuse: number | null;
+	pertes: Pertes;
+	consommations: Consommations;
+};
+
+export type Stockage = {
+	volume: number;
+	type: TypeStockage;
+	position_volume_chauffe: boolean;
 };
 
 export type GenerateurCombustion = GenerateurBase & {
@@ -114,6 +155,7 @@ export type ChaudiereElectrique = GenerateurElectrique & {
 export type ChauffeEauElectrique = GenerateurElectrique & {
 	type: typeof TypeGenerateurEnum.chauffe_eau;
 	position: {
+		position_chauffe_eau: PositionChauffeEau;
 		generateur_collectif: false;
 		generateur_multi_batiment: false;
 		generateur_mixte_id: null;
@@ -200,41 +242,6 @@ export type GenerateurCollectifInconnu = GenerateurBase & {
 	};
 };
 
-export type Position = {
-	position_chauffe_eau: PositionChauffeEau | null;
-	generateur_collectif: boolean;
-	generateur_multi_batiment: boolean;
-	position_volume_chauffe: boolean;
-	generateur_mixte_id: string | null;
-	reseau_chaleur_id: string | null;
-};
-
-export type Signaletique = {
-	volume_stockage: number | null;
-	pn: number | null;
-	cop: number | null;
-	label: Label | null;
-	mode_combustion: ModeCombustion | null;
-	presence_ventouse: boolean | null;
-	pveilleuse: number | null;
-	qp0: number | null;
-	rpn: number | null;
-};
-
-export type GenerateurData = {
-	rdim: number;
-	pn: number;
-	pdim: number;
-	pecs: number;
-	rg: number;
-	cop: number | null;
-	rpn: number | null;
-	qp0: number | null;
-	pveilleuse: number | null;
-	pertes: Pertes;
-	consommations: Consommations;
-};
-
 export const TYPES_GENERATEUR = [
 	"chauffe_eau",
 	"chaudiere",
@@ -284,3 +291,7 @@ export const MODES_COMBUSTION = [
 ] as const;
 export type ModeCombustion = (typeof MODES_COMBUSTION)[number];
 export const ModeCombustionEnum = buildEnum(MODES_COMBUSTION);
+
+export const TYPES_STOCKAGE = ["integre", "independant"] as const;
+export type TypeStockage = (typeof TYPES_STOCKAGE)[number];
+export const TypeStockageEnum = buildEnum(TYPES_STOCKAGE);

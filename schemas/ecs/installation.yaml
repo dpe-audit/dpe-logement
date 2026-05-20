@@ -10,52 +10,13 @@ properties:
     $ref: /common/primitives#/$defs/description
   surface:
     $ref: /common/primitives#/$defs/surface
-  generateurs:
-    title: Générateurs associés
+  systemes:
+    title: Systèmes associés
     type: array
     minItems: 1
+    maxItems: 2
     items:
       $ref: /common/primitives#/$defs/id
-  reseau:
-    title: Réseau de distribution d'eau chaude sanitaire
-    type: object
-    additionalProperties: false
-    properties:
-      alimentation_contigue:
-        title: Alimentation contigüe
-        type: boolean
-      niveaux_desservis:
-        title: Nombre de niveaux desservis
-        type: integer
-        minimum: 1
-      isolation:
-        title: Isolation du réseau
-        type: [boolean, "null"]
-      bouclage:
-        title: Type de bouclage
-        type: [string, "null"]
-        x-enum: ecs:bouclage-reseau
-        enum: [non_boucle, boucle, trace, null]
-    required:
-      - alimentation_contigue
-      - niveaux_desservis
-      - isolation
-      - bouclage
-  stockage:
-    title: Stockage indépendant
-    type: [object, "null"]
-    additionalProperties: false
-    properties:
-      volume:
-        title: Volume de stockage en l
-        type: [number, "null"]
-        minimum: 0
-      position_volume_chauffe:
-        title: Position à l'intérieur volume chauffé
-        type: boolean
-    required:
-      - volume
-      - position_volume_chauffe
   solaire_thermique:
     title: Solaire thermique
     type: [object, "null"]

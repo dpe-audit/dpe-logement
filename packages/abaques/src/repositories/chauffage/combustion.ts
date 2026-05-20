@@ -1,5 +1,5 @@
-import data from "../../data/chauffage/combustion.js";
-import { type AbaqueQuery, filter } from "../../filter.js";
+import data from "#data/chauffage/combustion.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type CombustionSchema = {
 	type_generateur: string;

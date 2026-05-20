@@ -1,5 +1,5 @@
-import data from "../../data/chauffage/rd.js";
-import { type AbaqueQuery, filter } from "../../filter.js";
+import data from "#data/chauffage/rd.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type RdSchema = {
 	type_distribution: string;

@@ -1,5 +1,5 @@
-import data from "../../data/performance/fcep.js";
-import { type AbaqueQuery, filter } from "../../filter.js";
+import data from "#data/performance/fcep.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type FcepSchema = {
 	energie: string;

@@ -1,15 +1,17 @@
 import { Batiment, Common, Ventilation } from "@open-dpe-logement/models";
 import { abaques } from "@open-dpe-logement/abaques";
-import toCEP from "../../../utils/to-cep";
-import toEGES from "../../../utils/to-eges";
+import toCEP from "#utils/to-cep.js";
+import toEGES from "#utils/to-eges.js";
+import { ValeurForfaitaireError } from "#utils/errors.js";
+import * as installation from "#rules/ventilation/installation/functions.js";
 
 /**
- * @params props.rdim - Ratio de dimensionnement de l'installation de ventilation
- * @params props.pvent_moy - Puissance moyenne de l'auxiliaire de ventilation en W
- * @params props.rut - Ratio du temps d'utilisation du mode mécanique de l'auxiliaire de ventilation
+ * @param props.rdim - {@linkcode installation.calcule_rdim}
+ * @param props.pvent_moy - {@linkcode calcule_pvent_moy}
+ * @param props.rut - {@linkcode calcule_rut}
  * @returns Consommation d'énergie finale de l'auxiliaire de ventilation en kWh/an
  */
-export function cef(props: {
+export function calcule_cef(props: {
 	rdim: number;
 	pvent_moy: number;
 	rut: number;
@@ -19,128 +21,108 @@ export function cef(props: {
 }
 
 /**
- * @params props.cef - Consommation d'énergie finale de l'auxiliaire de ventilation en kWh/an
- * @return Consommation d'énergie primaire de l'auxiliaire de ventilation en kWh/an
+ * @param props.cef_auxiliaire - {@linkcode calcule_cef}
+ * @return Consommation d'énergie primaire de l'auxiliaire de ventilation en kWh
  */
-export function cep(props: { cef: number }): number {
-	const { cef } = props;
+export function calcule_cep(props: { cef_auxiliaire: number }): number {
+	const { cef_auxiliaire } = props;
 	const energie = Common.EnergieEnum.electricite;
-	return toCEP({ cef, energie });
+	return toCEP({ cef: cef_auxiliaire, energie });
 }
 
 /**
- * @params props.cef - Consommation d'énergie finale de l'auxiliaire de ventilation en kWh/an
- * @return Emissions de gaz à effet de serre de l'auxiliaire de ventilation en kgCO2eq/an
+ * @param props.cef_auxiliaire - {@linkcode calcule_cef}
+ * @return Emissions de gaz à effet de serre de l'auxiliaire de ventilation en kgCO2eq
  */
-export function eges(props: { cef: number }): number {
-	const { cef } = props;
+export function calcule_eges(props: { cef_auxiliaire: number }): number {
+	const { cef_auxiliaire } = props;
 	const energie = Common.EnergieEnum.electricite;
 	const usage = Common.UsageEnum.auxiliaire;
-	return toEGES({ cef, energie, usage });
+	return toEGES({ cef: cef_auxiliaire, energie, usage });
 }
 
 /**
- * @params props.type_batiment - Type de bâtiment
- * @params props.type_installation - Type d'installation de ventilation
- * @params props.annee_installation - Année d'installation
- * @params props.surface_installation - Surface de l'installation de ventilation en m²
- * @params props.qvarep_conv - Débit volumique conventionnel à reprendre en m3/(h.m²)
- *
- * @oneof
- * - pvent_moy_maison -> Maison individuelle
- * - pvent_moy_immeuble -> Immeuble
- *
+ * @param props.type_batiment - Type de bâtiment
+ * @param props.type_ventilation - {@linkcode installation.set_type_ventilation}
+ * @param props.annee_installation - {@linkcode installation.set_annee_installation}
+ * @param props.surface_installation - Surface de l'installation de ventilation en m²
+ * @param props.qvarep_conv - {@linkcode installation.qvarep_conv}
  * @returns Puissance moyenne de l'auxiliaire de ventilation en W
  */
-export function pvent_moy(props: {
+export function calcule_pvent_moy(props: {
 	type_batiment: Batiment.TypeBatiment;
-	type_installation: Ventilation.Installation.TypeVentilation;
+	type_ventilation: Ventilation.Installation.TypeVentilation;
 	annee_installation: number | null;
 	surface_installation: number;
 	qvarep_conv: number;
 }): number {
-	const { type_batiment, type_installation } = props;
+	const { type_batiment, type_ventilation } = props;
 
 	// Cas des ventilations naturelles
-	if (Ventilation.Installation.isVentilationNaturelle(type_installation)) {
+	if (Ventilation.Installation.isVentilationNaturelle(type_ventilation)) {
 		return 0;
 	}
 	// Cas des ventilations mécaniques
 	switch (type_batiment) {
 		case Batiment.TypeBatimentEnum.maison:
-			return pvent_moy_maison(props);
+			return calcule_pvent_moy_maison(props);
 		case Batiment.TypeBatimentEnum.immeuble:
-			return pvent_moy_immeuble(props);
+			return calcule_pvent_moy_immeuble(props);
 	}
 }
 
 /**
- * @params props.type_installation - Type d'installation de ventilation
- * @params props.annee_installation - Année d'installation
- * @throws {Error} Aucune correspondance trouvée dans l'abaque ventilation.pventMoy
+ * @param props.type_ventilation - {@linkcode installation.set_type_ventilation}
+ * @param props.annee_installation - {@linkcode installation.set_annee_installation}
+ * @see abaques.ventilation.pventMoy
+ * @throws {ValeurForfaitaireError}
  * @returns Puissance moyenne de l'auxiliaire de ventilation pour une maison individuelle en W
  */
-export function pvent_moy_maison(props: {
-	type_installation: Ventilation.Installation.TypeVentilation;
+export function calcule_pvent_moy_maison(props: {
+	type_ventilation: Ventilation.Installation.TypeVentilation;
 	annee_installation: number | null;
 }): number {
-	const { type_installation, annee_installation } = props;
 	const abaque = abaques.ventilation.pventMoy;
-	const query = { type_installation, annee_installation };
-	const match = abaque.search(query, abaque.load()).at(0);
-
-	if (!match) {
-		const message = `Aucune correspondance trouvée pour la requête ${JSON.stringify(query)} dans l'abaque ventilation.pventMoy`;
-		throw new Error(message);
-	}
+	const match = abaque.search(props, abaque.load()).at(0);
+	if (!match) throw new ValeurForfaitaireError(props);
 	return match.pvent_moy;
 }
 
 /**
- * @params props.type_installation - Type d'installation de ventilation
- * @params props.annee_installation - Année d'installation
- * @params props.surface_installation - Surface de l'installation de ventilation en m²
- * @params props.qvarep_conv - Débit volumique conventionnel à reprendre en m3/(h.m²)
- * @throws {Error} Aucune correspondance trouvée dans l'abaque ventilation.pvent
+ * @param props.type_ventilation - {@linkcode installation.set_type_ventilation}
+ * @param props.annee_installation - {@linkcode installation.set_annee_installation}
+ * @param props.surface_installation - Surface de l'installation de ventilation en m²
+ * @param props.qvarep_conv - {@linkcode installation.calcule_debits}
+ * @see abaques.ventilation.pvent
+ * @throws {ValeurForfaitaireError}
  * @returns Puissance moyenne de l'auxiliaire de ventilation pour un immeuble en W
  */
-export function pvent_moy_immeuble(props: {
-	type_installation: Ventilation.Installation.TypeVentilation;
+export function calcule_pvent_moy_immeuble(props: {
+	type_ventilation: Ventilation.Installation.TypeVentilation;
 	annee_installation: number | null;
 	surface_installation: number;
 	qvarep_conv: number;
 }): number {
-	const {
-		type_installation,
-		annee_installation,
-		surface_installation,
-		qvarep_conv,
-	} = props;
+	const { surface_installation, qvarep_conv, ...query } = props;
 	const abaque = abaques.ventilation.pvent;
-	const query = { type_installation, annee_installation };
 	const match = abaque.search(query, abaque.load()).at(0);
-
-	if (!match) {
-		const message = `Aucune valeur forfaitaire trouvée pour : ${JSON.stringify(props)}`;
-		throw new Error(message);
-	}
-	const pvent = match.pvent;
-	return pvent * qvarep_conv * surface_installation;
+	if (!match) throw new ValeurForfaitaireError(props);
+	return match.pvent * qvarep_conv * surface_installation;
 }
 
 /**
- * @params props.type_installation - Type d'installation de ventilation
- * @params props.generateur_collectif - Présence d'un générateur collectif (ex : VMC collective)
+ * @param props.type_ventilation - {@linkcode installation.set_type_ventilation}
+ * @param props.generateur_collectif - Présence d'un générateur collectif (ex : VMC collective)
  * @returns Ratio du temps d'utilisation du mode mécanique de l'auxiliaire de ventilation
  */
-export function rut(props: {
-	type_installation: Ventilation.Installation.TypeVentilation;
+export function calcule_rut(props: {
+	type_ventilation: Ventilation.Installation.TypeVentilation;
 	generateur_collectif: boolean | null;
 }): number {
-	const { type_installation, generateur_collectif } = props;
+	const { type_ventilation, generateur_collectif } = props;
 
 	// Cas des ventilations naturelles
-	if (Ventilation.Installation.isVentilationNaturelle(type_installation)) {
+	if (Ventilation.Installation.isVentilationNaturelle(type_ventilation)) {
 		return 0;
 	}
 	const scope: Ventilation.Installation.TypeVentilation[] = [
@@ -149,7 +131,7 @@ export function rut(props: {
 			.ventilation_hybride_entrees_air_hygroreglables,
 	];
 	// Cas des ventilations mécaniques hybrides
-	if (false === scope.includes(type_installation)) return 1;
+	if (false === scope.includes(type_ventilation)) return 1;
 	// Autres cas de ventilations mécaniques
 	return generateur_collectif ? 0.167 : 0.083;
 }

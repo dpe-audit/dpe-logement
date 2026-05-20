@@ -1,5 +1,5 @@
 import type { Consommations, Pertes, UUID } from "../common/common.js";
-import { buildEnum, type NonEmptyArray } from "../utils.js";
+import { buildEnum } from "../utils.js";
 
 /**
  * @see https://schemas.open-dpe.fr/ecs/installation
@@ -8,9 +8,7 @@ export type Installation = {
 	id: UUID;
 	description: string;
 	surface: number;
-	generateurs: NonEmptyArray<UUID>;
-	reseau: Reseau;
-	stockage: Stockage | null;
+	systemes: [UUID] | [UUID, UUID];
 	solaire_thermique: SolaireThermique | null;
 };
 
@@ -31,28 +29,12 @@ export type InstallationData = {
 	consommations: Consommations;
 };
 
-export type Reseau = {
-	alimentation_contigue: boolean;
-	niveaux_desservis: number;
-	isolation: boolean | null;
-	bouclage: Bouclage | null;
-};
-
-export type Stockage = {
-	volume: number | null;
-	position_volume_chauffe: boolean;
-};
-
 export type SolaireThermique = {
-	usage: Usage;
+	usage: UsageSolaire;
 	annee_installation: number | null;
 	fecs: number | null;
 };
 
-export const BOUCLAGES = ["non_boucle", "boucle", "trace"] as const;
-export type Bouclage = (typeof BOUCLAGES)[number];
-export const BouclageEnum = buildEnum(BOUCLAGES);
-
 export const USAGES_SOLAIRE = ["ecs", "chauffage_ecs"] as const;
-export type Usage = (typeof USAGES_SOLAIRE)[number];
-export const UsageEnum = buildEnum(USAGES_SOLAIRE);
+export type UsageSolaire = (typeof USAGES_SOLAIRE)[number];
+export const UsageSolaireEnum = buildEnum(USAGES_SOLAIRE);

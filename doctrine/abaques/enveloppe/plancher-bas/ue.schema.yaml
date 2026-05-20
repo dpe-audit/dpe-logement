@@ -18,11 +18,11 @@ fields:
   - name: 2s/p
     title: Ratio 2s/p du plancher bas
     type: number
-    required: false
+    required: true
   - name: u
     title: Coefficient de transmission thermique du plancher bas non isolé en W/(m²·K)
     type: number
-    required: false
+    required: true
   - name: ue
     title: Coefficient de transmission thermique du plancher bas en W/(m²·K)
     type: number

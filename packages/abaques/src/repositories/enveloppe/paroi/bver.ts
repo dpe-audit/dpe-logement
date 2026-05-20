@@ -1,5 +1,5 @@
-import data from "../../../data/enveloppe/paroi/bver.js";
-import { type AbaqueQuery, filter } from "../../../filter.js";
+import data from "#data/enveloppe/paroi/bver.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type BverSchema = {
 	zone_climatique: string;

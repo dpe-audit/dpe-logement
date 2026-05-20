@@ -1,5 +1,5 @@
-import data from "../../data/performance/feges.js";
-import { type AbaqueQuery, filter } from "../../filter.js";
+import data from "#data/performance/feges.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type FegesSchema = {
 	energie: string;

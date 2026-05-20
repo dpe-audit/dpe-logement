@@ -1,5 +1,6 @@
 id: ecs:cop
 name: cop
+title: Coefficient de performance énergétique des chauffe-eau thermodynamiques
 fields:
   - name: zone_climatique
     title: Zone climatique
@@ -8,16 +9,16 @@ fields:
     x-enum: zone-climatique
     required: true
   - name: type_generateur
-    title: Type de générateur
+    title: Type de générateur d'eau chaude sanitaire
     type: string
     format: enums
     x-enum: ecs:type-generateur
     required: true
-  - name: annee_installation_generateur/gte
+  - name: annee_installation/gte
     title: Année d'installation du générateur (supérieure ou égale à)
     type: integer
     required: false
-  - name: annee_installation_generateur/lte
+  - name: annee_installation/lte
     title: Année d'installation du générateur (inférieure ou égale à)
     type: integer
     required: false

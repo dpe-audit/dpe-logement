@@ -7,7 +7,7 @@ fields:
     format: enums
     x-enum: enveloppe:baie:type
     required: true
-  - name: soubassement
+  - name: presence_soubassement
     title: Présence d'un soubassement
     type: boolean
     required: false
@@ -17,7 +17,7 @@ fields:
     format: enums
     x-enum: enveloppe:baie:materiau
     required: false
-  - name: rupteur_pont_thermique
+  - name: presence_rupteur_pont_thermique
     title: Présence d'un rupteur de pont thermique
     type: boolean
     required: false

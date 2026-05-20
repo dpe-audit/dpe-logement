@@ -1,12 +1,7 @@
 id: enveloppe:masque:omb
 name: omb
+description: Ombrage des masques lointains non homogènes
 fields:
-  - name: type_masque
-    title: Type de masque
-    type: string
-    format: enums
-    x-enum: enveloppe:masque:type
-    required: true
   - name: orientation_facade
     title: Orientation de la façade
     type: string

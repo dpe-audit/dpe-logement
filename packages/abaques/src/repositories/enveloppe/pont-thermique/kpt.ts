@@ -1,5 +1,5 @@
-import data from "../../../data/enveloppe/pont-thermique/kpt.js";
-import { type AbaqueQuery, filter } from "../../../filter.js";
+import data from "#data/enveloppe/pont-thermique/kpt.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type KptSchema = {
 	type_liaison: string;
@@ -16,5 +16,6 @@ export type KptSchema = {
 };
 
 export const load = (): KptSchema[] => data as KptSchema[];
+
 export const search = (query: AbaqueQuery, rows: KptSchema[]): KptSchema[] =>
 	filter(query, rows);

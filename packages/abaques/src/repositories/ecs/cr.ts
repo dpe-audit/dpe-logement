@@ -1,5 +1,5 @@
-import data from "../../data/ecs/cr.js";
-import { type AbaqueQuery, filter } from "../../filter.js";
+import data from "#data/ecs/cr.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type CrSchema = {
 	position_chauffe_eau: string;

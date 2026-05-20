@@ -1,5 +1,5 @@
-import data from "../../data/ventilation/pvent_moy.js";
-import { type AbaqueQuery, filter } from "../../filter.js";
+import data from "#data/ventilation/pvent_moy.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type PventMoySchema = {
 	type_ventilation: string;
@@ -9,6 +9,7 @@ export type PventMoySchema = {
 };
 
 export const load = (): PventMoySchema[] => data as PventMoySchema[];
+
 export const search = (
 	query: AbaqueQuery,
 	rows: PventMoySchema[],

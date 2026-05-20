@@ -1,5 +1,6 @@
 id: ecs:combustion
 name: combustion
+title: Performances des générateurs d'eau chaude sanitaire à combustion
 fields:
   - name: type_generateur
     title: Type de générateur
@@ -27,11 +28,11 @@ fields:
     title: Volume de stockage (égal à) en litres
     type: number
     required: false
-  - name: annee_installation_generateur/lte
+  - name: annee_installation/lte
     title: Année d'installation du générateur (inférieure ou égale à)
     type: integer
     required: false
-  - name: annee_installation_generateur/gte
+  - name: annee_installation/gte
     title: Année d'installation du générateur (supérieure ou égale à)
     type: integer
     required: false
@@ -52,7 +53,7 @@ fields:
     type: string
     required: true
   - name: qp0
-    title: Débit de déperditions à l'arrêt en W (expression mathématique)
+    title: Pertes à l'arrêt en W (expression mathématique)
     type: string
     required: true
   - name: pveilleuse

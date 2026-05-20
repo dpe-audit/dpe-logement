@@ -1,5 +1,5 @@
-import data from "../../../data/enveloppe/porte/uporte.js";
-import { type AbaqueQuery, filter } from "../../../filter.js";
+import data from "#data/enveloppe/porte/uporte.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type UporteSchema = {
 	presence_sas: boolean | null;

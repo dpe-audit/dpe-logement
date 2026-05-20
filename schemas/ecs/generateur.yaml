@@ -93,15 +93,32 @@ properties:
         required:
           - generateur_collectif
           - position_volume_chauffe
+  stockage:
+    title: Stockage
+    type: [object, "null"]
+    additionalProperties: false
+    properties:
+      type:
+        title: Type de stockage
+        type: [string, "null"]
+        x-enum: ecs:type-stockage
+        enum: [integre, independant, null]
+      volume:
+        title: Volume de stockage en l
+        type: number
+        exclusiveMinimum: 0
+      position_volume_chauffe:
+        title: Position à l'intérieur volume chauffé
+        type: boolean
+    required:
+      - type
+      - volume
+      - position_volume_chauffe
   signaletique:
     title: Fiche signalétique
     type: object
     unevaluatedProperties: false
     properties:
-      volume_stockage:
-        title: Volume de stockage en litres
-        type: [number, "null"]
-        minimum: 0
       pn:
         title: Puissance nominale en kW
         type: [number, "null"]
@@ -189,6 +206,15 @@ properties:
         $ref: /common/components#/$defs/pertes
       consommations:
         $ref: /common/components#/$defs/consommations
+    required:
+      - pn
+      - pdim
+      - pecs
+      - rg
+      - cop
+      - rpn
+      - qp0
+      - pveilleuse
 required:
   - id
   - description
@@ -196,6 +222,7 @@ required:
   - energie
   - annee_installation
   - position
+  - stockage
   - signaletique
 discriminator:
   propertyName: type
@@ -341,12 +368,16 @@ oneOf:
           position:
             type: object
             properties:
+              position_chauffe_eau:
+                type: string
               generateur_collectif:
                 const: false
               generateur_multi_batiment:
                 const: false
               generateur_mixte_id:
                 const: null
+          required:
+            - position_chauffe_eau
         required:
           - type
           - position
@@ -477,8 +508,6 @@ oneOf:
       signaletique:
         type: object
         properties:
-          volume_stockage:
-            const: null
           pn:
             const: null
           cop:

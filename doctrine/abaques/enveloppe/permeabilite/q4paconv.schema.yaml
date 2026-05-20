@@ -23,7 +23,7 @@ fields:
     title: Isolation des murs et plafonds
     type: boolean
     required: false
-  - name: q4pa_conv
+  - name: q4paconv
     title: Débit d'air conventionnel par infiltration sous 4 Pa en m³/(h·m²)
     type: number
     required: true

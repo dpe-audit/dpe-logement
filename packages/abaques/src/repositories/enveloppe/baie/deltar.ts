@@ -1,5 +1,5 @@
-import data from "../../../data/enveloppe/baie/deltar.js";
-import { type AbaqueQuery, filter } from "../../../filter.js";
+import data from "#data/enveloppe/baie/deltar.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type DeltarSchema = {
 	type_fermeture: string;
@@ -8,6 +8,7 @@ export type DeltarSchema = {
 };
 
 export const load = (): DeltarSchema[] => data as DeltarSchema[];
+
 export const search = (
 	query: AbaqueQuery,
 	rows: DeltarSchema[],

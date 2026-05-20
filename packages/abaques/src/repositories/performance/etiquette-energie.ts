@@ -1,5 +1,5 @@
-import data from "../../data/performance/etiquette-energie.js";
-import { type AbaqueQuery, filter } from "../../filter.js";
+import data from "#data/performance/etiquette-energie.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type EtiquetteEnergieSchema = {
 	zone_climatique: string;

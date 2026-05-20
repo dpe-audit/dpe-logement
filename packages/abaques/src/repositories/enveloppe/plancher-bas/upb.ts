@@ -1,5 +1,5 @@
-import data from "../../../data/enveloppe/plancher-bas/upb.js";
-import { type AbaqueQuery, filter } from "../../../filter.js";
+import data from "#data/enveloppe/plancher-bas/upb.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type UpbSchema = {
 	zone_climatique: string;

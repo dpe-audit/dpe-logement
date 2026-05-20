@@ -1,5 +1,5 @@
-import data from "../../data/climat/tbase.js";
-import { type AbaqueQuery, filter } from "../../filter.js";
+import data from "#data/climat/tbase.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type TbaseSchema = {
 	zone_climatique: string;

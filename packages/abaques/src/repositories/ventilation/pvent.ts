@@ -1,5 +1,5 @@
-import data from "../../data/ventilation/pvent.js";
-import { type AbaqueQuery, filter } from "../../filter.js";
+import data from "#data/ventilation/pvent.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type PventSchema = {
 	type_ventilation: string;

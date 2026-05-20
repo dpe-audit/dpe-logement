@@ -1,5 +1,6 @@
 id: enveloppe:masque:fe1
-name: fe1
+name: 
+description: Facteur d'ensoleillement des masques proches
 fields:
   - name: type_masque
     title: Type de masque

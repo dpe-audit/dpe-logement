@@ -1,5 +1,5 @@
-import data from "../../data/chauffage/tfonc100.js";
-import { type AbaqueQuery, filter } from "../../filter.js";
+import data from "#data/chauffage/tfonc100.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type Tfonc100Schema = {
 	temperature_distribution: string;

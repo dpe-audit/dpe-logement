@@ -1,5 +1,5 @@
-import data from "../../../data/enveloppe/masque/fe1.js";
-import { type AbaqueQuery, filter } from "../../../filter.js";
+import data from "#data/enveloppe/masque/fe1.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type Fe1Schema = {
 	type_masque: string;

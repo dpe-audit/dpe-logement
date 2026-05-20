@@ -1,5 +1,5 @@
-import data from "../../data/chauffage/pn.js";
-import { type AbaqueQuery, filter } from "../../filter.js";
+import data from "#data/chauffage/pn.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type PnSchema = {
 	position_chaudiere: string;

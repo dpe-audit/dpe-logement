@@ -1,5 +1,5 @@
-import data from "../../data/climat/zone-climatique.js";
-import { type AbaqueQuery, filter } from "../../filter.js";
+import data from "#data/climat/zone-climatique.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type ZoneClimatiqueSchema = {
 	code_departement: string;

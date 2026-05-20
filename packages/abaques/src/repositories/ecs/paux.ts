@@ -1,12 +1,12 @@
-import data from "../../data/ecs/paux.js";
-import { type AbaqueQuery, filter } from "../../filter.js";
+import data from "#data/ecs/paux.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type EcsPauxSchema = {
 	type_generateur: string;
 	energie_generateur: string | null;
 	presence_ventouse: boolean | null;
-	G: number | null;
-	H: number | null;
+	G: number;
+	H: number;
 	paux: string;
 	pn_max: number | null;
 };

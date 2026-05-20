@@ -1,5 +1,5 @@
-import data from "../../../data/enveloppe/mur/u0-doublage.js";
-import { type AbaqueQuery, filter } from "../../../filter.js";
+import data from "#data/enveloppe/mur/u0-doublage.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type U0DoublageSchema = {
 	type_doublage: string;

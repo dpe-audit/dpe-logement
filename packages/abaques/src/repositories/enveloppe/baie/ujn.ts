@@ -1,5 +1,5 @@
-import data from "../../../data/enveloppe/baie/ujn.js";
-import { type AbaqueQuery, filter } from "../../../filter.js";
+import data from "#data/enveloppe/baie/ujn.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type UjnSchema = {
 	deltar: number;

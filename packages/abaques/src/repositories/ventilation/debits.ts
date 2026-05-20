@@ -1,5 +1,5 @@
-import data from "../../data/ventilation/debits.js";
-import { type AbaqueQuery, filter } from "../../filter.js";
+import data from "#data/ventilation/debits.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type DebitsSchema = {
 	type_ventilation: string;
@@ -13,6 +13,7 @@ export type DebitsSchema = {
 };
 
 export const load = (): DebitsSchema[] => data as DebitsSchema[];
+
 export const search = (
 	query: AbaqueQuery,
 	rows: DebitsSchema[],

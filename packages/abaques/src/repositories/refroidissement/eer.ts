@@ -1,5 +1,5 @@
-import data from "../../data/refroidissement/eer.js";
-import { type AbaqueQuery, filter } from "../../filter.js";
+import data from "#data/refroidissement/eer.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type EerSchema = {
 	zone_climatique: string;

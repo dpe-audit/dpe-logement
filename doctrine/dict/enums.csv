@@ -437,3 +437,5 @@ mois;09;Septembre;mois
 mois;10;Octobre;mois
 mois;11;Novembre;mois
 mois;12;Décembre;mois
+ecs:type-stockage;integre;Stockage intégré à la production;ecs:type-stockage
+ecs:type-stockage;independant;Stockage indépendant de la production;ecs:type-stockage

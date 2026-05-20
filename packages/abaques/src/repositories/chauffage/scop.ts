@@ -1,5 +1,5 @@
-import data from "../../data/chauffage/scop.js";
-import { type AbaqueQuery, filter } from "../../filter.js";
+import data from "#data/chauffage/scop.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type ScopSchema = {
 	zone_climatique: string;

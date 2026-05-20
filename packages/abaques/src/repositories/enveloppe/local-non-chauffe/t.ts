@@ -1,5 +1,5 @@
-import data from "../../../data/enveloppe/local-non-chauffe/t.js";
-import { type AbaqueQuery, filter } from "../../../filter.js";
+import data from "#data/enveloppe/local-non-chauffe/t.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type TSchema = {
 	type_vitrage: string;

@@ -1,5 +1,5 @@
-import data from "../../../data/enveloppe/local-non-chauffe/b.js";
-import { type AbaqueQuery, filter } from "../../../filter.js";
+import data from "#data/enveloppe/local-non-chauffe/b.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type LncBSchema = {
 	uvue: number;

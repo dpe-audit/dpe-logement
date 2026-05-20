@@ -1,5 +1,5 @@
-import data from "../../data/chauffage/paux.js";
-import { type AbaqueQuery, filter } from "../../filter.js";
+import data from "#data/chauffage/paux.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type PauxSchema = {
 	type_generateur: string;

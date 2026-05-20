@@ -1,5 +1,5 @@
-import data from "../../data/climat/nj.js";
-import { type AbaqueQuery, filter } from "../../filter.js";
+import data from "#data/climat/nj.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type NjSchema = {
 	mois: string;

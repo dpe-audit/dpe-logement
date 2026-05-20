@@ -1,4 +1,4 @@
-﻿type_baie;soubassement;materiau;rupteur_pont_thermique;ug;uw;tv_uw_id
+﻿type_baie;presence_soubassement;materiau;presence_rupteur_pont_thermique;ug;uw;tv_uw_id
 brique_verre_pleine;;;;;3.5;1
 brique_verre_creuse;;;;;2;2
 polycarbonate;;;;;3;3

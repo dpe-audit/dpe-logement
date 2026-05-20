@@ -83,15 +83,55 @@ properties:
         $ref: /common/primitives#/$defs/inclinaison
       orientation:
         $ref: /enveloppe/common/primitives#/$defs/orientation
+      masques:
+        title: Masques
+        type: array
+        items:
+          $ref: /enveloppe/masque
     required:
       - paroi_id
       - baie_id
       - type_pose
       - inclinaison
       - orientation
+      - masques
     allOf:
       - $ref: /enveloppe/common/components#/$defs/position
     oneOf:
+      - title: Nord ou Sud
+        type: object
+        properties:
+          inclinaison:
+            exclusiveMinimum: 0
+          orientation:
+            enum: [nord, sud]
+          masques:
+            type: array
+            items:
+              type: object
+              properties:
+                secteur:
+                  enum: [lateral, central, null]
+        required:
+          - inclinaison
+          - orientation
+      - title: Est ou Ouest
+        type: object
+        properties:
+          inclinaison:
+            exclusiveMinimum: 0
+          orientation:
+            enum: [est, ouest]
+          masques:
+            type: array
+            items:
+              type: object
+              properties:
+                secteur:
+                  enum: [lateral, lateral_sud, central, central_sud, null]
+        required:
+          - inclinaison
+          - orientation
       - title: Baie horizontale
         type: object
         properties:
@@ -99,16 +139,6 @@ properties:
             const: 0
           orientation:
             const: horizontale
-        required:
-          - inclinaison
-          - orientation
-      - title: Autres cas
-        type: object
-        properties:
-          inclinaison:
-            exclusiveMinimum: 0
-          orientation:
-            enum: [nord, est, sud, ouest]
         required:
           - inclinaison
           - orientation
@@ -219,11 +249,6 @@ properties:
     required:
       - type
       - epaisseur_lame
-  masques:
-    title: Liste des masques
-    type: array
-    items:
-      $ref: /common/primitives#/$defs/id
   data:
     title: Données calculées
     description: >
@@ -264,7 +289,6 @@ required:
   - type_fermeture
   - position
   - vitrage
-  - masques
 discriminator:
   propertyName: type
 oneOf:

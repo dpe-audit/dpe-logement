@@ -1,27 +1,30 @@
+import { ValeurForfaitaireError } from "#utils/errors.js";
+import { createFrom, containsAllMois, mapParMois } from "#utils/mois.js";
 import { abaques } from "@open-dpe-logement/abaques";
-import { Common } from "@open-dpe-logement/models";
+import { Batiment, Common } from "@open-dpe-logement/models";
+import * as climat from "#rules/climat/functions.js";
 
 /**
- * @params props.surface - Surface du panneau photovoltaïque en m²
- * @params props.epv - Ensoleillement potentiel pour le mois en kWh/m²
- * @params props.kpv - Coefficient de pondération prenant en compte l'altération par rapport à l'orientation optimale du panneau photovoltaïque
+ * @param props.spv - {@linkcode calcule_spv}
+ * @param props.epv - {@linkcode calcule_epv}
+ * @param props.kpv - {@linkcode calcule_kpv}
  * @returns Production du panneau photovoltaïque pour le mois en kWh
  */
-export function ppv(props: {
-	surface: number;
+export function calcule_ppv(props: {
+	spv: number;
 	epv: number;
 	kpv: number;
 }): number {
-	const { surface, epv, kpv } = props;
-	return kpv * surface * 0.17 * epv * 0.86;
+	const { spv, epv, kpv } = props;
+	return kpv * spv * 0.17 * epv * 0.86;
 }
 
 /**
- * @params props.surface - Surface du panneau photovoltaïque en m²
- * @params props.modules - Nombre de modules photovoltaïques
+ * @param props.surface - Surface du panneau photovoltaïque en m²
+ * @param props.modules - Nombre de modules photovoltaïques
  * @returns Surface du panneau photovoltaïque en m²
  */
-export function spv(props: {
+export function calcule_spv(props: {
 	surface: number | null;
 	modules: number;
 }): number {
@@ -30,25 +33,33 @@ export function spv(props: {
 }
 
 /**
- * @params props.orientation - Orientation du panneau photovoltaïque
- * @params props.inclinaison - Inclinaison du panneau photovoltaïque en degrés
- * @abaques production.kpv
- * @throws {Error} Si aucune valeur forfaitaire n'est trouvée pour les propriétés données
+ * @param props.orientation - Orientation du panneau photovoltaïque
+ * @param props.inclinaison - Inclinaison du panneau photovoltaïque en degrés
+ * @see abaques.production.kpv
+ * @throws {ValeurForfaitaireError}
  * @returns Coefficient de pondération prenant en compte l'altération par rapport à l'orientation optimale du panneau photovoltaïque
  */
-export function kpv(props: {
+export function calcule_kpv(props: {
 	orientation: Common.Orientation;
 	inclinaison: number;
 }): number {
-	const { orientation, inclinaison } = props;
 	const abaque = abaques.production.kpv;
-	const match = abaque
-		.search({ orientation, inclinaison }, abaque.load())
-		.at(0);
-
-	if (!match) {
-		const message = `Aucune valeur forfaitaire trouvée pour : ${JSON.stringify(props)}`;
-		throw new Error(message);
-	}
+	const match = abaque.search(props, abaque.load()).at(0);
+	if (!match) throw new ValeurForfaitaireError(props);
 	return match.kpv;
+}
+
+/**
+ * @param props.zone_climatique - {@linkcode climat.calcule_zone_climatique}
+ * @see abaques.production.epv
+ * @throws {ValeurForfaitaireError}
+ * @returns Ensoleillement mensuel pour chaque mois de l'année en kWh/m²
+ */
+export function calcule_epv(props: {
+	zone_climatique: Batiment.ZoneClimatique;
+}): Common.ParMois<number> {
+	const abaque = abaques.production.epv;
+	const matches = abaque.search(props, abaque.load());
+	if (!containsAllMois(matches)) throw new ValeurForfaitaireError(props);
+	return mapParMois(createFrom(matches), (value) => value.epv);
 }

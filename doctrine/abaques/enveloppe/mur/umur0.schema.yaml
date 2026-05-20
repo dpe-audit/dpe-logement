@@ -7,8 +7,20 @@ fields:
     format: enums
     x-enum: enveloppe:mur:type
     required: true
-  - name: epaisseur_mur
-    title: Épaisseur du mur en cm
+  - name: epaisseur_mur/lt
+    title: Épaisseur du mur en cm (inférieure à)
+    type: number
+    required: false
+  - name: epaisseur_mur/lte
+    title: Épaisseur du mur en cm (inférieure ou égale à)
+    type: number
+    required: false
+  - name: epaisseur_mur/gt
+    title: Épaisseur du mur en cm (supérieure à)
+    type: number
+    required: false
+  - name: epaisseur_mur/gte
+    title: Épaisseur du mur en cm (supérieure ou égale à)
     type: number
     required: false
   - name: annee_construction/lte

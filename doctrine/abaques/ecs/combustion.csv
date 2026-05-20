@@ -1,4 +1,4 @@
-﻿type_generateur;energie_generateur;mode_combustion;volume_stockage/gt;volume_stockage/eq;annee_installation_generateur/lte;annee_installation_generateur/gte;pn/lte;pn/gt;pn_max;rpn;qp0;pveilleuse;tv_generateur_combustion_id
+﻿type_generateur;energie_generateur;mode_combustion;volume_stockage/gt;volume_stockage/eq;annee_installation/lte;annee_installation/gte;pn/lte;pn/gt;pn_max;rpn;qp0;pveilleuse;tv_generateur_combustion_id
 chaudiere;gaz_naturel|gpl;standard;;;1980;;;;;(84 + 2 * logPn) / 100;0.04 * Pn * 1000;240;1
 chaudiere;gaz_naturel|gpl;standard;;;1985;1981;;;;(84 + 2 * logPn) / 100;0.02 * Pn * 1000;150;2
 chaudiere;gaz_naturel|gpl;standard;;;1990;1986;;;;(84 + 2 * logPn) / 100;0.015 * Pn * 1000;150;3

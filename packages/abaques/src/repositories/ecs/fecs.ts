@@ -1,5 +1,5 @@
-import data from "../../data/ecs/fecs.js";
-import { type AbaqueQuery, filter } from "../../filter.js";
+import data from "#data/ecs/fecs.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type FecsSchema = {
 	type_batiment: string;

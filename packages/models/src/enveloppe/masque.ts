@@ -1,4 +1,3 @@
-import type { OrientationCardinale, UUID } from "../common/common";
 import { buildEnum } from "../utils";
 
 /**
@@ -7,10 +6,8 @@ import { buildEnum } from "../utils";
 export type Masque = MasqueProche | MasqueLointain;
 
 type BaseMasque = {
-	id: UUID;
 	description: string;
 	type: TypeMasque;
-	orientation: OrientationCardinale | null;
 	hauteur: number | null;
 	profondeur: number | null;
 	secteur: Secteur | null;
@@ -20,21 +17,6 @@ export type MasqueProche =
 	| MasqueProcheParoiLaterale
 	| MasqueProcheFondBalconOuLoggias
 	| MasqueProcheBalconOuAuvent;
-
-export type MasqueLointain = MasqueLointainHomogene | MasqueLointainNonHomogene;
-
-export type MasqueLointainHomogene = BaseMasque & {
-	type: typeof TypeMasqueEnum.homogene;
-	orientation: OrientationCardinale;
-	hauteur: number;
-};
-
-export type MasqueLointainNonHomogene = BaseMasque & {
-	type: typeof TypeMasqueEnum.non_homogene;
-	orientation: OrientationCardinale;
-	hauteur: number;
-	secteur: Secteur;
-};
 
 export type MasqueProcheParoiLaterale = BaseMasque & {
 	type:
@@ -46,13 +28,25 @@ export type MasqueProcheFondBalconOuLoggias = BaseMasque & {
 	type:
 		| typeof TypeMasqueEnum.fond_balcon
 		| typeof TypeMasqueEnum.fond_et_flanc_loggias;
-	orientation: OrientationCardinale;
 	profondeur: number;
 };
 
 export type MasqueProcheBalconOuAuvent = BaseMasque & {
 	type: typeof TypeMasqueEnum.balcon_ou_auvent;
 	profondeur: number;
+};
+
+export type MasqueLointain = MasqueLointainHomogene | MasqueLointainNonHomogene;
+
+export type MasqueLointainHomogene = BaseMasque & {
+	type: typeof TypeMasqueEnum.homogene;
+	hauteur: number;
+};
+
+export type MasqueLointainNonHomogene = BaseMasque & {
+	type: typeof TypeMasqueEnum.non_homogene;
+	hauteur: number;
+	secteur: Secteur;
 };
 
 export const TYPES_MASQUES = [

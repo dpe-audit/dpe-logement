@@ -1,5 +1,5 @@
-import data from "../../../data/enveloppe/paroi/b.js";
-import { type AbaqueQuery, filter } from "../../../filter.js";
+import data from "#data/enveloppe/paroi/b.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type BSchema = {
 	mitoyennete: string;

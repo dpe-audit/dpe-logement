@@ -1,5 +1,5 @@
-import data from "../../data/production/epv.js";
-import { type AbaqueQuery, filter } from "../../filter.js";
+import data from "#data/production/epv.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type EpvSchema = {
 	mois: string;

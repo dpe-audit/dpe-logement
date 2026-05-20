@@ -1,5 +1,5 @@
-import data from "../../data/chauffage/tfonc30.js";
-import { type AbaqueQuery, filter } from "../../filter.js";
+import data from "#data/chauffage/tfonc30.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type Tfonc30Schema = {
 	mode_combustion: string;

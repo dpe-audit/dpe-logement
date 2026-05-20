@@ -23,3 +23,37 @@ export function reduceParMois(
 ): number {
 	return Object.values(values).reduce(reducer, initial);
 }
+
+export function createFrom<T extends object>(
+	values: Array<T & { mois: string | Common.Mois }>,
+): Common.ParMois<T> {
+	const map = new Map(values.map((item) => [item.mois as Common.Mois, item]));
+	const result: Partial<Common.ParMois<T>> = {};
+
+	for (const mois of Common.MOIS) {
+		const match = map.get(mois);
+
+		if (!match) {
+			const message = `Valeur mensuelle manquante pour le mois ${mois} : ${JSON.stringify(values)}`;
+			throw new Error(message);
+		}
+		result[mois] = match;
+	}
+	return result as Common.ParMois<T>;
+}
+
+export function containsAllMois<T extends object>(
+	values: Array<T & { mois: string | Common.Mois }>,
+): boolean {
+	const moisSet = new Set(values.map((item) => item.mois));
+	return Common.MOIS.every((mois) => moisSet.has(mois));
+}
+
+export function mapParMois<T, U>(
+	parMois: Common.ParMois<T>,
+	fn: (value: T) => U,
+): Common.ParMois<U> {
+	return Object.fromEntries(
+		Common.MOIS.map((mois) => [mois, fn(parMois[mois])]),
+	) as Common.ParMois<U>;
+}

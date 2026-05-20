@@ -1,5 +1,5 @@
-import data from "../../data/chauffage/re.js";
-import { type AbaqueQuery, filter } from "../../filter.js";
+import data from "#data/chauffage/re.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type ReSchema = {
 	type_emission: string;

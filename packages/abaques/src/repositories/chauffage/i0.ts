@@ -1,5 +1,5 @@
-import data from "../../data/chauffage/i0.js";
-import { type AbaqueQuery, filter } from "../../filter.js";
+import data from "#data/chauffage/i0.js";
+import { type AbaqueQuery, filter } from "#filter.js";
 
 export type I0Schema = {
 	type_batiment: string;
