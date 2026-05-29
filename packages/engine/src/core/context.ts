@@ -13,15 +13,16 @@ export interface Context {
 		thunk: Thunk<Results[K][V]>,
 	): void;
 
-	registerEach<
+	register<
 		K extends keyof Results,
-		V extends keyof Results[K],
+		Item extends Results[K] extends Record<string, infer I> ? I : never,
+		V extends keyof Item,
 		T extends { id: string },
 	>(
 		key: K,
 		value: V,
-		items: T[],
-		thunk: (item: T) => Results[K][V],
+		item: T,
+		thunk: Thunk<Item[V]>,
 	): void;
 
 	resolve<K extends keyof Results, V extends keyof Results[K]>(
@@ -29,24 +30,25 @@ export interface Context {
 		value: V,
 	): Results[K][V];
 
-	resolveOne<K extends keyof Results, V extends keyof Results[K], I extends { id: string }>(
+	resolve<
+		K extends keyof Results,
+		Item extends Results[K] extends Record<string, infer I> ? I : never,
+		V extends keyof Item,
+	>(
 		key: K,
 		value: V,
-		item: I,
-	): Results[K] extends Record<I["id"], infer T> &  ? T[V] : never];
+		item: { id: string },
+	): Item[V];
 
-	resolveEach<K extends keyof Results>(
+	resolve<
+		K extends keyof Results,
+		Item extends Results[K] extends Record<string, infer I> ? I : never,
+		V extends keyof Item,
+	>(
 		key: K,
+		value: V,
 		items: Array<{ id: string }>,
-	): Array<Results[K] extends Record<string, infer V> ? V : never>;
+	): Array<Item[V]>;
 
 	getResults(): Results;
 }
-
-function register<K extends keyof Results, V extends keyof Results[K]>(
-	key: K,
-	value: V,
-	thunk: Thunk<Results[K][V]>,
-): void {}
-
-register("ventilation", "caux", () => 0);

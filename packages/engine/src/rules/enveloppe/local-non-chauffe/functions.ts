@@ -4,7 +4,11 @@ import * as ClimatRule from "#rules/climat/functions.js";
 import * as BaieRule from "#rules/enveloppe/baie/functions.js";
 import * as ParoiRule from "#rules/enveloppe/paroi/functions.js";
 import { ValeurForfaitaireError } from "#utils/errors.js";
-import { createParMois } from "#utils/helpers.js";
+import {
+	createParMois,
+	createParMoisFrom,
+	mapParMois,
+} from "#utils/helpers.js";
 
 /**
  * @param props.aue : {@linkcode calcule_aue}
@@ -171,7 +175,7 @@ export function calcule_sse(props: {
 /**
  * @param props.surface : Surface de la baie de l'espace tampon solarisé donnant sur l'extérieur en m²/mois
  * @param props.t : {@linkcode calcule_t}
- * @param props.c1 : {@linkcode ClimatRule.calcule_c1}
+ * @param props.c1 : {@linkcode calcule_c1}
  * @return Surface sud équivalente de la baie de l'espace tampon solarisé donnant sur l'extérieur en m²/mois
  */
 export function calcule_sst(props: {
@@ -183,6 +187,22 @@ export function calcule_sst(props: {
 	return createParMois(
 		(mois: Common.Mois) => surface * (0.8 * t + 0.024) * c1[mois],
 	);
+}
+
+/**
+ * @param props.abaque : {@linkcode ClimatRule.filtre_c1}
+ * @param props.orientation - Orientation de la paroi
+ * @param props.inclinaison - Inclinaison de la paroi en degrés
+ * @returns Coefficients d'orientation et d'inclinaison des parois vitrées pour chaque mois de l'année
+ */
+export function calcule_c1(props: {
+	abaque: ReturnType<typeof abaques.climat.c1.search>;
+	orientation: Enveloppe.Common.Orientation;
+	inclinaison: number;
+}): Common.ParMois<number> {
+	const { abaque, ...query } = props;
+	const matches = abaques.climat.c1.search(query, abaque);
+	return mapParMois(createParMoisFrom(matches), (value) => value.c1);
 }
 
 /**

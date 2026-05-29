@@ -2,7 +2,7 @@ import { abaques } from "@open-dpe-logement/abaques";
 import { Common, Batiment, Enveloppe } from "@open-dpe-logement/models";
 import * as EnveloppRule from "#rules/enveloppe/functions.js";
 import { ValeurForfaitaireError } from "#utils/errors.js";
-import { createParMoisFrom, mapParMois } from "#utils/helpers.js";
+import { createParMoisFrom } from "#utils/helpers.js";
 
 /**
  * @param props.code_departement - Code département du bâtiment
@@ -89,18 +89,15 @@ export function calcule_sollicitations(props: {
 
 /**
  * @param props.zone_climatique - {@linkcode calcule_zone_climatique}
- * @param props.orientation - Orientation de la paroi
- * @param props.inclinaison - Inclinaison de la paroi en degrés
- * @returns Coefficients d'orientation et d'inclinaison des parois vitrées pour chaque mois de l'année
+ * @see abaques.climat.c1
+ * @return Abaque filtrée par zone climatique
  */
-export function calcule_c1(props: {
+export function filtre_c1(props: {
 	zone_climatique: Batiment.ZoneClimatique;
-	orientation: Enveloppe.Common.Orientation;
-	inclinaison: number;
-}): Common.ParMois<number> {
+}): ReturnType<typeof abaques.climat.c1.search> {
 	const abaque = abaques.climat.c1;
 	const matches = abaque.search(props, abaque.load());
-	return mapParMois(createParMoisFrom(matches), (value) => value.c1);
+	return matches;
 }
 
 /**

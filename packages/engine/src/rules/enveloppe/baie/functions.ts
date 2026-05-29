@@ -4,7 +4,11 @@ import * as ClimatRule from "#rules/climat/functions.js";
 import * as LocalNonChauffeRule from "#rules/enveloppe/local-non-chauffe/functions.js";
 import * as MasqueRule from "#rules/enveloppe/masque/functions.js";
 import { ValeurForfaitaireError } from "#utils/errors.js";
-import { createParMois } from "#utils/helpers.js";
+import {
+	createParMois,
+	createParMoisFrom,
+	mapParMois,
+} from "#utils/helpers.js";
 import { linearInterpolate } from "#utils/math.js";
 
 /**
@@ -150,7 +154,7 @@ export function calcule_ug(props: {
  * @param props.sw : {@linkcode calcule_sw}
  * @param props.fe : {@linkcode calcule_fe}
  * @param props.t : {@linkcode LocalNonChauffeRule.calcule_tmoy}
- * @param props.c1 : {@linkcode ClimatRule.calcule_c1}
+ * @param props.c1 : {@linkcode calcule_c1}
  * @return Surface sud équivalente de la baie en m²/mois
  */
 export function calcule_sse(props: {
@@ -192,6 +196,22 @@ export function calcule_sw(props: {
 	const match = abaque.search(query, abaque.load()).at(0);
 	if (!match) throw new ValeurForfaitaireError(query);
 	return match.sw;
+}
+
+/**
+ * @param props.abaque : {@linkcode ClimatRule.filtre_c1}
+ * @param props.orientation - Orientation de la paroi
+ * @param props.inclinaison - Inclinaison de la paroi en degrés
+ * @returns Coefficients d'orientation et d'inclinaison des parois vitrées pour chaque mois de l'année
+ */
+export function calcule_c1(props: {
+	abaque: ReturnType<typeof abaques.climat.c1.search>;
+	orientation: Enveloppe.Common.Orientation;
+	inclinaison: number;
+}): Common.ParMois<number> {
+	const { abaque, ...query } = props;
+	const matches = abaques.climat.c1.search(query, abaque);
+	return mapParMois(createParMoisFrom(matches), (value) => value.c1);
 }
 
 /**

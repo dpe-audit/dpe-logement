@@ -14,7 +14,7 @@ export type InstallationWithData<T extends Installation = Installation> = T & {
 	data: InstallationData;
 };
 
-type InstallationBase = {
+type InstallationGeneric<T> = {
 	id: UUID;
 	description: string;
 	surface: number;
@@ -22,28 +22,29 @@ type InstallationBase = {
 	annee_installation: number | null;
 	installation_collective: boolean | null;
 	presence_echangeur_thermique: boolean | null;
-};
+} & T;
 
-export type InstallationNaturelle = InstallationBase & {
+export type InstallationNaturelle = InstallationGeneric<{
 	type: TypeVentilationNaturelle;
 	annee_installation: null;
 	installation_collective: null;
-};
+}>;
 
-export type InstallationMecanique = InstallationBase & {
+export type InstallationMecanique = InstallationGeneric<{
 	type: TypeVentilationMecanique;
 	installation_collective: boolean;
 	presence_echangeur_thermique: null;
-};
+}>;
 
-export type InstallationVMCDoubleFlux = InstallationBase & {
+export type InstallationVMCDoubleFlux = InstallationGeneric<{
 	type: typeof TypeVentilationEnum.vmc_double_flux;
 	installation_collective: boolean;
-};
+}>;
 
-export type InstallationPuitClimatique = InstallationVMCDoubleFlux & {
+export type InstallationPuitClimatique = InstallationGeneric<{
 	type: typeof TypeVentilationEnum.puit_climatique;
-};
+	installation_collective: boolean;
+}>;
 
 export type InstallationData = {
 	rdim: number;

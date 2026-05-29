@@ -88,14 +88,14 @@ export function calcule_pvent_moy_immeuble(props: {
 
 /**
  * @param props.type_ventilation - {@linkcode set_type_ventilation}
- * @param props.generateur_collectif - Présence d'un générateur collectif (ex : VMC collective)
+ * @param props.installation_collective - Installation collective (ex : VMC collective)
  * @returns Ratio du temps d'utilisation du mode mécanique de l'auxiliaire de ventilation
  */
 export function calcule_rut(props: {
 	type_ventilation: Ventilation.Installation.TypeVentilation;
-	generateur_collectif: boolean | null;
+	installation_collective: boolean | null;
 }): number {
-	const { type_ventilation, generateur_collectif } = props;
+	const { type_ventilation, installation_collective } = props;
 
 	// Cas des ventilations naturelles
 	if (Ventilation.Installation.isVentilationNaturelle(type_ventilation)) {
@@ -109,7 +109,7 @@ export function calcule_rut(props: {
 	// Cas des ventilations mécaniques hybrides
 	if (false === scope.includes(type_ventilation)) return 1;
 	// Autres cas de ventilations mécaniques
-	return generateur_collectif ? 0.167 : 0.083;
+	return installation_collective ? 0.167 : 0.083;
 }
 /**
  * @param props.surface_installation : Surface de l'installation de ventilation en m²
