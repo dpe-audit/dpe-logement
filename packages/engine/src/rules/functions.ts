@@ -2,10 +2,33 @@ import { Common } from "@open-dpe-logement/models";
 import { abaques } from "@open-dpe-logement/abaques";
 
 /**
- * Conversion énergie finale -> énergie primaire
  * @see Arrêté 15 septembre 2006 – Annexe 4
+ * @param props.cef - Consommation d'énergie finale en kWh
+ * @param props.energie - Type d'énergie consommée
+ * @return Consommation d'énergie primaire en kWh
  */
-export default function toEGES(props: {
+export function calcule_cep(props: {
+	cef: number;
+	energie: Common.Energie;
+}): number {
+	const { cef, energie } = props;
+	switch (energie) {
+		case Common.EnergieEnum.electricite:
+			return cef * 1.9;
+		default:
+			return cef;
+	}
+}
+
+/**
+ * @see Arrêté 15 septembre 2006 – Annexe 4
+ * @param props.cef - Consommation d'énergie finale en kWh
+ * @param props.usage - Usage de l'énergie consommée
+ * @param props.energie - Type d'énergie consommée
+ * @param props.reseau_id - ID du réseau de chaleur ou de froid (optionnel)
+ * @return Emissions de gaz à effet de serre en kgCO2eq
+ */
+export function calcule_eges(props: {
 	cef: number;
 	usage: Common.Usage;
 	energie: Common.Energie;

@@ -4,10 +4,9 @@ import { type AbaqueQuery, filter } from "#filter.js";
 export type PauxSchema = {
 	type_generateur: string;
 	energie_generateur: string | null;
-	generateur_multi_batiment: boolean | null;
 	presence_ventouse: boolean | null;
-	G: number | null;
-	H: number | null;
+	G: number;
+	H: number;
 	pn_max: number | null;
 	paux: string;
 };

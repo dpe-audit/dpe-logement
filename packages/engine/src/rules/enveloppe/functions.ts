@@ -1,16 +1,17 @@
 import { abaques } from "@open-dpe-logement/abaques";
-import { Batiment, Enveloppe } from "@open-dpe-logement/models";
+import { Common, Batiment, Enveloppe } from "@open-dpe-logement/models";
+import * as BaieRule from "#rules/enveloppe/baie/functions.js";
+import * as NiveauRule from "#rules/enveloppe/niveau/functions.js";
+import * as ParoiRule from "#rules/enveloppe/paroi/functions.js";
+import * as PontThermiqueRule from "#rules/enveloppe/pont-thermique/functions.js";
+import * as LocalNonChauffeRule from "#rules/enveloppe/local-non-chauffe/functions.js";
+import * as VentilationRule from "#rules/ventilation/functions.js";
 import { ValeurForfaitaireError } from "#utils/errors.js";
-import * as baie from "#rules/enveloppe/baie/functions.js";
-import * as niveau from "#rules/enveloppe/niveau/functions.js";
-import * as paroi from "#rules/enveloppe/paroi/functions.js";
-import * as pont_thermique from "#rules/enveloppe/pont-thermique/functions.js";
-import * as local_non_chauffe from "#rules/enveloppe/local-non-chauffe/functions.js";
-import * as ventilation from "#rules/ventilation/functions.js";
+import { createParMois, type NonEmptyArray } from "#utils/helpers.js";
 
 /**
  * @param props.dp : {@linkcode calcule_dp}
- * @param props.pt : {@linkcode pont_thermique.calcule_pt}
+ * @param props.pt : {@linkcode PontThermiqueRule.calcule_pt}
  * @param props.dr : {@linkcode calcule_dr}
  * @returns Déperditions thermiques totales de l'enveloppe en W/K
  */
@@ -25,8 +26,8 @@ export function calcule_gv(props: {
 
 /**
  * @param props.dp : {@linkcode calcule_dp}
- * @param props.pt : {@linkcode pont_thermique.calcule_pt}
- * @param props.sdep : {@linkcode paroi.calcule_sdep}
+ * @param props.pt : {@linkcode PontThermiqueRule.calcule_pt}
+ * @param props.sdep : {@linkcode ParoiRule.calcule_sdep}
  * @returns Coefficient de transmission thermique moyen en W/(K.m²)
  */
 export function calcule_ubat(props: {
@@ -39,11 +40,11 @@ export function calcule_ubat(props: {
 }
 
 /**
- * @param props.dp_murs : {@linkcode paroi.calcule_dp}
- * @param props.dp_planchers_hauts : {@linkcode paroi.calcule_dp}
- * @param props.dp_planchers_bas : {@linkcode paroi.calcule_dp}
- * @param props.dp_baies : {@linkcode paroi.calcule_dp}
- * @param props.dp_portes : {@linkcode paroi.calcule_dp}
+ * @param props.dp_murs : {@linkcode ParoiRule.calcule_dp}
+ * @param props.dp_planchers_hauts : {@linkcode ParoiRule.calcule_dp}
+ * @param props.dp_planchers_bas : {@linkcode ParoiRule.calcule_dp}
+ * @param props.dp_baies : {@linkcode BaieRule.calcule_dp}
+ * @param props.dp_portes : {@linkcode ParoiRule.calcule_dp}
  * @returns Déperditions thermiques totales par les parois en W/K
  */
 export function calcule_dp(props: {
@@ -59,7 +60,7 @@ export function calcule_dp(props: {
 
 /**
  * @param props.hperm : {@linkcode calcule_hperm}
- * @param props.hvent : {@linkcode ventilation.calcule_hvent}
+ * @param props.hvent : {@linkcode VentilationRule.calcule_hvent}
  * @returns Déperditions thermiques totales par renouvellement d'air en W/K
  */
 export function calcule_dr(props: { hperm: number; hvent: number }): number {
@@ -69,18 +70,15 @@ export function calcule_dr(props: { hperm: number; hvent: number }): number {
 
 /**
  * @param props.niveaux : Liste des niveaux
- * @param props.niveaux[].inertie : {@linkcode niveau.calcule_inertie}
+ * @param props.niveaux[].inertie : {@linkcode NiveauRule.calcule_inertie}
  * @param props.niveaux[].sh : Surface habitable du niveau
  * @throws {Error} Aucun niveau transmis
  * @returns Inertie de l'enveloppe
  */
 export function calcule_inertie(props: {
-	niveaux: { inertie: Enveloppe.Common.Inertie; sh: number }[];
+	niveaux: NonEmptyArray<{ inertie: Enveloppe.Common.Inertie; sh: number }>;
 }): Enveloppe.Common.Inertie {
 	const { niveaux } = props;
-
-	if (niveaux.length === 0) throw new Error("Aucun niveau transmis");
-
 	// Surface totale par inertie
 	const surfaceParInertie = new Map<Enveloppe.Common.Inertie, number>();
 	for (const niveau of niveaux) {
@@ -120,8 +118,8 @@ export function calcule_hperm(props: { qvinf: number }): number {
  * @param props.exposition : Exposition de l'enveloppe
  * @param props.sh : Surface habitable en m²
  * @param props.hsp : Hauteur sous plafond en m
- * @param props.qvarep_conv : {@linkcode ventilation.calcule_qvarep_conv}
- * @param props.qvasouf_conv : {@linkcode ventilation.calcule_qvasouf_conv}
+ * @param props.qvarep_conv : {@linkcode VentilationRule.calcule_qvarep_conv}
+ * @param props.qvasouf_conv : {@linkcode VentilationRule.calcule_qvasouf_conv}
  * @param props.n50 : {@linkcode calcule_n50}
  * @returns Débit d'air dû aux infiltrations liées au vent en m3/h
  */
@@ -162,7 +160,7 @@ export function calcule_n50(props: {
 /**
  * @param props.sh : Surface habitable en m²
  * @param props.q4paenv : {@linkcode calcule_q4paenv}
- * @param props.smea_conv : {@linkcode ventilation.calcule_smea_conv}
+ * @param props.smea_conv : {@linkcode VentilationRule.calcule_smea_conv}
  * @returns Perméabilité de la zone sous 4Pa en m3/h
  */
 export function calcule_q4pa(props: {
@@ -240,17 +238,17 @@ export function calcule_presence_joints(props: {
 }
 
 /**
- * @params props.sse : {@linkcode baie.calcule_sse}
- * @params props.sse_ets : {@linkcode local_non_chauffe.calcule_sse}
- * @returns Surface sud équivalente de l'enveloppe en m²/mois
+ * @params props.sse : {@linkcode BaieRule.calcule_sse}
+ * @params props.sse_ets : {@linkcode LocalNonChauffeRule.calcule_sse}
+ * @returns Surface sud équivalente de l'enveloppe en m²
  */
 export function calcule_sse(props: {
-	sse: number[];
-	sse_ets: number[];
-}): number {
-	const { sse, sse_ets } = props;
-	return (
-		sse.reduce((acc, sse) => acc + sse, 0) +
-		sse_ets.reduce((acc, sse) => acc + sse, 0)
-	);
+	sse: Common.ParMois<number>[];
+	sse_ets: Common.ParMois<number>[];
+}): Common.ParMois<number> {
+	return createParMois((mois: Common.Mois) => {
+		const sse = props.sse.reduce((acc, sse) => acc + sse[mois], 0);
+		const sse_ets = props.sse_ets.reduce((acc, sse) => acc + sse[mois], 0);
+		return sse + sse_ets;
+	});
 }

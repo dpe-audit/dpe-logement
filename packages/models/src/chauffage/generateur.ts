@@ -20,7 +20,7 @@ export type GenerateurWithData<T extends Generateur = Generateur> = T & {
 	data: GenerateurData;
 };
 
-type GenerateurBase = {
+export type GenerateurBase = {
 	id: UUID;
 	description: string;
 	type: TypeGenerateur | null;
@@ -29,6 +29,22 @@ type GenerateurBase = {
 	annee_installation: number | null;
 	position: Position;
 	signaletique: Signaletique;
+};
+
+export type GenerateurGeneric<
+	T extends {
+		type?: TypeGenerateur | null;
+		energie?: EnergieChauffage | null;
+		bienergie?: Bienergie | null;
+		annee_installation?: number | null;
+		position?: Partial<Position>;
+		signaletique?: Partial<Signaletique>;
+	},
+> = Omit<GenerateurBase & T, "position" | "signaletique"> & {
+	position: Omit<Position, keyof NonNullable<T["position"]>> &
+		NonNullable<T["position"]>;
+	signaletique: Omit<Signaletique, keyof NonNullable<T["signaletique"]>> &
+		NonNullable<T["signaletique"]>;
 };
 
 export type Position = {
@@ -46,7 +62,7 @@ export type Signaletique = {
 	scop: number | null;
 	mode_combustion: ModeCombustion | null;
 	presence_ventouse: boolean | null;
-	presence_regulation_combustion: boolean | null;
+	presence_regulation: boolean | null;
 	pveilleuse: number | null;
 	qp0: number | null;
 	rpn: number | null;
@@ -72,93 +88,108 @@ export type GenerateurData = {
 	consommations: Consommations;
 };
 
-export type GenerateurCombustion = GenerateurBase & {
+export type GenerateurCombustion = GenerateurGeneric<{
+	type:
+		| typeof TypeGenerateurEnum.chaudiere
+		| typeof TypeGenerateurEnum.cuisiniere
+		| typeof TypeGenerateurEnum.foyer_ferme
+		| typeof TypeGenerateurEnum.insert
+		| typeof TypeGenerateurEnum.poele
+		| typeof TypeGenerateurEnum.poele_bouilleur
+		| typeof TypeGenerateurEnum.radiateur_gaz;
 	energie: Exclude<
 		EnergieChauffage,
 		| typeof EnergieChauffageEnum.electricite
 		| typeof EnergieChauffageEnum.reseau_chaleur
 	>;
+	bienergie: null;
 	position: {
 		reseau_chaleur_id: null;
 	};
 	signaletique: {
-		scope: null;
+		scop: null;
 	};
-};
+}>;
 
-export type ChaudiereCombustion = GenerateurCombustion & {
-	type: typeof TypeGenerateurEnum.chaudiere;
-	signaletique: {
-		label: null;
-	};
-};
+export type ChaudiereCombustion = GenerateurGeneric<
+	GenerateurCombustion & {
+		type: typeof TypeGenerateurEnum.chaudiere;
+		signaletique: {
+			label: null;
+		};
+	}
+>;
 
-export type PoeleBouilleur = GenerateurCombustion & {
-	type: typeof TypeGenerateurEnum.poele_bouilleur;
-	energie:
-		| typeof EnergieChauffageEnum.bois_buche
-		| typeof EnergieChauffageEnum.bois_plaquette
-		| typeof EnergieChauffageEnum.bois_granule;
-	bienergie: null;
-	signaletique: {
-		label: null;
-	};
-};
+export type PoeleBouilleur = GenerateurGeneric<
+	GenerateurCombustion & {
+		type: typeof TypeGenerateurEnum.poele_bouilleur;
+		energie:
+			| typeof EnergieChauffageEnum.bois_buche
+			| typeof EnergieChauffageEnum.bois_plaquette
+			| typeof EnergieChauffageEnum.bois_granule;
+		signaletique: {
+			label: null;
+		};
+	}
+>;
 
-export type PoeleInsert = GenerateurCombustion & {
-	type:
-		| typeof TypeGenerateurEnum.cuisiniere
-		| typeof TypeGenerateurEnum.insert
-		| typeof TypeGenerateurEnum.foyer_ferme
-		| typeof TypeGenerateurEnum.poele;
-	bienergie: null;
-	position: {
-		position_chaudiere: null;
-		generateur_collectif: false;
-		generateur_multi_batiment: false;
-		position_volume_chauffe: true;
-		generateur_mixte_id: null;
-	};
-	signaletique: {
-		label: typeof LabelEnum.flamme_verte | null;
-	} & {
-		[K in Exclude<keyof Signaletique, "pn" | "label">]: null;
-	};
-};
+export type PoeleInsert = GenerateurGeneric<
+	GenerateurCombustion & {
+		type:
+			| typeof TypeGenerateurEnum.cuisiniere
+			| typeof TypeGenerateurEnum.insert
+			| typeof TypeGenerateurEnum.foyer_ferme
+			| typeof TypeGenerateurEnum.poele;
+		position: {
+			position_chaudiere: null;
+			generateur_collectif: false;
+			generateur_multi_batiment: false;
+			position_volume_chauffe: true;
+			generateur_mixte_id: null;
+		};
+		signaletique: {
+			label: typeof LabelEnum.flamme_verte | null;
+		} & {
+			[K in Exclude<keyof Signaletique, "pn" | "label">]: null;
+		};
+	}
+>;
 
-export type GenerateurAirChaudCombustion = GenerateurCombustion & {
-	type: typeof TypeGenerateurEnum.generateur_air_chaud;
-	bienergie: null;
-	signaletique: {
-		label: null;
-		mode_combustion:
-			| typeof ModeCombustionEnum.standard
-			| typeof ModeCombustionEnum.condensation
-			| null;
-	};
-};
+export type GenerateurAirChaudCombustion = GenerateurGeneric<
+	GenerateurCombustion & {
+		type: typeof TypeGenerateurEnum.generateur_air_chaud;
+		signaletique: {
+			label: null;
+			mode_combustion:
+				| typeof ModeCombustionEnum.standard
+				| typeof ModeCombustionEnum.condensation
+				| null;
+		};
+	}
+>;
 
-export type RadiateurGaz = GenerateurCombustion & {
-	type: typeof TypeGenerateurEnum.radiateur_gaz;
-	energie:
-		| typeof EnergieChauffageEnum.gaz_naturel
-		| typeof EnergieChauffageEnum.gpl;
-	bienergie: null;
-	position: {
-		position_chaudiere: null;
-		generateur_collectif: false;
-		generateur_multi_batiment: false;
-		position_volume_chauffe: true;
-		generateur_mixte_id: null;
-	};
-	signaletique: {
-		label: typeof LabelEnum.flamme_verte | null;
-	} & {
-		[K in Exclude<keyof Signaletique, "pn" | "label" | "rpn">]: null;
-	};
-};
+export type RadiateurGaz = GenerateurGeneric<
+	GenerateurCombustion & {
+		type: typeof TypeGenerateurEnum.radiateur_gaz;
+		energie:
+			| typeof EnergieChauffageEnum.gaz_naturel
+			| typeof EnergieChauffageEnum.gpl;
+		position: {
+			position_chaudiere: null;
+			generateur_collectif: false;
+			generateur_multi_batiment: false;
+			position_volume_chauffe: true;
+			generateur_mixte_id: null;
+		};
+		signaletique: {
+			label: typeof LabelEnum.flamme_verte | null;
+		} & {
+			[K in Exclude<keyof Signaletique, "pn" | "label" | "rpn">]: null;
+		};
+	}
+>;
 
-export type GenerateurElectrique = GenerateurBase & {
+export type GenerateurElectrique = GenerateurGeneric<{
 	type:
 		| typeof TypeGenerateurEnum.chaudiere
 		| typeof TypeGenerateurEnum.generateur_air_chaud
@@ -177,30 +208,34 @@ export type GenerateurElectrique = GenerateurBase & {
 	signaletique: {
 		[K in Exclude<keyof Signaletique, "pn" | "label">]: null;
 	};
-};
+}>;
 
-export type ChaudiereElectrique = GenerateurElectrique & {
-	type:
-		| typeof TypeGenerateurEnum.chaudiere
-		| typeof TypeGenerateurEnum.generateur_air_chaud;
-	signaletique: {
-		label: null;
-	};
-};
+export type ChaudiereElectrique = GenerateurGeneric<
+	GenerateurElectrique & {
+		type:
+			| typeof TypeGenerateurEnum.chaudiere
+			| typeof TypeGenerateurEnum.generateur_air_chaud;
+		signaletique: {
+			label: null;
+		};
+	}
+>;
 
-export type EmetteurElectrique = GenerateurElectrique & {
-	type:
-		| typeof TypeGenerateurEnum.generateur_air_chaud
-		| typeof TypeGenerateurEnum.convecteur_bi_jonction
-		| typeof TypeGenerateurEnum.convecteur_electrique
-		| typeof TypeGenerateurEnum.panneau_rayonnant_electrique
-		| typeof TypeGenerateurEnum.plafond_rayonnant_electrique
-		| typeof TypeGenerateurEnum.plancher_rayonnant_electrique
-		| typeof TypeGenerateurEnum.radiateur_electrique
-		| typeof TypeGenerateurEnum.radiateur_electrique_accumulation;
-};
+export type EmetteurElectrique = GenerateurGeneric<
+	GenerateurElectrique & {
+		type:
+			| typeof TypeGenerateurEnum.generateur_air_chaud
+			| typeof TypeGenerateurEnum.convecteur_bi_jonction
+			| typeof TypeGenerateurEnum.convecteur_electrique
+			| typeof TypeGenerateurEnum.panneau_rayonnant_electrique
+			| typeof TypeGenerateurEnum.plafond_rayonnant_electrique
+			| typeof TypeGenerateurEnum.plancher_rayonnant_electrique
+			| typeof TypeGenerateurEnum.radiateur_electrique
+			| typeof TypeGenerateurEnum.radiateur_electrique_accumulation;
+	}
+>;
 
-export type GenerateurThermodynamique = GenerateurBase & {
+export type GenerateurThermodynamique = GenerateurGeneric<{
 	type:
 		| typeof TypeGenerateurEnum.pac_air_air
 		| typeof TypeGenerateurEnum.pac_air_eau
@@ -211,31 +246,35 @@ export type GenerateurThermodynamique = GenerateurBase & {
 	position: {
 		reseau_chaleur_id: null;
 	};
-};
+}>;
 
-export type PAC = GenerateurThermodynamique & {
-	bienergie: null;
-	position: {
-		position_chaudiere: null;
-	};
-	signaletique: {
-		[K in Exclude<keyof Signaletique, "pn" | "scop">]: null;
-	};
-};
+export type PAC = GenerateurGeneric<
+	GenerateurThermodynamique & {
+		bienergie: null;
+		position: {
+			position_chaudiere: null;
+		};
+		signaletique: {
+			[K in Exclude<keyof Signaletique, "pn" | "scop">]: null;
+		};
+	}
+>;
 
-export type PACHybride = GenerateurThermodynamique & {
-	type:
-		| typeof TypeGenerateurEnum.pac_air_eau
-		| typeof TypeGenerateurEnum.pac_eau_eau
-		| typeof TypeGenerateurEnum.pac_eau_glycolee_eau
-		| typeof TypeGenerateurEnum.pac_geothermique;
-	bienergie: Exclude<Bienergie, typeof BienergieEnum.electricite>;
-	signaletique: {
-		label: null;
-	};
-};
+export type PACHybride = GenerateurGeneric<
+	GenerateurThermodynamique & {
+		type:
+			| typeof TypeGenerateurEnum.pac_air_eau
+			| typeof TypeGenerateurEnum.pac_eau_eau
+			| typeof TypeGenerateurEnum.pac_eau_glycolee_eau
+			| typeof TypeGenerateurEnum.pac_geothermique;
+		bienergie: Bienergie;
+		signaletique: {
+			label: null;
+		};
+	}
+>;
 
-export type ReseauChaleur = GenerateurBase & {
+export type ReseauChaleur = GenerateurGeneric<{
 	type: typeof TypeGenerateurEnum.reseau_chaleur;
 	energie: typeof EnergieChauffageEnum.reseau_chaleur;
 	bienergie: null;
@@ -249,9 +288,9 @@ export type ReseauChaleur = GenerateurBase & {
 	signaletique: {
 		[P in keyof Signaletique]: null;
 	};
-};
+}>;
 
-export type GenerateurCollectifInconnu = GenerateurBase & {
+export type GenerateurCollectifInconnu = GenerateurGeneric<{
 	type: null;
 	energie: null;
 	bienergie: null;
@@ -265,7 +304,7 @@ export type GenerateurCollectifInconnu = GenerateurBase & {
 	signaletique: {
 		[P in keyof Signaletique]: null;
 	};
-};
+}>;
 
 export const TYPES_GENERATEUR = [
 	"chaudiere",
@@ -293,6 +332,30 @@ export const TYPES_GENERATEUR = [
 export type TypeGenerateur = (typeof TYPES_GENERATEUR)[number];
 export const TypeGenerateurEnum = buildEnum(TYPES_GENERATEUR);
 
+export const TYPES_PAC: TypeGenerateur[] = [
+	TypeGenerateurEnum.pac_air_air,
+	TypeGenerateurEnum.pac_air_eau,
+	TypeGenerateurEnum.pac_eau_eau,
+	TypeGenerateurEnum.pac_eau_glycolee_eau,
+	TypeGenerateurEnum.pac_geothermique,
+] as const;
+export type TypePAC = (typeof TYPES_PAC)[number];
+export const TypePACEnum = buildEnum(TYPES_PAC);
+
+export const TYPES_GENERATEUR_COMBUSTION = [
+	"chaudiere_standard",
+	"chaudiere_basse_temperature",
+	"chaudiere_condensation",
+	"generateur_air_chaud",
+	"chaudiere_bois",
+	"radiateur_gaz",
+] as const;
+export type TypeGenerateurCombustion =
+	(typeof TYPES_GENERATEUR_COMBUSTION)[number];
+export const TypeGenerateurCombustionEnum = buildEnum(
+	TYPES_GENERATEUR_COMBUSTION,
+);
+
 export const ENERGIES_CHAUFFAGE = [
 	"electricite",
 	"gaz_naturel",
@@ -308,14 +371,9 @@ export type EnergieChauffage = (typeof ENERGIES_CHAUFFAGE)[number];
 export const EnergieChauffageEnum = buildEnum(ENERGIES_CHAUFFAGE);
 
 export const BIENERGIES = [
-	"electricite",
 	"gaz_naturel",
 	"gpl",
 	"fioul",
-	"charbon",
-	"bois_buche",
-	"bois_plaquette",
-	"bois_granule",
 ] as const satisfies readonly EnergieChauffage[];
 export type Bienergie = (typeof BIENERGIES)[number];
 export const BienergieEnum = buildEnum(BIENERGIES);

@@ -1,21 +1,21 @@
 import { abaques } from "@open-dpe-logement/abaques";
 import type { Batiment, Enveloppe } from "@open-dpe-logement/models";
 import { ValeurForfaitaireError } from "#utils/errors.js";
-import * as climat from "#rules/climat/functions.js";
-import * as chauffage from "#rules/chauffage/functions.js";
-import * as paroi from "#rules/enveloppe/paroi/functions.js";
+import * as ClimatRule from "#rules/climat/functions.js";
+import * as ChauffageRule from "#rules/chauffage/functions.js";
+import * as ParoiRule from "#rules/enveloppe/paroi/functions.js";
 
 /**
  * @props props.u_saisi : Coefficient de transmission thermique du mur saisi en W/m².K
- * @props props.zone_climatique : {@linkcode climat.calcule_zone_climatique}
- * @props props.effet_joule : {@linkcode chauffage.calcule_effet_joule}
+ * @props props.zone_climatique : {@linkcode ClimatRule.calcule_zone_climatique}
+ * @props props.effet_joule : {@linkcode ChauffageRule.calcule_effet_joule}
  * @props props.u0 : {@linkcode calcule_u0}
  * @props props.isolation : Etat de l'isolation du mur
  * @props props.type_isolation : Type d'isolation du mur
  * @props props.epaisseur_isolation : Epaisseur de l'isolation du mur en mm
  * @props props.resistance_thermique_isolation : Résistance thermique de l'isolation du mur en m².K/W
  * @props props.annee_isolation : Année d'isolation du mur
- * @props props.annee_construction : {@linkcode paroi.set_annee_construction}
+ * @props props.annee_construction : {@linkcode ParoiRule.set_annee_construction}
  * @see abaques.enveloppe.mur.uph
  * @throws {ValeurForfaitaireError}
  * @returns Coefficient de transmission thermique du mur en W/m².K
@@ -67,7 +67,7 @@ export function calcule_u(props: {
  * @see https://github.com/dpe-audit/dpe-logement/issues/41
  * @see https://github.com/dpe-audit/dpe-logement/issues/47
  * @props props.u0_saisi : Coefficient de transmission thermique du mur nu saisi en W/m².K
- * @props props.annee_construction : {@linkcode paroi.set_annee_construction}
+ * @props props.annee_construction : {@linkcode ParoiRule.set_annee_construction}
  * @props props.structures : Structures du mur
  * @props props.structures[].materiau : Matériau de la structure du mur
  * @props props.structures[].epaisseur : Epaisseur de la structure du mur en mm

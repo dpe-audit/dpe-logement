@@ -1,1 +1,1 @@
-export * as nhecl from './nhecl.js'
+export * as nhecl from "./nhecl.js";

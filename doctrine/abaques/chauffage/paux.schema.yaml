@@ -13,10 +13,6 @@ fields:
     format: enums
     x-enum: energie
     required: false
-  - name: generateur_multi_batiment
-    title: Générateur desservant plusieurs bâtiments
-    type: boolean
-    required: false
   - name: presence_ventouse
     title: Présence d'une ventouse
     type: boolean

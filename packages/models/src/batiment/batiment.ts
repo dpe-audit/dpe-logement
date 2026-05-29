@@ -1,5 +1,6 @@
 import type { Adresse } from "../common/common";
 import { buildEnum } from "../utils";
+import type { Appartement } from "./appartement";
 
 /**
  * @see https://schemas.open-dpe.fr/batiment
@@ -17,11 +18,14 @@ type BaseBatiment = {
 	materiaux_anciens: boolean;
 	rnb_id: string | null;
 	adresse: Adresse;
+	appartements_visites: Appartement[];
+	logement: Logement | null;
 };
 
 export type Maison = BaseBatiment & {
 	type: typeof TypeBatimentEnum.maison;
 	logements: 1 | 2;
+	appartements_visites: [];
 };
 
 export type Immeuble = BaseBatiment & {
@@ -35,6 +39,12 @@ export type BatimentWithData<T extends Batiment = Batiment> = T & {
 
 export type BatimentData = {
 	zone_climatique: ZoneClimatique;
+};
+
+export type Logement = {
+	description: string;
+	surface_habitable: number;
+	hauteur_sous_plafond: number;
 };
 
 export const TYPES_BATIMENT = ["maison", "immeuble"] as const;

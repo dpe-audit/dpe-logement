@@ -1,22 +1,27 @@
 import { ValeurForfaitaireError } from "#utils/errors.js";
-import { createFrom, containsAllMois, mapParMois } from "#utils/mois.js";
 import { abaques } from "@open-dpe-logement/abaques";
 import { Batiment, Common } from "@open-dpe-logement/models";
-import * as climat from "#rules/climat/functions.js";
+import * as ClimatRule from "#rules/climat/functions.js";
+import {
+	containsAllMois,
+	createParMois,
+	createParMoisFrom,
+	mapParMois,
+} from "#utils/helpers.js";
 
 /**
  * @param props.spv - {@linkcode calcule_spv}
  * @param props.epv - {@linkcode calcule_epv}
  * @param props.kpv - {@linkcode calcule_kpv}
- * @returns Production du panneau photovoltaïque pour le mois en kWh
+ * @returns Production du panneau photovoltaïque en kWh/mois
  */
 export function calcule_ppv(props: {
 	spv: number;
-	epv: number;
 	kpv: number;
-}): number {
-	const { spv, epv, kpv } = props;
-	return kpv * spv * 0.17 * epv * 0.86;
+	epv: Common.ParMois<number>;
+}): Common.ParMois<number> {
+	const { spv, kpv } = props;
+	return createParMois((mois) => kpv * spv * 0.17 * props.epv[mois] * 0.86);
 }
 
 /**
@@ -50,7 +55,7 @@ export function calcule_kpv(props: {
 }
 
 /**
- * @param props.zone_climatique - {@linkcode climat.calcule_zone_climatique}
+ * @param props.zone_climatique - {@linkcode ClimatRule.calcule_zone_climatique}
  * @see abaques.production.epv
  * @throws {ValeurForfaitaireError}
  * @returns Ensoleillement mensuel pour chaque mois de l'année en kWh/m²
@@ -61,5 +66,5 @@ export function calcule_epv(props: {
 	const abaque = abaques.production.epv;
 	const matches = abaque.search(props, abaque.load());
 	if (!containsAllMois(matches)) throw new ValeurForfaitaireError(props);
-	return mapParMois(createFrom(matches), (value) => value.epv);
+	return mapParMois(createParMoisFrom(matches), (value) => value.epv);
 }

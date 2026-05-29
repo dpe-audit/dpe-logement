@@ -18,14 +18,12 @@ properties:
       - radiateur_monotube
       - radiateur_bitube
       - radiateur
+      - autres
   temperature_distribution:
     title: Température de distribution de l'émetteur de chaleur
-    type: string
+    type: [string, "null"]
     x-enum: chauffage:temperature-distribution
-    enum:
-      - basse
-      - moyenne
-      - haute
+    enum: [basse, moyenne, haute, null]
   presence_robinet_thermostatique:
     title: Présence d'un robinet thermostatique
     type: boolean

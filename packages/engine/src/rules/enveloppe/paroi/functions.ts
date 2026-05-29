@@ -1,8 +1,9 @@
 import { abaques } from "@open-dpe-logement/abaques";
 import { Batiment, Common, Enveloppe } from "@open-dpe-logement/models";
 import { ValeurForfaitaireError } from "#utils/errors.js";
-import * as climat from "#rules/climat/functions.js";
-import * as local_non_chauffe from "#rules/enveloppe/local-non-chauffe/functions.js";
+import * as ClimatRule from "#rules/climat/functions.js";
+import * as LocalNonChauffeRule from "#rules/enveloppe/local-non-chauffe/functions.js";
+import type { NonEmptyArray } from "#utils/helpers.js";
 
 /**
  * @param props.surface : Surface de la paroi en m²
@@ -39,7 +40,7 @@ export function calcule_b(props: {
 
 /**
  * @param props.mitoyennete : Mitoyenneté de la paroi
- * @param props.blnc : {@linkcode local_non_chauffe.calcule_b}
+ * @param props.blnc : {@linkcode LocalNonChauffeRule.calcule_b}
  * @see abaques.enveloppe.paroi.b
  * @returns Coefficient de réduction des déperditions thermiques de la paroi
  */
@@ -64,7 +65,7 @@ export function calcule_b(props: {
 }
 
 /**
- * @param props.zone_climatique - {@linkcode climat.calcule_zone_climatique}
+ * @param props.zone_climatique - {@linkcode ClimatRule.calcule_zone_climatique}
  * @param props.orientation_ets - Orientations de l'espace tampon solarisé
  * @param props.isolation_paroi - Indique si la paroi est isolée ou non
  * @see abaques.enveloppe.paroi.bver
@@ -74,14 +75,10 @@ export function calcule_b(props: {
  */
 export function calcule_bver(props: {
 	zone_climatique: Batiment.ZoneClimatique;
-	orientation_ets: Common.Orientation[];
+	orientation_ets: NonEmptyArray<Common.Orientation>;
 	isolation_paroi: boolean;
 }): number {
 	const { orientation_ets } = props;
-
-	if (orientation_ets.length === 0)
-		throw new Error("Aucune orientation d'espace tampon solarisé fournie");
-
 	const abaque = abaques.enveloppe.paroi.bver;
 	const data = abaque.load();
 

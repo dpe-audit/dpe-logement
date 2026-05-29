@@ -49,11 +49,11 @@ fields:
     type: number
     required: false
   - name: rpn
-    title: Rendement à pleine charge (expression mathématique)
+    title: Rendement à pleine charge sur PCI (expression mathématique)
     type: string
     required: true
   - name: qp0
-    title: Pertes à l'arrêt en W (expression mathématique)
+    title: Pertes à l'arrêt en kW (expression mathématique)
     type: string
     required: true
   - name: pveilleuse

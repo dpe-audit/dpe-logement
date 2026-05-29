@@ -114,6 +114,7 @@ chauffage:type-emetteur;plafond_chauffant;Plafond chauffant;chauffage:type-emett
 chauffage:type-emetteur;radiateur_monotube;Radiateur monotube;chauffage:type-emetteur
 chauffage:type-emetteur;radiateur_bitube;Radiateur bitube;chauffage:type-emetteur
 chauffage:type-emetteur;radiateur;Radiateur;chauffage:type-emetteur
+chauffage:type-emetteur;autres;Autres;chauffage:type-emetteur
 chauffage:type-emission;radiateur;Radiateur;chauffage:type-emission
 chauffage:type-emission;air_souffle;Air soufflé;chauffage:type-emission
 chauffage:type-emission;plancher_chauffant;Plancher chauffant;chauffage:type-emission
@@ -410,16 +411,16 @@ ventilation:type;ventilation_mecanique_conduit;Ventilation mécanique sur condui
 ventilation:type;ventilation_naturelle_conduit_entrees_air_hygroreglables;Ventilation naturelle par conduit avec entrées d'air hygroéglables;ventilation:type
 ventilation:type;puit_climatique;Puit climatique;ventilation:type
 ventilation:type;ventilation_mecanique_insufflation;Ventilation mécanique par insufflation;ventilation:type
-appartement:position;rdc;Appartement en rez-de-chaussée;appartement:position
-appartement:position;etage_intermediaire;Appartement en étage intermédiaire;appartement:position
-appartement:position;dernier_etage;Appartement au dernier étage;appartement:position
-appartement:typologie;T1;T1;appartement:typologie
-appartement:typologie;T2;T2;appartement:typologie
-appartement:typologie;T3;T3;appartement:typologie
-appartement:typologie;T4;T4;appartement:typologie
-appartement:typologie;T5;T5;appartement:typologie
-appartement:typologie;T6;T6;appartement:typologie
-appartement:typologie;T7;T7 et plus;appartement:typologie
+appartement:position;rdc;Appartement en rez-de-chaussée;batiment:position-appartement
+appartement:position;etage_intermediaire;Appartement en étage intermédiaire;batiment:position-appartement
+appartement:position;dernier_etage;Appartement au dernier étage;batiment:position-appartement
+appartement:typologie;T1;T1;batiment:typologie-appartement
+appartement:typologie;T2;T2;batiment:typologie-appartement
+appartement:typologie;T3;T3;batiment:typologie-appartement
+appartement:typologie;T4;T4;batiment:typologie-appartement
+appartement:typologie;T5;T5;batiment:typologie-appartement
+appartement:typologie;T6;T6;batiment:typologie-appartement
+appartement:typologie;T7;T7 et plus;batiment:typologie-appartement
 enveloppe:paroi:orientation;nord;Paroi exposée au nord;enveloppe:paroi:orientation
 enveloppe:paroi:orientation;sud;Paroi exposée au sud;enveloppe:paroi:orientation
 enveloppe:paroi:orientation;est;Paroi exposée à l'est;enveloppe:paroi:orientation
@@ -439,3 +440,38 @@ mois;11;Novembre;mois
 mois;12;Décembre;mois
 ecs:type-stockage;integre;Stockage intégré à la production;ecs:type-stockage
 ecs:type-stockage;independant;Stockage indépendant de la production;ecs:type-stockage
+chauffage:type-programmation;absent;Absence de programmation;chauffage:type-programmation
+chauffage:type-programmation;central_sans_minimum_temperature;Programmation centrale sans minimum de température;chauffage:type-programmation
+chauffage:type-programmation;central_avec_minimum_temperature;Programmation centrale avec minimum de température;chauffage:type-programmation
+chauffage:type-programmation;central_collectif_sans_detection_presence;Programmation centrale collective;chauffage:type-programmation
+chauffage:type-programmation;central_collectif_avec_detection_presence;Programmation centrale collective avec détection de présence;chauffage:type-programmation
+chauffage:type-programmation;terminal_avec_minimum_temperature;Programmation par pièce avec minimum de température;chauffage:type-programmation
+chauffage:type-programmation;terminal_avec_minimum_temperature_detection_presence;Programmation par pièce avec minimum de température et détection de présence;chauffage:type-programmation
+chauffage:type;central;Chauffage central;chauffage:type
+chauffage:type;divise;Chauffage divisé;chauffage:type
+configuration-systeme;base;Système en base;configuration-systeme
+configuration-systeme;releve;Système en relève;configuration-systeme
+configuration-systeme;appoint;Système d'appoint;configuration-systeme
+chauffage:taux-charge;5;5;chauffage:taux-charge
+chauffage:taux-charge;15;15;chauffage:taux-charge
+chauffage:taux-charge;25;25;chauffage:taux-charge
+chauffage:taux-charge;35;35;chauffage:taux-charge
+chauffage:taux-charge;45;45;chauffage:taux-charge
+chauffage:taux-charge;55;55;chauffage:taux-charge
+chauffage:taux-charge;65;65;chauffage:taux-charge
+chauffage:taux-charge;75;75;chauffage:taux-charge
+chauffage:taux-charge;85;85;chauffage:taux-charge
+chauffage:taux-charge;95;95;chauffage:taux-charge
+chauffage:type-generateur-combustion;chaudiere_standard;Chaudière standard;chauffage:type-generateur-combustion
+chauffage:type-generateur-combustion;chaudiere_basse_temperature;Chaudière basse température;chauffage:type-generateur-combustion
+chauffage:type-generateur-combustion;chaudiere_condensation;Chaudière à condensation;chauffage:type-generateur-combustion
+chauffage:type-generateur-combustion;generateur_air_chaud;Générateur d'air chaud;chauffage:type-generateur-combustion
+chauffage:type-generateur-combustion;chaudiere_bois;Chaudière bois;chauffage:type-generateur-combustion
+chauffage:type-generateur-combustion;radiateur_gaz;Radiateur gaz;chauffage:type-generateur-combustion
+photovoltaique:usage-electricite;chauffage;Chauffage;photovoltaique:usage-electricite
+photovoltaique:usage-electricite;refroidissement;Refroidissement;photovoltaique:usage-electricite
+photovoltaique:usage-electricite;ecs;Ecs;photovoltaique:usage-electricite
+photovoltaique:usage-electricite;eclairage;Eclairage;photovoltaique:usage-electricite
+photovoltaique:usage-electricite;auxiliaires_ventilation;Auxiliaires de ventilation;photovoltaique:usage-electricite
+photovoltaique:usage-electricite;auxiliaires_distribution;Auxiliaires de distribution;photovoltaique:usage-electricite
+photovoltaique:usage-electricite;autres;Autres;photovoltaique:usage-electricite

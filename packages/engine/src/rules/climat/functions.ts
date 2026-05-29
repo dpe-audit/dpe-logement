@@ -1,8 +1,8 @@
 import { abaques } from "@open-dpe-logement/abaques";
 import { Common, Batiment, Enveloppe } from "@open-dpe-logement/models";
-import { createFrom, mapParMois } from "#utils/mois.js";
+import * as EnveloppRule from "#rules/enveloppe/functions.js";
 import { ValeurForfaitaireError } from "#utils/errors.js";
-import * as enveloppe from "#rules/enveloppe/functions.js";
+import { createParMoisFrom, mapParMois } from "#utils/helpers.js";
 
 /**
  * @param props.code_departement - Code département du bâtiment
@@ -34,7 +34,7 @@ export function calcule_tbase(props: {
 	return match.tbase;
 }
 
-export type Sollicitations = {
+export type Sollicitations = Common.ParMois<{
 	/** Température moyenne d'eau froide sanitaire en °C */
 	tefs: number | null;
 	/** Ensoleillement reçu en période de chauffage en kWh/m² */
@@ -67,24 +67,24 @@ export type Sollicitations = {
 	dh26: number;
 	/** Degrés-heure pour une température de consigne de 28°C en °C·h */
 	dh28: number;
-};
+}>;
 
 /**
  * @param props.zone_climatique - {@linkcode calcule_zone_climatique}
  * @param props.altitude - Altitude du bâtiment en mètres
  * @param props.parois_anciennes - {@linkcode calcule_parois_anciennes}
- * @param props.inertie - {@linkcode enveloppe.calcule_inertie}
- * @returns {Common.ParMois<Sollicitations>} - Sollicitations climatiques pour chaque mois de l'année
+ * @param props.inertie - {@linkcode EnveloppRule.calcule_inertie}
+ * @returns Sollicitations climatiques pour chaque mois de l'année
  */
 export function calcule_sollicitations(props: {
 	zone_climatique: Batiment.ZoneClimatique;
 	altitude: number;
 	parois_anciennes: boolean;
 	inertie: Enveloppe.Common.Inertie;
-}): Common.ParMois<Sollicitations> {
+}): Sollicitations {
 	const abaque = abaques.climat.sollicitations;
 	const matches = abaque.search(props, abaque.load());
-	return createFrom(matches);
+	return createParMoisFrom(matches);
 }
 
 /**
@@ -100,7 +100,7 @@ export function calcule_c1(props: {
 }): Common.ParMois<number> {
 	const abaque = abaques.climat.c1;
 	const matches = abaque.search(props, abaque.load());
-	return mapParMois(createFrom(matches), (value) => value.c1);
+	return mapParMois(createParMoisFrom(matches), (value) => value.c1);
 }
 
 /**

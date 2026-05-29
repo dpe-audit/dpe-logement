@@ -8,7 +8,6 @@ export type Systeme = {
 	id: UUID;
 	description: string;
 	generateur_id: UUID;
-	installation_id: UUID;
 	reseau: Reseau;
 };
 
@@ -17,7 +16,6 @@ export type SystemeWithData<T extends Systeme = Systeme> = T & {
 };
 
 export type SystemeData = {
-	paux: number;
 	rdim: number;
 	iecs: number;
 	rd: number;

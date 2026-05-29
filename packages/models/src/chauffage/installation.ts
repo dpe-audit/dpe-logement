@@ -1,5 +1,6 @@
 import type { Consommations, UUID } from "../common/common.js";
 import { buildEnum, type NonEmptyArray } from "../utils.js";
+import type { Systeme } from "./systeme.js";
 
 /**
  * @see https://schemas.open-dpe.fr/chauffage/installation
@@ -8,12 +9,14 @@ export type Installation = {
 	id: UUID;
 	description: string;
 	surface: number;
-	comptage_individuel: boolean;
-	reseau: Reseau | null;
+	type: TypeInstallation;
+	installation_collective: boolean;
+	comptage_individuel: boolean | null;
+	regulation_terminale: boolean | null;
+	programmation_centrale: TypeProgrammationCentrale;
+	programmation_terminale: TypeProgrammationTerminale | null;
 	solaire_thermique: SolaireThermique | null;
-	regulation_centrale: Regulation;
-	regulation_terminale: Regulation;
-	generateurs: NonEmptyArray<UUID>;
+	systemes: NonEmptyArray<Systeme>;
 };
 
 export type InstallationWithData<T extends Installation = Installation> = T & {
@@ -21,38 +24,12 @@ export type InstallationWithData<T extends Installation = Installation> = T & {
 };
 
 export type InstallationData = {
-	paux: number;
 	rdim: number;
 	fch: number;
 	int: number;
 	i0: number;
 	ich: number;
-	rd: number;
-	re: number;
-	rg: number;
-	rr: number;
 	consommations: Consommations;
-};
-
-export type Reseau = ReseauHydraulique | ReseauAeraulique;
-
-type ReseauBase = {
-	type_distribution: TypeDistribution;
-	presence_fluide_frigorigene: boolean;
-	presence_circulateur_externe: boolean;
-	niveaux_desservis: number;
-	isolation: boolean | null;
-	emetteurs: UUID[];
-};
-
-export type ReseauHydraulique = ReseauBase & {
-	type_distribution: typeof TypeDistributionEnum.hydraulique;
-	emetteurs: NonEmptyArray<UUID>;
-};
-
-export type ReseauAeraulique = ReseauBase & {
-	type_distribution: typeof TypeDistributionEnum.aeraulique;
-	emetteurs: [];
 };
 
 export type SolaireThermique = {
@@ -61,29 +38,37 @@ export type SolaireThermique = {
 	fch: number | null;
 };
 
-export type Regulation = SansRegulation | AvecRegulation;
+export const TYPES_INSTALLATION = ["central", "divise"] as const;
+export type TypeInstallation = (typeof TYPES_INSTALLATION)[number];
+export const TypeInstallationEnum = buildEnum(TYPES_INSTALLATION);
 
-type RegulationBase = {
-	presence_regulation: boolean;
-	minimum_temperature: boolean | null;
-	detection_presence: boolean | null;
-};
+export const TYPES_PROGRAMMATION = [
+	"absent",
+	"central_sans_minimum_temperature",
+	"central_avec_minimum_temperature",
+	"central_collectif_sans_detection_presence",
+	"central_collectif_avec_detection_presence",
+	"terminal_avec_minimum_temperature",
+	"terminal_avec_minimum_temperature_detection_presence",
+];
+export type TypeProgrammation = (typeof TYPES_PROGRAMMATION)[number];
+export const TypeProgrammationEnum = buildEnum(TYPES_PROGRAMMATION);
 
-export type SansRegulation = RegulationBase & {
-	presence_regulation: false;
-	minimum_temperature: null | false;
-	detection_presence: null | false;
-};
+export type TypeProgrammationCentrale = Extract<
+	TypeProgrammation,
+	| "absent"
+	| "central_sans_minimum_temperature"
+	| "central_avec_minimum_temperature"
+	| "central_collectif_sans_detection_presence"
+	| "central_collectif_avec_detection_presence"
+>;
 
-export type AvecRegulation = RegulationBase & {
-	presence_regulation: true;
-	minimum_temperature: boolean;
-	detection_presence: boolean;
-};
-
-export const TYPES_DISTRIBUTION = ["hydraulique", "aeraulique"] as const;
-export type TypeDistribution = (typeof TYPES_DISTRIBUTION)[number];
-export const TypeDistributionEnum = buildEnum(TYPES_DISTRIBUTION);
+export type TypeProgrammationTerminale = Extract<
+	TypeProgrammation,
+	| "absent"
+	| "terminal_avec_minimum_temperature"
+	| "terminal_avec_minimum_temperature_detection_presence"
+>;
 
 export const USAGES_SOLAIRE = ["chauffage", "chauffage_ecs"] as const;
 export type UsageSolaire = (typeof USAGES_SOLAIRE)[number];

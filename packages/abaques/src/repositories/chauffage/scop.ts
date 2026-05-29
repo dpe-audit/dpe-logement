@@ -5,11 +5,9 @@ export type ScopSchema = {
 	zone_climatique: string;
 	type_generateur: string;
 	type_emetteur: string | null;
-	"annee_installation_generateur/lte": number | null;
-	"annee_installation_generateur/gte": number | null;
-	scop_cop: string;
+	"annee_installation/lte": number | null;
+	"annee_installation/gte": number | null;
 	scop: number;
-	tv_scop_id: number;
 };
 
 export const load = (): ScopSchema[] => data as ScopSchema[];

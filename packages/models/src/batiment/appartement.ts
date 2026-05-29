@@ -2,7 +2,7 @@ import type { UUID } from "../common/common";
 import { buildEnum } from "../utils";
 
 /**
- * @see https://schemas.open-dpe.fr/appartement
+ * @see https://schemas.open-dpe.fr/batiment/appartement
  */
 export type Appartement = {
 	id: UUID;

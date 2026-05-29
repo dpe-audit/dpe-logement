@@ -10,8 +10,6 @@ properties:
     $ref: /common/primitives#/$defs/description
   generateur_id:
     $ref: /common/primitives#/$defs/id
-  installation_id:
-    $ref: /common/primitives#/$defs/id
   reseau:
     title: Réseau de distribution d'eau chaude sanitaire
     type: object
@@ -43,9 +41,6 @@ properties:
     readOnly: true
     additionalProperties: false
     properties:
-      paux:
-        title: Puissance des auxiliaires en W
-        type: number
       iecs:
         title: Inverse du rendement moyen
         type: number
@@ -68,7 +63,6 @@ properties:
       consommations:
         $ref: /common/components#/$defs/consommations
     required:
-      - paux
       - iecs
       - rd
       - rs
@@ -81,5 +75,4 @@ required:
   - id
   - description
   - generateur_id
-  - installation_id
   - reseau

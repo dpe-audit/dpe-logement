@@ -19,11 +19,11 @@ fields:
     format: enums
     x-enum: chauffage:mode-combustion
     required: true
-  - name: annee_installation_generateur/lte
+  - name: annee_installation/lte
     title: Année d'installation du générateur (inférieure ou égale à)
     type: integer
     required: false
-  - name: annee_installation_generateur/gte
+  - name: annee_installation/gte
     title: Année d'installation du générateur (supérieure ou égale à)
     type: integer
     required: false
@@ -40,15 +40,15 @@ fields:
     type: number
     required: false
   - name: rpn
-    title: Rendement à pleine charge (expression mathématique)
+    title: Rendement à pleine charge sur PCI (expression mathématique)
     type: string
     required: true
   - name: rpint
-    title: Rendement à charge intermédiaire (expression mathématique)
+    title: Rendement à charge intermédiaire sur PCI (expression mathématique)
     type: string
     required: true
   - name: qp0
-    title: Débit de déperditions à l'arrêt en W (expression mathématique)
+    title: Débit de déperditions à l'arrêt en kW (expression mathématique)
     type: string
     required: true
   - name: pveilleuse

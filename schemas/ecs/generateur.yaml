@@ -37,6 +37,11 @@ properties:
       - bois_granule
       - reseau_chaleur
       - null
+  bienergie:
+    title: Energie secondaire
+    type: [string, "null"]
+    x-enum: energie
+    enum: [gaz_naturel, gpl, fioul, null]
   annee_installation:
     $ref: /common/primitives#/$defs/annee_installation
   position:
@@ -80,6 +85,7 @@ properties:
             const: false
           reseau_chaleur_id:
             const: null
+            default: null
         required:
           - generateur_collectif
           - generateur_multi_batiment
@@ -154,11 +160,11 @@ properties:
         type: [number, "null"]
         minimum: 0
       qp0:
-        title: Pertes à l'arrêt en W
+        title: Pertes à l'arrêt en kW
         type: [number, "null"]
         exclusiveMinimum: 0
       rpn:
-        title: Rendement à puissance nominale sur PCI en %
+        title: Rendement à puissance nominale sur PCI
         type: [number, "null"]
         exclusiveMinimum: 0
         maximum: 150
@@ -180,20 +186,20 @@ properties:
         title: Puissance de dimensionnement du besoin d'eau chaude sanitaire en kW
         type: number
         exclusiveMinimum: 0
-      rg:
-        title: Rendement de génération moyen
+      paux:
+        title: Puissance des auxiliaires en W
         type: number
-        exclusiveMinimum: 0
+        minimum: 0
       cop:
         title: Coefficient de performance énergétique
         type: [number, "null"]
         exclusiveMinimum: 0
       rpn:
-        title: Rendement à pleine charge exprimée en %PCI
+        title: Rendement à pleine charge sur PCI
         type: [number, "null"]
         exclusiveMinimum: 0
       qp0:
-        title: Pertes à l'arrêt en W
+        title: Pertes à l'arrêt en kW
         type: [number, "null"]
         exclusiveMinimum: 0
       pveilleuse:
@@ -210,7 +216,7 @@ properties:
       - pn
       - pdim
       - pecs
-      - rg
+      - paux
       - cop
       - rpn
       - qp0
@@ -227,305 +233,8 @@ required:
 discriminator:
   propertyName: type
 oneOf:
-  - title: Générateur à combustion
-    type: object
-    properties:
-      type:
-        enum:
-          - chaudiere
-          - poele_bouilleur
-          - chauffe_eau
-      energie:
-        not:
-          enum: [electricite, reseau_chaleur]
-      position:
-        type: object
-        properties:
-          reseau_chaleur_id:
-            const: null
-      signaletique:
-        type: object
-        properties:
-          cop:
-            const: null
-          label:
-            const: null
-    required:
-      - type
-      - energie
-      - position
-      - signaletique
-    oneOf:
-      - title: Chaudière à combustion
-        type: object
-        properties:
-          type:
-            const: chaudiere
-          position:
-            type: object
-            properties:
-              position_chauffe_eau:
-                const: null
-        required:
-          - type
-          - position
-      - title: Poèle à bois bouilleur
-        type: object
-        properties:
-          type:
-            const: poele_bouilleur
-          energie:
-            enum: [bois_buche, bois_plaquette, bois_granule]
-          position:
-            type: object
-            properties:
-              position_chauffe_eau:
-                const: null
-        required:
-          - type
-          - energie
-          - position
-      - title: Chauffe-eau à combustion
-        type: object
-        properties:
-          type:
-            const: chauffe_eau
-          position:
-            type: object
-            properties:
-              generateur_collectif:
-                const: false
-              generateur_multi_batiment:
-                const: false
-              generateur_mixte_id:
-                const: null
-          signaletique:
-            type: object
-            properties:
-              mode_combustion:
-                enum: [standard, condensation]
-        required:
-          - type
-          - position
-          - signaletique
-  - title: Générateur électrique
-    type: object
-    properties:
-      type:
-        enum: [chaudiere, chauffe_eau]
-      energie:
-        const: electricite
-      position:
-        type: object
-        properties:
-          reseau_chaleur_id:
-            const: null
-      signaletique:
-        type: object
-        properties:
-          cop:
-            const: null
-          mode_combustion:
-            const: null
-          presence_ventouse:
-            const: null
-          pveilleuse:
-            const: null
-          qp0:
-            const: null
-          rpn:
-            const: null
-    required:
-      - type
-      - energie
-      - position
-      - signaletique
-    oneOf:
-      - title: Chaudière électrique
-        type: object
-        properties:
-          type:
-            const: chaudiere
-          position:
-            type: object
-            properties:
-              position_chauffe_eau:
-                const: null
-          signaletique:
-            type: object
-            properties:
-              label:
-                const: null
-        required:
-          - type
-          - position
-          - signaletique
-      - title: Chauffe-eau électrique
-        type: object
-        properties:
-          type:
-            const: chauffe_eau
-          position:
-            type: object
-            properties:
-              position_chauffe_eau:
-                type: string
-              generateur_collectif:
-                const: false
-              generateur_multi_batiment:
-                const: false
-              generateur_mixte_id:
-                const: null
-          required:
-            - position_chauffe_eau
-        required:
-          - type
-          - position
-  - title: Générateur thermodynamique
-    type: object
-    properties:
-      type:
-        enum:
-          - cet_air_ambiant
-          - cet_air_exterieur
-          - cet_air_extrait
-          - pac_double_service
-      energie:
-        const: electricite
-      position:
-        type: object
-        properties:
-          reseau_chaleur_id:
-            const: null
-          position_chauffe_eau:
-            const: null
-      signaletique:
-        type: object
-        properties:
-          label:
-            const: null
-    required:
-      - type
-      - energie
-      - position
-      - signaletique
-    oneOf:
-      - title: Chauffe-eau thermodynamique
-        type: object
-        properties:
-          type:
-            enum: [cet_air_ambiant, cet_air_exterieur, cet_air_extrait]
-          position:
-            type: object
-            properties:
-              generateur_mixte_id:
-                const: null
-          signaletique:
-            type: object
-            properties:
-              mode_combustion:
-                const: null
-              presence_ventouse:
-                const: null
-              pveilleuse:
-                const: null
-              qp0:
-                const: null
-              rpn:
-                const: null
-        required:
-          - type
-          - position
-          - signaletique
-      - title: PAC double service
-        properties:
-          type:
-            const: pac_double_service
-        required:
-          - type
-  - title: Réseau de chaleur
-    type: object
-    properties:
-      type:
-        const: reseau_chaleur
-      energie:
-        const: reseau_chaleur
-      position:
-        type: object
-        properties:
-          generateur_collectif:
-            const: true
-          generateur_multi_batiment:
-            const: true
-          position_volume_chauffe:
-            const: false
-          generateur_mixte_id:
-            const: null
-      signaletique:
-        type: object
-        properties:
-          pn:
-            const: null
-          cop:
-            const: null
-          label:
-            const: null
-          mode_combustion:
-            const: null
-          presence_ventouse:
-            const: null
-          pveilleuse:
-            const: null
-          qp0:
-            const: null
-          rpn:
-            const: null
-    required:
-      - type
-      - energie
-      - position
-      - signaletique
-  - title: Générateur collectif inconnu
-    type: object
-    properties:
-      type:
-        const: null
-      energie:
-        const: null
-      position:
-        type: object
-        properties:
-          generateur_collectif:
-            const: true
-          position_volume_chauffe:
-            const: false
-          position_chauffe_eau:
-            const: null
-          generateur_mixte_id:
-            const: null
-          reseau_chaleur_id:
-            const: null
-      signaletique:
-        type: object
-        properties:
-          pn:
-            const: null
-          cop:
-            const: null
-          label:
-            const: null
-          mode_combustion:
-            const: null
-          presence_ventouse:
-            const: null
-          pveilleuse:
-            const: null
-          qp0:
-            const: null
-          rpn:
-            const: null
-    required:
-      - type
-      - energie
-      - position
-      - signaletique
+  - $ref: /ecs/generateur/generateur-combustion
+  - $ref: /ecs/generateur/generateur-electrique
+  - $ref: /ecs/generateur/generateur-thermodynamique
+  - $ref: /ecs/generateur/reseau-chaleur
+  - $ref: /ecs/generateur/generateur-inconnu

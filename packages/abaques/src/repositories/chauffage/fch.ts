@@ -5,7 +5,6 @@ export type FchSchema = {
 	zone_climatique: string;
 	type_batiment: string;
 	fch: number;
-	tv_facteur_couverture_solaire_id: number;
 };
 
 export const load = (): FchSchema[] => data as FchSchema[];

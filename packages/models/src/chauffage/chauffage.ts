@@ -1,6 +1,5 @@
 import type { Consommations, Pertes } from "../common/common.js";
-import type { NonEmptyArray } from "../utils.js";
-import type { Emetteur } from "./emetteur.js";
+import { buildEnum, type NonEmptyArray } from "../utils.js";
 import type { Generateur } from "./generateur.js";
 import type { Installation } from "./installation.js";
 
@@ -8,7 +7,6 @@ import type { Installation } from "./installation.js";
  * @see https://schemas.open-dpe.fr/chauffage
  */
 export type Chauffage = {
-	emetteurs: Emetteur[];
 	generateurs: NonEmptyArray<Generateur>;
 	installations: NonEmptyArray<Installation>;
 };
@@ -19,15 +17,15 @@ export type ChauffageWithData<T extends Chauffage = Chauffage> = T & {
 
 export type ChauffageData = {
 	f: number;
-	apports: number;
-	apports_solaires: number;
-	apports_internes: number;
+	as: number;
+	ai: number;
 	bef: number;
 	ich: number;
-	rd: number;
-	re: number;
-	rg: number;
-	rr: number;
 	pertes: Pertes;
 	consommations: Consommations;
 };
+
+export const TAUX_CHARGE = [5, 15, 25, 35, 45, 55, 65, 75, 85, 95] as const;
+export type TauxCharge = (typeof TAUX_CHARGE)[number];
+export const TauxChargeEnum = buildEnum(TAUX_CHARGE);
+export type ParTauxCharge<T> = Record<TauxCharge, T>;

@@ -1,4 +1,5 @@
 # Claude Code
+.agent/
 .claude/
 .claudeignore
 CLAUDE.md

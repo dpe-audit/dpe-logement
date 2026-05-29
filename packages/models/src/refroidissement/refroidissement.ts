@@ -17,9 +17,8 @@ export type RefroidissementWithData<
 };
 
 export type RefroidissementData = {
-	apports: number;
-	apports_internes: number;
-	apports_solaires: number;
+	ai: number;
+	as: number;
 	bef: number;
 	consommations: Consommations;
 };

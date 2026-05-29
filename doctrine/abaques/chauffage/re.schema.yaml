@@ -1,5 +1,6 @@
 id: chauffage:re
 name: re
+title: Rendement d'émission
 fields:
   - name: type_emission
     title: Type d'émission de chaleur

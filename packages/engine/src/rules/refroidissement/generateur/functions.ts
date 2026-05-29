@@ -1,59 +1,38 @@
 import { abaques } from "@open-dpe-logement/abaques";
 import { Common, Batiment } from "@open-dpe-logement/models";
-import toCEP from "#utils/to-cep.js";
-import toEGES from "#utils/to-eges.js";
+import * as ClimatRule from "#rules/climat/functions.js";
+import * as RefroidissementRule from "#rules/refroidissement/functions.js";
+import * as InstallationRule from "#rules/refroidissement/installation/functions.js";
 import { ValeurForfaitaireError } from "#utils/errors.js";
-import * as climat from "#rules/climat/functions.js";
-import * as refroidissement from "#rules/refroidissement/functions.js";
-import * as installation from "#rules/refroidissement/installation/functions.js";
+import { reduceParMois } from "#utils/helpers.js";
 
 /**
- * @param props.bfr - {@linkcode refroidissement.calcule_bfr}
+ * @param props.bfr - {@linkcode RefroidissementRule.calcule_bfr}
  * @param props.rdim - {@linkcode calcule_rdim}
  * @param props.eer - {@linkcode calcule_eer}
- * @returns Consommations d'énergie finale du générateur de refroidissement en kWh/an
+ * @returns Consommations du générateur de refroidissement en kWh/an
  */
-export function calcule_cef(props: {
-	bfr: number;
+export function calcule_cfr(props: {
+	bfr: Common.ParMois<number>;
 	rdim: number;
 	eer: number;
 }): number {
-	const { bfr, rdim, eer } = props;
+	const { rdim, eer } = props;
+	const bfr = reduceParMois(props.bfr);
 	return 0.9 * (bfr / eer) * rdim;
 }
 
 /**
- * @param props.cef - {@linkcode calcule_cef}
- * @param props.energie - Energie utilisée par le générateur de refroidissement
- * @return Consommation d'énergie primaire du générateur de refroidissement en kWh
+ * @see https://github.com/dpe-audit/dpe-logement/issues/38
+ * @returns Consommation d'énergie de l'auxiliaire de refroidissement en Wh/an
  */
-export function calcule_cep(props: {
-	cef: number;
-	energie: Common.Energie;
-}): number {
-	const { cef, energie } = props;
-	return toCEP({ cef, energie });
-}
-
-/**
- * @param props.cef - {@linkcode calcule_cef}
- * @param props.energie - Energie utilisée par le générateur de refroidissement
- * @param props.reseau_id - Identifiant du réseau de froid
- * @return Emissions de gaz à effet de serre du générateur de refroidissement en kgCO2eq
- */
-export function calcule_eges(props: {
-	cef: number;
-	energie: Common.Energie;
-	reseau_id: string | null;
-}): number {
-	const { cef, energie, reseau_id } = props;
-	const usage = Common.UsageEnum.refroidissement;
-	return toEGES({ cef, energie, usage, reseau_id });
+export function calcule_caux(): number {
+	return 0;
 }
 
 /**
  * @param props.installations - Liste des installations de refroidissement associées au générateur
- * @param props.installations[].rdim - {@linkcode installation.calcule_rdim}
+ * @param props.installations[].rdim - {@linkcode InstallationRule.calcule_rdim}
  * @param props.installations[].n_generateurs - Nombre de générateurs de refroidissement associés à chaque installation
  * @returns Ratio de dimensionnement du générateur de refroidissement
  */
@@ -68,7 +47,7 @@ export function calcule_rdim(props: {
 }
 
 /**
- * @param props.zone_climatique - {@linkcode climat.calcule_zone_climatique}
+ * @param props.zone_climatique - {@linkcode ClimatRule.calcule_zone_climatique}
  * @param props.annee_installation - {@linkcode set_annee_installation}
  * @param props.seer_saisi - Coefficient d'efficience énergétique saisonnier du générateur connu et justifié (SEER)
  * @see abaques.refroidissement.eer

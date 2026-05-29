@@ -1,9 +1,10 @@
 import { abaques } from "@open-dpe-logement/abaques";
-import { Enveloppe } from "@open-dpe-logement/models";
+import { Common, Enveloppe } from "@open-dpe-logement/models";
+import * as ClimatRule from "#rules/climat/functions.js";
+import * as BaieRule from "#rules/enveloppe/baie/functions.js";
+import * as ParoiRule from "#rules/enveloppe/paroi/functions.js";
 import { ValeurForfaitaireError } from "#utils/errors.js";
-import * as climat from "#rules/climat/functions.js";
-import * as baie from "#rules/enveloppe/baie/functions.js";
-import * as paroi from "#rules/enveloppe/paroi/functions.js";
+import { createParMois } from "#utils/helpers.js";
 
 /**
  * @param props.aue : {@linkcode calcule_aue}
@@ -35,7 +36,7 @@ export function calcule_b(props: {
  * @see https://github.com/dpe-audit/dpe-logement/issues/45
  * @param props.parois : Liste des parois déperditives donnant sur l'espace tampon solarisé
  * @param props.parois[].surface : Surface de la paroi en m²
- * @param props.parois[].bver : {@linkcode paroi.calcule_bver}
+ * @param props.parois[].bver : {@linkcode ParoiRule.calcule_bver}
  * @returns Coefficient de réduction des déperditions thermiques de l'espace tampon solarisé
  */
 export function calcule_bver(props: {
@@ -150,34 +151,38 @@ export function calcule_isolation_baie(props: {
 /**
  * @see https://github.com/dpe-audit/dpe-logement/discussions/48
  * @param props.sst : {@linkcode calcule_sst}
- * @param props.sse : {@linkcode baie.calcule_sse}
+ * @param props.sse : {@linkcode BaieRule.calcule_sse}
  * @param props.bver : {@linkcode calcule_bver}
  * @returns Surface sud équivalente de l'espace tampon solarisé en m²/mois
  */
 export function calcule_sse(props: {
-	sst: number[];
-	sse: number[];
+	sst: Common.ParMois<number>[];
+	sse: Common.ParMois<number>[];
 	bver: number;
-}): number {
-	const bver = props.bver;
-	const sst = props.sst.reduce((acc, sst) => acc + sst, 0);
-	const sse = props.sse.reduce((acc, sse) => acc + sse, 0);
-	return (sst - sse) * bver;
+}): Common.ParMois<number> {
+	const { bver } = props;
+	return createParMois((mois: Common.Mois) => {
+		const sst = props.sst.reduce((acc, sst) => acc + sst[mois], 0);
+		const sse = props.sse.reduce((acc, sse) => acc + sse[mois], 0);
+		return (sst - sse) * bver;
+	});
 }
 
 /**
  * @param props.surface : Surface de la baie de l'espace tampon solarisé donnant sur l'extérieur en m²/mois
  * @param props.t : {@linkcode calcule_t}
- * @param props.c1 : {@linkcode climat.calcule_c1}
+ * @param props.c1 : {@linkcode ClimatRule.calcule_c1}
  * @return Surface sud équivalente de la baie de l'espace tampon solarisé donnant sur l'extérieur en m²/mois
  */
 export function calcule_sst(props: {
 	surface: number;
 	t: number;
-	c1: number;
-}): number {
+	c1: Common.ParMois<number>;
+}): Common.ParMois<number> {
 	const { surface, t, c1 } = props;
-	return surface * (0.8 * t + 0.024) * c1;
+	return createParMois(
+		(mois: Common.Mois) => surface * (0.8 * t + 0.024) * c1[mois],
+	);
 }
 
 /**

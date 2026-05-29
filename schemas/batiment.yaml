@@ -37,6 +37,28 @@ properties:
     type: boolean
   adresse:
     $ref: /common/components#/$defs/adresse
+  appartements_visites:
+    title: Appartements visités
+    type: array
+    items:
+      $ref: /batiment/appartement
+  logement:
+    logement:
+    title: Logement de référence
+    type: [object, "null"]
+    properties:
+      description:
+        $ref: /common/primitives#/$defs/description
+      surface_habitable:
+        title: Surface habitable en m²
+        $ref: /common/primitives#/$defs/surface
+      hauteur_sous_plafond:
+        title: Hauteur sous plafond moyenne en m
+        $ref: /common/primitives#/$defs/hauteur
+    required:
+      - description
+      - surface_habitable
+      - hauteur_sous_plafond
   data:
     title: Données calculées
     type: object
@@ -61,6 +83,8 @@ required:
   - hauteur_sous_plafond
   - materiaux_anciens
   - adresse
+  - appartements_visites
+  - logement
 oneOf:
   - title: Maison individuelle
     properties:
@@ -68,15 +92,36 @@ oneOf:
         const: maison
       logements:
         enum: [1, 2]
+      appartements_visites:
+        const: []
     required:
       - type
       - logements
-  - title: Immeuble
+      - appartements_visites
+  - title: Immeuble - Bâtiment
     properties:
       type:
         const: immeuble
       logements:
         minimum: 3
+      appartements_visites:
+        minItems: 1
     required:
       - type
       - logements
+      - appartements_visites
+  - title: Immeuble - Appartement
+    properties:
+      type:
+        const: immeuble
+      logements:
+        minimum: 3
+      logement:
+        type: object
+      appartements_visites:
+        const: []
+    required:
+      - type
+      - logements
+      - logement
+      - appartements_visites

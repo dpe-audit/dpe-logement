@@ -10,11 +10,6 @@ properties:
     minItems: 1
     items:
       $ref: /chauffage/generateur
-  emetteurs:
-    title: Liste des émetteurs
-    type: array
-    items:
-      $ref: /chauffage/emetteur
   installations:
     title: Liste des installations
     type: array
@@ -32,34 +27,16 @@ properties:
         type: number
         minimum: 0
         maximum: 1
-      apports:
-        $ref: /common/primitives#/$defs/apports
-      apports_internes:
+      ai:
         title: Apports internes
         $ref: /common/primitives#/$defs/apports
-      apports_solaires:
+      as:
         title: Apports solaires
         $ref: /common/primitives#/$defs/apports
       bef:
         $ref: /common/primitives#/$defs/bef
       ich:
         title: Inverse du rendement moyen
-        type: number
-        minimum: 0
-      rd:
-        title: Rendement de distribution moyen
-        type: number
-        minimum: 0
-      re:
-        title: Rendement d'émission moyen
-        type: number
-        minimum: 0
-      rg:
-        title: Rendement de génération moyen
-        type: number
-        minimum: 0
-      rr:
-        title: Rendement de régulation moyen
         type: number
         minimum: 0
       pertes:
@@ -69,18 +46,12 @@ properties:
     required:
       - effet_joule
       - f
-      - apports
-      - apports_internes
-      - apports_solaires
+      - ai
+      - as
       - bef
       - ich
-      - rd
-      - re
-      - rg
-      - rr
       - pertes
       - consommations
 required:
   - generateurs
-  - emetteurs
   - installations

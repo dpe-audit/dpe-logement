@@ -1,10 +1,11 @@
 import { abaques } from "@open-dpe-logement/abaques";
-import { Enveloppe } from "@open-dpe-logement/models";
+import { Common, Enveloppe } from "@open-dpe-logement/models";
+import * as ClimatRule from "#rules/climat/functions.js";
+import * as LocalNonChauffeRule from "#rules/enveloppe/local-non-chauffe/functions.js";
+import * as MasqueRule from "#rules/enveloppe/masque/functions.js";
 import { ValeurForfaitaireError } from "#utils/errors.js";
-import { linearInterpolate } from "#utils/interpolate.js";
-import * as climat from "#rules/climat/functions.js";
-import * as local_non_chauffe from "#rules/enveloppe/local-non-chauffe/functions.js";
-import * as masque from "#rules/enveloppe/masque/functions.js";
+import { createParMois } from "#utils/helpers.js";
+import { linearInterpolate } from "#utils/math.js";
 
 /**
  * @param props.ujn_saisi : Coefficient de transmission thermique de la baie avec fermeture saisi en W/(m².K)
@@ -148,20 +149,20 @@ export function calcule_ug(props: {
  * @param props.surface : Surface de la baie en m²
  * @param props.sw : {@linkcode calcule_sw}
  * @param props.fe : {@linkcode calcule_fe}
- * @param props.c1 : {@linkcode climat.c1}
- * @param props.t : {@linkcode local_non_chauffe.calcule_tmoy}
+ * @param props.t : {@linkcode LocalNonChauffeRule.calcule_tmoy}
+ * @param props.c1 : {@linkcode ClimatRule.calcule_c1}
  * @return Surface sud équivalente de la baie en m²/mois
  */
 export function calcule_sse(props: {
 	surface: number;
 	sw: number;
 	fe: number;
-	c1: number;
 	t: number | null;
-}): number {
+	c1: Common.ParMois<number>;
+}): Common.ParMois<number> {
 	const { surface, sw, fe, c1 } = props;
 	const t = props.t === null ? 1 : props.t;
-	return surface * sw * fe * c1 * t;
+	return createParMois((mois: Common.Mois) => surface * sw * fe * c1[mois] * t);
 }
 
 /**
@@ -174,7 +175,7 @@ export function calcule_sse(props: {
  * @param props.type_survitrage : {@linkcode set_type_survitrage}
  * @see abaques.enveloppe.baie.sw
  * @throws {ValeurForfaitaireError}
- * @returns Proportion d'énergie solaire incidente transmise par la baie pour le mois
+ * @returns Proportion d'énergie solaire incidente transmise par la baie
  */
 export function calcule_sw(props: {
 	sw_saisi: number | null;
@@ -194,8 +195,8 @@ export function calcule_sw(props: {
 }
 
 /**
- * @param props.fe1 : {@linkcode masque.calcule_fe1}
- * @param props.fe2 : {@linkcode masque.calcule_fe2}
+ * @param props.fe1 : {@linkcode MasqueRule.calcule_fe1}
+ * @param props.fe2 : {@linkcode MasqueRule.calcule_fe2}
  * @returns Facteur d'ensoleillement de la baie dû à la présence de masques
  */
 export function calcule_fe(props: { fe1: number; fe2: number }): number {
@@ -204,7 +205,7 @@ export function calcule_fe(props: { fe1: number; fe2: number }): number {
 }
 
 /**
- * @param props.fe1 : {@linkcode masque.calcule_fe1}
+ * @param props.fe1 : {@linkcode MasqueRule.calcule_fe1}
  * @returns Facteur d'ensoleillement dû aux masques proches
  */
 export function calcule_fe1(props: { fe1: number[] }): number {
@@ -213,8 +214,8 @@ export function calcule_fe1(props: { fe1: number[] }): number {
 }
 
 /**
- * @param props.fe2 : {@linkcode masque.calcule_fe2}
- * @param props.omb : {@linkcode masque.calcule_omb}
+ * @param props.fe2 : {@linkcode MasqueRule.calcule_fe2}
+ * @param props.omb : {@linkcode MasqueRule.calcule_omb}
  * @returns Facteur d'ensoleillement dû aux masques lointains
  */
 export function calcule_fe2(props: { fe2: number[]; omb: number[] }): number {

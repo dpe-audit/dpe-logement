@@ -16,7 +16,7 @@ properties:
     minItems: 1
     maxItems: 2
     items:
-      $ref: /common/primitives#/$defs/id
+      $ref: /ecs/systeme
   solaire_thermique:
     title: Solaire thermique
     type: [object, "null"]
@@ -44,26 +44,11 @@ properties:
     readOnly: true
     additionalProperties: false
     properties:
-      paux:
-        title: Puissance des auxiliaires en W
-        type: number
       fecs:
         title: Facteur de couverture solaire
         type: number
       iecs:
         title: Inverse du rendement moyen
-        type: number
-      rd:
-        title: Rendement de distribution moyen
-        type: number
-      rs:
-        title: Rendement de stockage moyen
-        type: number
-      rg:
-        title: Rendement de génération moyen
-        type: number
-      rgs:
-        title: Rendement de génération et de stockage moyen
         type: number
       rdim:
         $ref: /common/primitives#/$defs/rdim
@@ -72,13 +57,8 @@ properties:
       consommations:
         $ref: /common/components#/$defs/consommations
     required:
-      - paux
       - fecs
       - iecs
-      - rd
-      - rs
-      - rg
-      - rgs
       - rdim
       - pertes
       - consommations
@@ -86,7 +66,5 @@ required:
   - id
   - description
   - surface
-  - generateurs
-  - reseau
-  - stockage
+  - systemes
   - solaire_thermique

@@ -21,12 +21,10 @@ properties:
     readOnly: true
     additionalProperties: false
     properties:
-      apports:
-        $ref: /common/primitives#/$defs/apports
-      apports_internes:
+      ai:
         title: Apports internes
         $ref: /common/primitives#/$defs/apports
-      apports_solaires:
+      as:
         title: Apports solaires
         $ref: /common/primitives#/$defs/apports
       bef:
@@ -34,9 +32,8 @@ properties:
       consommations:
         $ref: /common/components#/$defs/consommations
     required:
-      - apports
-      - apports_internes
-      - apports_solaires
+      - ai
+      - as
       - bef
       - consommations
 required:

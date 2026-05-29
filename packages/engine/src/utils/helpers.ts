@@ -1,14 +1,40 @@
-import { Common } from "@open-dpe-logement/models";
+import { Chauffage, Common } from "@open-dpe-logement/models";
+
+export type NonEmptyArray<T> = [T, ...T[]];
+
+/**
+ * Données par taux de charge
+ */
+export function createParTauxCharge<T>(
+	fn: (x: Chauffage.TauxCharge) => T,
+): Chauffage.ParTauxCharge<T> {
+	const result: Partial<Chauffage.ParTauxCharge<T>> = {};
+	for (const x of Chauffage.TAUX_CHARGE) result[x] = fn(x);
+	return result as Chauffage.ParTauxCharge<T>;
+}
 
 /**
  * Fonction pour créer une collection de valeurs pour chaque mois de l'année.
  */
 export function createParMois<T>(
-	fn: (props: { mois: Common.Mois }) => T,
+	fn: (mois: Common.Mois) => T,
 ): Record<Common.Mois, T> {
 	const result = {} as Record<Common.Mois, T>;
 	for (const mois of Common.MOIS) {
-		result[mois] = fn({ mois });
+		result[mois] = fn(mois);
+	}
+	return result;
+}
+
+/**
+ * Fusionne plusieurs collections de valeurs par mois en une seule collection, en sommant les valeurs pour chaque mois.
+ */
+export function mergeParMois(
+	values: Common.ParMois<number>[],
+): Common.ParMois<number> {
+	const result = createParMois<number>(() => 0);
+	for (const item of values) {
+		for (const mois of Common.MOIS) result[mois] += item[mois];
 	}
 	return result;
 }
@@ -24,7 +50,7 @@ export function reduceParMois(
 	return Object.values(values).reduce(reducer, initial);
 }
 
-export function createFrom<T extends object>(
+export function createParMoisFrom<T extends object>(
 	values: Array<T & { mois: string | Common.Mois }>,
 ): Common.ParMois<T> {
 	const map = new Map(values.map((item) => [item.mois as Common.Mois, item]));

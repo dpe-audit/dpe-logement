@@ -1,3 +1,49 @@
+import * as math from "mathjs";
+
+/**
+ * Arrondi un nombre à une précision définie
+ */
+export function round(value: number): number;
+export function round(value: null): null;
+export function round(value: number | null): number | null {
+	if (value === null) return null;
+	return parseFloat(value.toFixed(2));
+}
+
+/**
+ * Moyenne simple ou pondérée
+ */
+export const average = (props: {
+	values: number[];
+	weights?: number[];
+}): number => {
+	const { values, weights } = props;
+
+	if (0 === values.length) {
+		throw new Error("La liste des valeurs est vide.");
+	}
+	if (!weights) {
+		return values.reduce((a, b) => a + b, 0) / values.length;
+	}
+	if (values.length !== weights.length) {
+		throw new Error(
+			"Les listes 'values' et 'weights' doivent avoir la même longueur.",
+		);
+	}
+	const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
+
+	if (totalWeight !== 1) {
+		throw new Error("La somme des poids ('weights') doit être égale à 1.");
+	}
+
+	const weightedSum = values.reduce(
+		(sum, value, index) => sum + value * weights[index]!,
+		0,
+	);
+
+	return weightedSum / totalWeight;
+};
+
 /**
  * Interpolation linéaire / extrapolation
  */
@@ -59,4 +105,14 @@ export const bilinearInterpolate = (
 	q += (((x2 - x) * (y - y1)) / ((x2 - x1) * (y2 - y1))) * q12;
 	q += (((x - x1) * (y - y1)) / ((x2 - x1) * (y2 - y1))) * q22;
 	return q;
+};
+
+/**
+ * Évalue une expression mathématique
+ */
+export const evaluate = (
+	expr: string,
+	scope?: Record<string, number>,
+): number => {
+	return math.evaluate(expr, scope);
 };

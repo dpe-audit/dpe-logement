@@ -20,10 +20,6 @@ export type EcsData = {
 	nadeq: number;
 	bef: number;
 	iecs: number;
-	rd: number;
-	rs: number;
-	rg: number;
-	rgs: number;
 	pertes: Pertes;
 	consommations: Consommations;
 };

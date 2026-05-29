@@ -19,11 +19,11 @@ fields:
     format: enums
     x-enum: chauffage:type-emetteur
     required: false
-  - name: annee_installation_generateur/lte
+  - name: annee_installation/lte
     title: Année d'installation du générateur (inférieure ou égale à)
     type: integer
     required: false
-  - name: annee_installation_generateur/gte
+  - name: annee_installation/gte
     title: Année d'installation du générateur (supérieure ou égale à)
     type: integer
     required: false

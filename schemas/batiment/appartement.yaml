@@ -1,4 +1,4 @@
-$id: https://schemas.open-dpe.fr/appartement
+$id: https://schemas.open-dpe.fr/batiment/appartement
 $schema: https://json-schema.org/draft/2020-12/schema
 title: Appartement visité
 type: object
@@ -17,12 +17,12 @@ properties:
   position:
     title: Position de l'appartement dans le bâtiment
     type: string
-    x-enum: appartement:position
+    x-enum: batiment:position-appartement
     enum: [rdc, etage_intermediaire, dernier_etage]
   typologie:
     title: Typologie d'appartement
     type: string
-    x-enum: appartement:typologie
+    x-enum: batiment:typologie-appartement
     enum: [T1, T2, T3, T4, T5, T6, T7]
 required:
   - id

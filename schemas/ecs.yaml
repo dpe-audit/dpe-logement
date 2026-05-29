@@ -17,12 +17,6 @@ properties:
     minItems: 1
     items:
       $ref: /ecs/installation
-  systemes:
-    title: Liste des systèmes
-    type: array
-    minItems: 1
-    items:
-      $ref: /ecs/systeme
   data:
     title: Données calculées
     type: object
@@ -41,22 +35,6 @@ properties:
         $ref: /common/primitives#/$defs/bef
       iecs:
         title: Inverse du rendement moyen
-        type: number
-        minimum: 0
-      rd:
-        title: Rendement de distribution moyen
-        type: number
-        minimum: 0
-      rs:
-        title: Rendement de stockage moyen
-        type: number
-        minimum: 0
-      rg:
-        title: Rendement de génération moyen
-        type: number
-        minimum: 0
-      rgs:
-        title: Rendement de génération et de stockage moyen
         type: number
         minimum: 0
       pertes:

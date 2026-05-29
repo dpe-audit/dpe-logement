@@ -94,6 +94,26 @@ export const ENERGIES = [
 export type Energie = (typeof ENERGIES)[number];
 export const EnergieEnum = buildEnum(ENERGIES);
 
+export const ENERGIES_BOIS: readonly Energie[] = [
+	"bois_buche",
+	"bois_plaquette",
+	"bois_granule",
+] as const satisfies readonly Energie[];
+export type EnergieBois = (typeof ENERGIES_BOIS)[number];
+export const EnergieBoisEnum = buildEnum(ENERGIES_BOIS);
+
+export const ENERGIES_COMBUSTION: readonly Energie[] = [
+	"gaz_naturel",
+	"gpl",
+	"fioul",
+	"bois_buche",
+	"bois_plaquette",
+	"bois_granule",
+	"charbon",
+] as const satisfies readonly Energie[];
+export type EnergieCombustion = (typeof ENERGIES_COMBUSTION)[number];
+export const EnergieCombustionEnum = buildEnum(ENERGIES_COMBUSTION);
+
 /**
  * @see https://schemas.open-dpe.fr/common/primitives#/$defs/type_pertes
  */
